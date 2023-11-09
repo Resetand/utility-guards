@@ -117,4 +117,9 @@ describe('is - util for runtime+ts type guarding', () => {
     )('should check on Not Empty - %s', (value, expected) => {
         expect(is.Empty(value)).toBe(expected);
     });
+
+    test('Should work outside this context', () => {
+        const isNumber = is.Number;
+        expect([12, 32, 32].every(isNumber)).toBe(true);
+    });
 });
