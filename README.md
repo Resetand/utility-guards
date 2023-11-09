@@ -1,6 +1,6 @@
-# Textarea Markdown
+# TS Types Guard util
 
-[![CI status][github-action-image]][github-action-url] [![codecov][codecov-image]][codecov-url] [![NPM version][npm-image]][npm-url]
+Util for runtime types checking for JS(TS)
 
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard
