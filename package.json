@@ -1,0 +1,46 @@
+{
+  "name": "ts-types-guard",
+  "version": "1.0.0",
+  "description": "Util for runtime types checking for JS(TS)",
+  "homepage": "https://github.com/Resetand/ts-types-guard",
+  "author": "Resetand",
+  "license": "MIT",
+  "keywords": [
+    "guard",
+    "typescript",
+    "types",
+    "is",
+    "ts-guard"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/jest": "29.2.1",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "eslint": "8.26.0",
+    "eslint-config-prettier": "8.5.0",
+    "husky": "8.0.1",
+    "jest": "29.2.2",
+    "lint-staged": "13.0.3",
+    "ts-jest": "29.0.3",
+    "typescript": "5.2.2"
+  },
+  "scripts": {
+    "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "test": "./node_modules/.bin/jest --colors",
+    "test:coverage": "npm run test -- --coverage",
+    "prepublish": "npm run lint && npm run test -- --watchAll=false && npm run build",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/parser": "^6.10.0"
+  }
+}
