@@ -56,7 +56,7 @@ const is = {
     },
 
     /**
-     * checks if value is a null or undefined
+     * Checks if value is a null or undefined
      */
     Nil: (value: unknown): value is null | undefined => {
         return value === null || value === undefined;
@@ -120,6 +120,9 @@ const is = {
         return !!value && getTypeTag(value) === TypeTag.PROMISE;
     },
 
+    /**
+     * Check if value is a valid JS date
+     */
     Date: (value: unknown): value is Date => {
         return !!value && getTypeTag(value) === TypeTag.DATE && !is.NaN(Number(value));
     },
