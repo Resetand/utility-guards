@@ -13,7 +13,7 @@ Util for runtime types checking for JS(TS)
 
 -   Full typescript guard support
 -   Type inference for guards
--   Type inference for `guardsValidate` function
+-   Type inference for `validateBySchema` function
 
 ```bash
 npm install ts-types-guard
@@ -25,28 +25,30 @@ import is from 'ts-types-guard';
 
 # `Guards`
 
-| Name                           | Description                                                                                                                                                                                                    |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `is.String(value)`             | Check if value a string literal or string created by `String` constructor                                                                                                                                      |
-| `is.Number(value)`             | Check if value a number literal or number created by `Number` constructor                                                                                                                                      |
-| `is.Boolean(value)`            | Check if value a boolean                                                                                                                                                                                       |
-| `is.NaN(value)`                | Check if value is a NaN value                                                                                                                                                                                  |
-| `is.Nil(value)`                | Check if value is a null or undefined                                                                                                                                                                          |
-| `is.Symbol(value)`             | Check if value is a `Symbol`                                                                                                                                                                                   |
-| `is.RegExp(value)`             | Check if value is a RegExp object or RegExp literal                                                                                                                                                            |
-| `is.Error(value)`              | Check if value is an JS Error object                                                                                                                                                                           |
-| `is.Primitive(value)`          | Check if value is a primitive                                                                                                                                                                                  |
-| `is.PlainObject(value)`        | Check if value is a plain JavaScript object                                                                                                                                                                    |
-| `is.Array(value)`              | Check if value is array                                                                                                                                                                                        |
-| `is.Function(value)`           | Check if value is an any function                                                                                                                                                                              |
-| `is.Promise(value)`            | Check if value is a promise object                                                                                                                                                                             |
-| `is.PromiseLike(value)`        | Check if value is a promise-like object (has `then` method)                                                                                                                                                    |
-| `is.Iterable(value)`           | Check if value is iterable (arrays, strings, maps, sets, etc.)                                                                                                                                                 |
-| `is.InstanceOf(value)`         | Check if value is instance of given constructor                                                                                                                                                                |
-| `is.Date(value)`               | Check if value is a valid JS Date object                                                                                                                                                                       |
-| `is.Empty(value)`              | Check if value is empty: Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty Map: `new Map()`, empty Set: `new Set()`, empty string: `''`, nullable value: `null or undefined` |
-| `is.HasKey(obj, propertyName)` | Check if an object has a property                                                                                                                                                                              |
-| `is.ArrayOf(array, guard)`     | Check if all elements of array match given guard                                                                                                                                                               |
+| Name                                | Description                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------- |
+| `is.String(value)`                  | Check if value a string literal or string created by `String` constructor |
+| `is.Number(value)`                  | Check if value a number literal or number created by `Number` constructor |
+| `is.Boolean(value)`                 | Check if value a boolean                                                  |
+| `is.NaN(value)`                     | Check if value is a NaN value                                             |
+| `is.Nil(value)`                     | Check if value is a null or undefined                                     |
+| `is.Symbol(value)`                  | Check if value is a `Symbol`                                              |
+| `is.RegExp(value)`                  | Check if value is a RegExp object or RegExp literal                       |
+| `is.Error(value)`                   | Check if value is an JS Error object                                      |
+| `is.Primitive(value)`               | Check if value is a primitive                                             |
+| `is.PlainObject(value)`             | Check if value is a plain JavaScript object                               |
+| `is.Array(value)`                   | Check if value is array                                                   |
+| `is.Function(value)`                | Check if value is an any function                                         |
+| `is.Promise(value)`                 | Check if value is a promise object                                        |
+| `is.PromiseLike(value)`             | Check if value is a promise-like object (has `then` method)               |
+| `is.Iterable(value)`                | Check if value is iterable (arrays, strings, maps, sets, etc.)            |
+| `is.Date(value)`                    | Check if value is a valid JS Date object                                  |
+| `is.Empty(value)`                   | Check if value is empty                                                   |
+| `is.HasKey(obj, propertyName)`      | Check if an object has a property                                         |
+| `is.ArrayOf(array, guard)`          | Check if all elements of array match given guard                          |
+| `is.InstanceOf(value, constructor)` | Check if value is instance of given constructor                           |
+
+ℹ️ Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty Map: `new Map()`, empty Set: `new Set()`, empty string: `''`, nullable value: `null or undefined`
 
 ## Usage
 
@@ -78,12 +80,12 @@ if (is.Empty(dataArr)) {
 }
 ```
 
-# `guardsValidate`
+# `validateBySchema`
 
 ## Usage
 
 ```tsx
-import { guardsValidate } from 'ts-types-guard';
+import { validateBySchema } from 'ts-types-guard';
 
 const obj = ...
 const schema: TypeSchema<typeof obj> = {
@@ -98,15 +100,20 @@ const schema: TypeSchema<typeof obj> = {
     },
 };
 
-if (guardsValidate(obj, schema)) {
+if (validateBySchema(obj, schema)) {
     obj.c.e.f // OK
 } else {
     obj.c.e.f // TS Error
 }
 
 // usage with guard
-guardsValidate(42, is.Number) // true
-guardsValidate(42, [is.Number, is.String]) // true
-guardsValidate('42', [is.Number, is.String]) // true
-guardsValidate([], is.Number) // false
+validateBySchema(42, is.Number) // true
+validateBySchema(42, [is.Number, is.String]) // true
+validateBySchema('42', [is.Number, is.String]) // true
+validateBySchema([], is.Number) // false
+
+validateBySchema([1,2,3], is.$ArrayOf(is.Number)) // true
+validateBySchema([1,2,3, 'asd'], is.$ArrayOf(is.Number)) // false
 ```
+
+ℹ️ Use `validateBySchemaStrict` to check if object has all properties from schema

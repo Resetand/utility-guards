@@ -1,7 +1,7 @@
 type NullOrUndefined = null | undefined;
 type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
-type GuardFunction<T = unknown> = (value: unknown) => value is T;
+type GuardFunction<TGuarded = unknown> = (value: unknown) => value is TGuarded;
 
 enum TypeTag {
     STRING = 'String',
@@ -25,6 +25,29 @@ enum TypeTag {
  */
 const getTypeTag = (value: unknown): TypeTag => {
     return Object.prototype.toString.call(value).slice(8, -1) as TypeTag;
+};
+
+type CurriedGuardFunction<TGuarded = unknown, TArgs extends unknown[] = unknown[]> = (
+    ...args: TArgs
+) => GuardFunction<TGuarded>;
+
+const curryGuard = <TValue, TGuarded extends TValue, TArgs extends unknown[]>(
+    guard: (value: TValue, ...args: TArgs) => value is TGuarded,
+): CurriedGuardFunction<TGuarded, TArgs> => {
+    return (...args: TArgs): GuardFunction<TGuarded> => {
+        return (value): value is TGuarded => {
+            return guard(value as TValue, ...args);
+        };
+    };
+};
+
+const bindProperty = <TSource, TMethodProp extends keyof TSource>(source: TSource, prop: TMethodProp) => {
+    const currentValue = source[prop];
+
+    if (is.Function(currentValue)) {
+        delete source[prop];
+        source[prop] = currentValue;
+    }
 };
 
 /**
@@ -122,13 +145,6 @@ const is = {
     },
 
     /**
-     * Check if all elements of array match given guard
-     */
-    ArrayOf: <T>(value: unknown, guard: GuardFunction<T>): value is T[] => {
-        return is.Array(value) && value.every(guard);
-    },
-
-    /**
      * Check if value is an any function
      */
     Function: (value: unknown): value is AnyFunction => {
@@ -206,12 +222,35 @@ const is = {
     ): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
         return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
     },
+
+    /**
+     * Check if all elements of array match given guard
+     */
+    ArrayOf: <T>(value: unknown, guard: GuardFunction<T>): value is T[] => {
+        return is.Array(value) && value.every(guard);
+    },
+
+    get $HasKey() {
+        return curryGuard(is.HasKey);
+    },
+
+    get $InstanceOf() {
+        return curryGuard(is.InstanceOf);
+    },
+
+    get $ArrayOf() {
+        return curryGuard(is.ArrayOf);
+    },
 };
+
+bindProperty(is, '$HasKey');
+bindProperty(is, '$ArrayOf');
+bindProperty(is, '$InstanceOf');
 
 export default is;
 
 // -----------------------------------------------------------------------------
-// guardsValidate
+// validateBySchema
 // -----------------------------------------------------------------------------
 
 export type TypeSchema<T> = T extends Record<string, unknown> ? _ObjectSchema<T> : GuardFunction | GuardFunction[];
@@ -231,26 +270,42 @@ type _InferTypeSchema<TSchema, TValue = unknown> = TSchema extends Record<string
     ? _InferTypeGuardArray<TSchema> & TValue
     : never;
 
-export const guardsValidate = <TValue, TSchema extends TypeSchema<any>>(
+const _validateBySchemaImpl = <TValue, TSchema extends TypeSchema<any>>(
     value: TValue,
     schema: TSchema,
-    options?: { ignoreExtraAttributes?: true },
+    options?: { strict?: boolean },
 ): value is TValue & _InferTypeSchema<TSchema, TValue> => {
-    const { ignoreExtraAttributes: strict = false } = options ?? {};
+    const strictShape = options?.strict ?? false;
 
     if (is.Function(schema)) {
         return schema(value);
     }
+
     if (is.Array(schema)) {
-        return schema.some((guard) => guardsValidate(value, guard));
+        return schema.some((guard) => _validateBySchemaImpl(value, guard));
     }
 
     if (is.PlainObject(value)) {
-        const entries = Object.entries(schema);
-        const reducer = strict ? entries.every.bind(entries) : entries.some.bind(entries);
-        return reducer(([key, guard]) => {
-            return is.HasKey(value, key) ? guardsValidate(value[key], guard) : false;
-        });
+        if (Object.keys(value).length !== Object.keys(schema).length && strictShape) {
+            return false;
+        }
+        return Object.entries(schema).every(([key, guard]) =>
+            is.HasKey(value, key) ? _validateBySchemaImpl(value[key], guard) : false,
+        );
     }
     return false;
+};
+
+export const validateBySchema = <TValue, TSchema extends TypeSchema<any>>(
+    value: TValue,
+    schema: TSchema,
+): value is TValue & _InferTypeSchema<TSchema, TValue> => {
+    return _validateBySchemaImpl(value, schema, { strict: false });
+};
+
+export const validateBySchemaStrict = <TValue, TSchema extends TypeSchema<any>>(
+    value: TValue,
+    schema: TSchema,
+): value is TValue & _InferTypeSchema<TSchema, TValue> => {
+    return _validateBySchemaImpl(value, schema, { strict: true });
 };

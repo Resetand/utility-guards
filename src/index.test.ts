@@ -1,4 +1,4 @@
-import is, { guardsValidate, TypeSchema } from './index';
+import is, { validateBySchema, TypeSchema, validateBySchemaStrict } from './index';
 import { test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
@@ -174,12 +174,21 @@ test.each(
     expect(is.Error(value)).toBe(expected);
 });
 
+test.each(
+    unwrap({
+        passed: [[1, 2], [], [32, 3, new Number(32)]],
+        failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+    }),
+)('should check on Array of %s', (value, expected) => {
+    expect(is.$ArrayOf(is.Number)(value)).toBe(expected);
+});
+
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
 });
 
-test('Should validate by schema shape (guardsValidate)', () => {
+test('Should validate by schema shape (validateBySchema)', () => {
     const obj = {
         a: 1,
         b: 'string',
@@ -204,14 +213,16 @@ test('Should validate by schema shape (guardsValidate)', () => {
         },
     };
 
-    expect(guardsValidate(obj, schema)).toBe(true);
+    expect(validateBySchema(obj, schema)).toBe(true);
 
-    expect(guardsValidate(42, is.Number)).toBe(true);
-    expect(guardsValidate(42, [is.Number, is.Nil])).toBe(true);
+    expect(validateBySchema(42, is.Number)).toBe(true);
+    expect(validateBySchema(42, [is.Number, is.Nil])).toBe(true);
 
-    expect(guardsValidate(42, is.String)).toBe(false);
-    expect(guardsValidate({ a: 1 }, schema)).toBe(false);
+    expect(validateBySchema(42, is.String)).toBe(false);
+    expect(validateBySchema({ a: 1 }, schema)).toBe(false);
 
-    expect(guardsValidate({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
-    expect(guardsValidate({ a: 1, otherParam: 'here' }, { a: is.Number }, { ignoreExtraAttributes: true })).toBe(true);
+    expect(validateBySchema({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(true);
+    expect(validateBySchemaStrict({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
+
+    expect(validateBySchema([21, 2, 32], is.$ArrayOf(is.Number))).toBe(true);
 });
