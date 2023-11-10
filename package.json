@@ -39,7 +39,7 @@
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "test": "vitest --watch=false",
     "test:coverage": "npm run test -- --coverage",
-    "prepublish": "npm run lint && npm run test -- --watch=false && npm run build",
+    "prepublish": "npm run lint && npm run test && npm run build",
     "prepare": "husky install"
   },
   "dependencies": {
