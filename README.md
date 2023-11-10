@@ -24,6 +24,9 @@ npm install ts-types-guard
 | `is.Boolean(value)`            | Checks is a value a boolean                                                                                                                                       |
 | `is.NaN(value)`                | Checks if a value is a NaN value                                                                                                                                  |
 | `is.Nil(value)`                | Checks if a value is a null or undefined                                                                                                                          |
+| `is.Symbol(value)`             | Checks if a value is a `Symbol`                                                                                                                                   |
+| `is.RegExp(value)`             | Checks if a value is a RegExp object                                                                                                                              |
+| `is.Error(value)`              | Checks if a value is an Error object                                                                                                                              |
 | `is.Primitive(value)`          | Checks if a value is a primitive value                                                                                                                            |
 | `is.PlainObject(value)`        | Checks if a value is a plain JavaScript object                                                                                                                    |
 | `is.Array(value)`              | Checks if a value is array                                                                                                                                        |
