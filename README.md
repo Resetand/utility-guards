@@ -17,21 +17,21 @@ npm install ts-types-guard
 
 #### `Guards`
 
-| Name            | Description                                                                                                                                                    |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **String**      | Checks is a value a string literal or string created by `String` constructor                                                                                   |
-| **Number**      | Checks is a value a number literal or number created by `Number` constructor                                                                                   |
-| **Boolean**     | Checks is a value a boolean                                                                                                                                    |
-| **NaN**         | Checks if value is a NaN value                                                                                                                                 |
-| **Nil**         | Checks if value is a null or undefined                                                                                                                         |
-| **Primitive**   | Check if value is a primitive                                                                                                                                  |
-| **PlainObject** | Check if value is a plain JavaScript object                                                                                                                    |
-| **HasKey**      | Check if object has own property                                                                                                                               |
-| **Array**       | Check if value is array                                                                                                                                        |
-| **Function**    | Check if value is an any function                                                                                                                              |
-| **Promise**     | Check if value is a promise object                                                                                                                             |
-| **Date**        | Check if value is a valid JS date                                                                                                                              |
-| **Empty**       | Check if value is empty: Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty string: `''`, nullable value: `null or undefined` |
+| Name                           | Description                                                                                                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `is.String(value)`             | Checks is a value a string literal or string created by `String` constructor                                                                                      |
+| `is.Number(value)`             | Checks is a value a number literal or number created by `Number` constructor                                                                                      |
+| `is.Boolean(value)`            | Checks is a value a boolean                                                                                                                                       |
+| `is.NaN(value)`                | Checks if a value is a NaN value                                                                                                                                  |
+| `is.Nil(value)`                | Checks if a value is a null or undefined                                                                                                                          |
+| `is.Primitive(value)`          | Checks if a value is a primitive value                                                                                                                            |
+| `is.PlainObject(value)`        | Checks if a value is a plain JavaScript object                                                                                                                    |
+| `is.Array(value)`              | Checks if a value is array                                                                                                                                        |
+| `is.Function(value)`           | Checks if a value is an any function                                                                                                                              |
+| `is.Promise(value)`            | Checks if a value is a promise object                                                                                                                             |
+| `is.Date(value)`               | Checks if a value is a valid JS Date object                                                                                                                       |
+| `is.Empty(value)`              | Checks if a value is empty: Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty string: `''`, nullable value: `null or undefined` |
+| `is.HasKey(obj, propertyName)` | Checks if an object has a property                                                                                                                                |
 
 ## Usage
 
@@ -42,8 +42,8 @@ const value: number | { property: 42 } = 32;
 
 if (is.PlainObject(value)) {
     console.log(value.property); // ok
+} else {
+    value.property; // TS error
+    value * 32; // TS error
 }
-
-value.property; // TS error
-value * 32; // TS error
 ```
