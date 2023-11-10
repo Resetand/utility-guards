@@ -44,14 +44,23 @@ const is = {
         return getTypeTag(value) === TypeTag.NUMBER;
     },
 
+    /**
+     * Check if value a symbol
+     */
     Symbol: (value: unknown): value is symbol => {
         return getTypeTag(value) === TypeTag.SYMBOL;
     },
 
+    /**
+     * Check if value a regular expression or created by `RegExp` constructor
+     */
     RegExp: (value: unknown): value is RegExp => {
         return getTypeTag(value) === TypeTag.REGEXP;
     },
 
+    /**
+     * Check if value a JS error
+     */
     Error: (value: unknown): value is Error => {
         return value instanceof Error && getTypeTag(value) === TypeTag.ERROR;
     },
