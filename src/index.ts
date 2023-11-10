@@ -58,7 +58,7 @@ const is = {
     /**
      * Checks if value is a null or undefined
      */
-    Nil: (value: unknown): value is null | undefined => {
+    Nil: (value: unknown): value is Nullable => {
         return value === null || value === undefined;
     },
 
@@ -75,7 +75,7 @@ const is = {
      * It may be object literal `{}` or instance created by `Object` constructor
      * or using `Object.create(null | Object)`
      */
-    PlainObject: (value: unknown): value is Record<string | symbol, unknown> => {
+    PlainObject: (value: unknown): value is Record<PropertyKey, unknown> => {
         if (getTypeTag(value) !== TypeTag.OBJECT) {
             return false;
         }
@@ -95,7 +95,7 @@ const is = {
     HasKey: <P extends string>(
         value: unknown,
         propertyName: P,
-    ): value is Record<string | symbol, unknown> & Record<P, unknown> => {
+    ): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
         return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
     },
 
