@@ -6,8 +6,6 @@ Util for runtime types checking for JS(TS)
 
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard
-[github-action-image]: https://github.com/Resetand/ts-types-guard/actions/workflows/ci.yaml/badge.svg
-[github-action-url]: https://github.com/Resetand/ts-types-guard/actions/workflows/ci.yaml
 [codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
 
@@ -25,7 +23,7 @@ npm install ts-types-guard
 | `is.NaN(value)`                | Checks if a value is a NaN value                                                                                                                                  |
 | `is.Nil(value)`                | Checks if a value is a null or undefined                                                                                                                          |
 | `is.Symbol(value)`             | Checks if a value is a `Symbol`                                                                                                                                   |
-| `is.RegExp(value)`             | Checks if a value is a RegExp object                                                                                                                              |
+| `is.RegExp(value)`             | Checks if a value is a RegExp object or RegExp literal                                                                                                            |
 | `is.Error(value)`              | Checks if a value is an Error object                                                                                                                              |
 | `is.Primitive(value)`          | Checks if a value is a primitive value                                                                                                                            |
 | `is.PlainObject(value)`        | Checks if a value is a plain JavaScript object                                                                                                                    |
@@ -41,12 +39,27 @@ npm install ts-types-guard
 ```tsx
 import is from 'ts-types-guard';
 
-const value: number | { property: 42 } = 32;
+type Data = {
+    prop1: number,
+    prop2: string,
+}
 
-if (is.PlainObject(value)) {
-    console.log(value.property); // ok
+const dataOrNil: Data | null | undefined = ...
+
+if (!is.Nil(dataOrNil)) {
+    console.log(dataOrNil.prop1) // OK
 } else {
-    value.property; // TS error
-    value * 32; // TS error
+    console.log(dataOrNil.prop2) // TS Error
+}
+
+
+const dataOrCallback: Data | (() => Data) = ...
+const resolvedData = is.Function(dataOrCallback) ? dataOrCallback() : dataOrCallback
+
+const dataArr: Data[] = []
+
+if (is.Empty(dataArr)) {
+    // nil or no elements
+    console.log('Array is empty')
 }
 ```
