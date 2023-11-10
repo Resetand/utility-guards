@@ -8,7 +8,7 @@ Util for runtime types checking for JS(TS)
 [npm-url]: http://npmjs.org/package/ts-types-guard
 [github-action-image]: https://github.com/Resetand/ts-types-guard/actions/workflows/ci.yaml/badge.svg
 [github-action-url]: https://github.com/Resetand/ts-types-guard/actions/workflows/ci.yaml
-[codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/branch/master/graph/badge.svg?token=OBD8KR7Y98
+[codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
 
 ```bash
