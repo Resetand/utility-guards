@@ -9,6 +9,12 @@ Util for runtime types checking for JS(TS)
 [codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
 
+**Features:**
+
+-   Full typescript guard support
+-   Type inference for guards
+-   Type inference for `guardsValidate` function
+
 ```bash
 npm install ts-types-guard
 ```
@@ -17,7 +23,7 @@ npm install ts-types-guard
 import is from 'ts-types-guard';
 ```
 
-#### `Guards`
+# `Guards`
 
 | Name                           | Description                                                                                                                                                                                                    |
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,6 +46,7 @@ import is from 'ts-types-guard';
 | `is.Date(value)`               | Check if value is a valid JS Date object                                                                                                                                                                       |
 | `is.Empty(value)`              | Check if value is empty: Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty Map: `new Map()`, empty Set: `new Set()`, empty string: `''`, nullable value: `null or undefined` |
 | `is.HasKey(obj, propertyName)` | Check if an object has a property                                                                                                                                                                              |
+| `is.ArrayOf(array, guard)`     | Check if all elements of array match given guard                                                                                                                                                               |
 
 ## Usage
 
@@ -69,4 +76,37 @@ if (is.Empty(dataArr)) {
     // nil or no elements
     console.log('Array is empty')
 }
+```
+
+# `guardsValidate`
+
+## Usage
+
+```tsx
+import { guardsValidate } from 'ts-types-guard';
+
+const obj = ...
+const schema: TypeSchema<typeof obj> = {
+    a: is.Number,
+    b: [is.String, is.Nil], // string or nil
+    c: {
+        d: is.Boolean,
+        e: {
+            f: is.Number,
+            g: is.String,
+        },
+    },
+};
+
+if (guardsValidate(obj, schema)) {
+    obj.c.e.f // OK
+} else {
+    obj.c.e.f // TS Error
+}
+
+// usage with guard
+guardsValidate(42, is.Number) // true
+guardsValidate(42, [is.Number, is.String]) // true
+guardsValidate('42', [is.Number, is.String]) // true
+guardsValidate([], is.Number) // false
 ```

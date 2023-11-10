@@ -1,4 +1,4 @@
-import is from './index';
+import is, { guardsValidate, TypeSchema } from './index';
 import { test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
@@ -177,4 +177,41 @@ test.each(
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
+});
+
+test('Should validate by schema shape (guardsValidate)', () => {
+    const obj = {
+        a: 1,
+        b: 'string',
+        c: {
+            d: true,
+            e: {
+                f: 1,
+                g: 'string',
+            },
+        },
+    };
+
+    const schema: TypeSchema<typeof obj> = {
+        a: is.Number,
+        b: [is.String, is.Nil],
+        c: {
+            d: is.Boolean,
+            e: {
+                f: is.Number,
+                g: is.String,
+            },
+        },
+    };
+
+    expect(guardsValidate(obj, schema)).toBe(true);
+
+    expect(guardsValidate(42, is.Number)).toBe(true);
+    expect(guardsValidate(42, [is.Number, is.Nil])).toBe(true);
+
+    expect(guardsValidate(42, is.String)).toBe(false);
+    expect(guardsValidate({ a: 1 }, schema)).toBe(false);
+
+    expect(guardsValidate({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
+    expect(guardsValidate({ a: 1, otherParam: 'here' }, { a: is.Number }, { ignoreExtraAttributes: true })).toBe(true);
 });

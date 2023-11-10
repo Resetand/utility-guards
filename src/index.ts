@@ -1,6 +1,7 @@
-type Nullable = undefined | null;
+type NullOrUndefined = null | undefined;
 type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
+type GuardFunction<T = unknown> = (value: unknown) => value is T;
 
 enum TypeTag {
     STRING = 'String',
@@ -23,7 +24,7 @@ enum TypeTag {
  * [] // -> "Array"  ("[object Array]"")
  */
 const getTypeTag = (value: unknown): TypeTag => {
-    return Object.prototype.toString.call(value).slice(8, -1);
+    return Object.prototype.toString.call(value).slice(8, -1) as TypeTag;
 };
 
 /**
@@ -82,7 +83,7 @@ const is = {
     /**
      * Check if value is a null or undefined
      */
-    Nil: (value: unknown): value is Nullable => {
+    Nil: (value: unknown): value is NullOrUndefined => {
         return value === null || value === undefined;
     },
 
@@ -118,6 +119,13 @@ const is = {
      */
     Array: (value: unknown): value is unknown[] => {
         return Array.isArray(value);
+    },
+
+    /**
+     * Check if all elements of array match given guard
+     */
+    ArrayOf: <T>(value: unknown, guard: GuardFunction<T>): value is T[] => {
+        return is.Array(value) && value.every(guard);
     },
 
     /**
@@ -165,7 +173,7 @@ const is = {
      * - empty string: `''`
      * - nullable value: `null or undefined`
      */
-    Empty: <T>(value: T): value is Extract<T, Nullable | '' | { [P in keyof T]: never } | never> => {
+    Empty: <T>(value: T): value is Extract<T, NullOrUndefined | '' | { [P in keyof T]: never } | never> => {
         if (is.PlainObject(value)) {
             return !Object.keys(value).length;
         }
@@ -201,3 +209,48 @@ const is = {
 };
 
 export default is;
+
+// -----------------------------------------------------------------------------
+// guardsValidate
+// -----------------------------------------------------------------------------
+
+export type TypeSchema<T> = T extends Record<string, unknown> ? _ObjectSchema<T> : GuardFunction | GuardFunction[];
+
+type _ObjectSchema<T extends Record<string, unknown>> = {
+    [K in keyof T]: GuardFunction | TypeSchema<T[K]>;
+};
+
+type _InferTypeGuard<TGuard extends GuardFunction> = TGuard extends (value: unknown) => value is infer T ? T : never;
+type _InferTypeGuardArray<TG1 extends GuardFunction[]> = TG1 extends GuardFunction<infer T>[] ? T : never;
+
+type _InferTypeSchema<TSchema, TValue = unknown> = TSchema extends Record<string, unknown>
+    ? { [K in keyof TSchema]: _InferTypeSchema<TSchema[K], K extends keyof TValue ? TValue[K] : never> }
+    : TSchema extends GuardFunction
+    ? _InferTypeGuard<TSchema> & TValue
+    : TSchema extends GuardFunction[]
+    ? _InferTypeGuardArray<TSchema> & TValue
+    : never;
+
+export const guardsValidate = <TValue, TSchema extends TypeSchema<any>>(
+    value: TValue,
+    schema: TSchema,
+    options?: { ignoreExtraAttributes?: true },
+): value is TValue & _InferTypeSchema<TSchema, TValue> => {
+    const { ignoreExtraAttributes: strict = false } = options ?? {};
+
+    if (is.Function(schema)) {
+        return schema(value);
+    }
+    if (is.Array(schema)) {
+        return schema.some((guard) => guardsValidate(value, guard));
+    }
+
+    if (is.PlainObject(value)) {
+        const entries = Object.entries(schema);
+        const reducer = strict ? entries.every.bind(entries) : entries.some.bind(entries);
+        return reducer(([key, guard]) => {
+            return is.HasKey(value, key) ? guardsValidate(value[key], guard) : false;
+        });
+    }
+    return false;
+};

@@ -11,7 +11,8 @@
     "noUnusedParameters": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "strict": true // Enable strict mode
   },
 
   "include": ["src", "tests"]
