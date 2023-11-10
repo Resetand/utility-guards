@@ -2,6 +2,8 @@
 
 Util for runtime types checking for JS(TS)
 
+[![NPM version][npm-image]][npm-url]
+
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard
 [github-action-image]: https://github.com/Resetand/ts-types-guard/actions/workflows/ci.yaml/badge.svg
