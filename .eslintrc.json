@@ -8,7 +8,8 @@
     "testing-library/no-container": "off",
     "testing-library/no-node-access": "off",
     "no-unused-vars": "off",
-    "no-unused-expressions": "off"
+    "no-unused-expressions": "off",
+    "no-redeclare": "off"
   },
 
   "overrides": [

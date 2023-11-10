@@ -2,7 +2,7 @@
 
 Util for runtime types checking for JS(TS)
 
-[![NPM version][npm-image]][npm-url]
+[![codecov][codecov-image]][codecov-url] [![NPM version][npm-image]][npm-url]
 
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard

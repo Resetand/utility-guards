@@ -1,12 +1,12 @@
 import is from './index';
-import { test, expect } from 'vitest'
+import { test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
     return [...tests.passed.map((p) => [p, true]), ...tests.failed.map((f) => [f, false])] as [TP | TF, boolean][];
 };
 
-
 class Cls {}
+class CustomError extends Error {}
 function func() {}
 
 test.each(
@@ -116,8 +116,33 @@ test.each(
     expect(is.Empty(value)).toBe(expected);
 });
 
+test.each(
+    unwrap({
+        passed: [Symbol('new'), Symbol.iterator, Symbol()],
+        failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+    }),
+)('should check on Symbol - %s', (value, expected) => {
+    expect(is.Symbol(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
+        passed: [/\w+/, new RegExp('\\w+', 'g')],
+        failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+    }),
+)('should check on RegExp - %s', (value, expected) => {
+    expect(is.RegExp(value)).toBe(expected);
+});
+test.each(
+    unwrap({
+        passed: [new Error('example'), new CustomError()],
+        failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+    }),
+)('should check on Error - %s', (value, expected) => {
+    expect(is.Error(value)).toBe(expected);
+});
+
 test('Should work outside this context', () => {
     const isNumber = is.Number;
     expect([12, 32, 32].every(isNumber)).toBe(true);
 });
-

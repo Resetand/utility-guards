@@ -9,6 +9,9 @@ enum TypeTag {
     BOOLEAN = 'Boolean',
     PROMISE = 'Promise',
     DATE = 'Date',
+    SYMBOL = 'Symbol',
+    REGEXP = 'RegExp',
+    ERROR = 'Error',
 }
 
 /**
@@ -39,6 +42,18 @@ const is = {
      */
     Number: (value: unknown): value is number => {
         return getTypeTag(value) === TypeTag.NUMBER;
+    },
+
+    Symbol: (value: unknown): value is symbol => {
+        return getTypeTag(value) === TypeTag.SYMBOL;
+    },
+
+    RegExp: (value: unknown): value is RegExp => {
+        return getTypeTag(value) === TypeTag.REGEXP;
+    },
+
+    Error: (value: unknown): value is Error => {
+        return value instanceof Error && getTypeTag(value) === TypeTag.ERROR;
     },
 
     /**
