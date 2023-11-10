@@ -31,14 +31,14 @@ const getTypeTag = (value: unknown): TypeTag => {
  */
 const is = {
     /**
-     * Checks is a value a string literal or string created by `String` constructor
+     * Check if value a string literal or string created by `String` constructor
      */
     String: (value: unknown): value is string => {
         return getTypeTag(value) === TypeTag.STRING;
     },
 
     /**
-     * Checks is a value a number literal or number created by `Number` constructor
+     * Check if value a number literal or number created by `Number` constructor
      */
     Number: (value: unknown): value is number => {
         return getTypeTag(value) === TypeTag.NUMBER;
@@ -57,21 +57,21 @@ const is = {
     },
 
     /**
-     * Checks is a value a boolean
+     * Check if value a boolean
      */
     Boolean: (value: unknown): value is boolean => {
         return getTypeTag(value) === TypeTag.BOOLEAN;
     },
 
     /**
-     * Checks if value is a NaN
+     * Check if value is a NaN
      */
     NaN: (value: unknown): value is number => {
         return is.Number(value) && isNaN(value);
     },
 
     /**
-     * Checks if value is a null or undefined
+     * Check if value is a null or undefined
      */
     Nil: (value: unknown): value is Nullable => {
         return value === null || value === undefined;
@@ -105,16 +105,6 @@ const is = {
     },
 
     /**
-     * Check if object has own property
-     */
-    HasKey: <P extends string>(
-        value: unknown,
-        propertyName: P,
-    ): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
-        return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
-    },
-
-    /**
      * Check if value is array
      */
     Array: (value: unknown): value is unknown[] => {
@@ -136,6 +126,13 @@ const is = {
     },
 
     /**
+     * Check if value is a promise-like object (has `then` method)
+     */
+    PromiseLike: (value: unknown): value is Promise<unknown> => {
+        return is.Promise(value) || (is.HasKey(value, 'then') && is.Function(value.then));
+    },
+
+    /**
      * Check if value is a valid JS date
      */
     Date: (value: unknown): value is Date => {
@@ -143,10 +140,19 @@ const is = {
     },
 
     /**
+     * Check if value is iterable (arrays, strings, maps, sets, etc.)
+     */
+    Iterable: (value: unknown): value is Iterable<unknown> => {
+        return Symbol.iterator in Object(value);
+    },
+
+    /**
      * Check if value is empty:
      * Value is considered as empty if it's
      * - empty object: `{}`
      * - empty array: `[]`
+     * - empty Set: `new Set()`
+     * - empty Map: `new Map()`
      * - empty string: `''`
      * - nullable value: `null or undefined`
      */
@@ -157,11 +163,31 @@ const is = {
         if (is.Array(value)) {
             return !value.length;
         }
+        if (is.InstanceOf(value, Set) || is.InstanceOf(value, Map)) {
+            return !value.size;
+        }
         if (is.String(value)) {
             return value === '';
         }
 
         return is.Nil(value);
+    },
+
+    /**
+     * Check if value is instance of given constructor
+     */
+    InstanceOf: <T>(value: unknown, constructor: new (...args: any[]) => T): value is T => {
+        return value instanceof constructor;
+    },
+
+    /**
+     * Check if object has own property
+     */
+    HasKey: <P extends string>(
+        value: unknown,
+        propertyName: P,
+    ): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
+        return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
     },
 };
 

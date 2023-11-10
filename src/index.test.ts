@@ -8,6 +8,10 @@ const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
 class Cls {}
 class CustomError extends Error {}
 function func() {}
+function* generator() {
+    yield 1;
+    yield 2;
+}
 
 test.each(
     unwrap({
@@ -100,6 +104,24 @@ test.each(
 
 test.each(
     unwrap({
+        passed: [new Promise((res) => res(1)), Promise.resolve(), { then: () => void 0 }],
+        failed: [{}, () => 'test'],
+    }),
+)('should check on PromiseLike object - %s', (value, expected) => {
+    expect(is.PromiseLike(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
+        passed: [[], [1, 2, 3], Array(10), new Map(), new Set(), new Set([1, 2, 3]), 'some string', generator()],
+        failed: [{}, () => 'test', { then: () => void 0 }, new Promise((res) => res(1))],
+    }),
+)('should check on Iterable', (value, expected) => {
+    expect(is.Iterable(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
         passed: [new Date(), new Date('01.02.1971')],
         failed: [123123, new Date('invalid date'), '01.02.1971'],
     }),
@@ -107,10 +129,19 @@ test.each(
     expect(is.Date(value)).toBe(expected);
 });
 
+test('should check on InstanceOf', () => {
+    expect(is.InstanceOf(new Cls(), Cls)).toBe(true);
+    expect(is.InstanceOf(new CustomError(), Error)).toBe(true);
+    expect(is.InstanceOf(new CustomError(), CustomError)).toBe(true);
+    expect(is.InstanceOf(new CustomError(), Cls)).toBe(false);
+    expect(is.InstanceOf(new Cls(), CustomError)).toBe(false);
+    expect(!is.InstanceOf(new Cls(), Error)).toBe(true);
+});
+
 test.each(
     unwrap({
-        passed: ['', [], {}],
-        failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+        passed: ['', [], {}, new Map(), new Set()],
+        failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a', new Set([1, 2, 3]), new Date()],
     }),
 )('should check on Not Empty - %s', (value, expected) => {
     expect(is.Empty(value)).toBe(expected);
@@ -133,6 +164,7 @@ test.each(
 )('should check on RegExp - %s', (value, expected) => {
     expect(is.RegExp(value)).toBe(expected);
 });
+
 test.each(
     unwrap({
         passed: [new Error('example'), new CustomError()],
@@ -143,6 +175,6 @@ test.each(
 });
 
 test('Should work outside this context', () => {
-    const isNumber = is.Number;
+    const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
 });
