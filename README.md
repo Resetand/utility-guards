@@ -1,13 +1,20 @@
-# TS Types Guard util
-
-Util for runtime types checking for JS(TS)
-
-[![NPM version][npm-image]][npm-url] [![codecov][codecov-image]][codecov-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
-
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard
 [codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
+
+# TS Types Guard util
+
+<div style='text-align: center;'>
+<img src="https://raw.githubusercontent.com/Resetand/ts-types-guard/master/logo.png" height="200" />
+</div>
+<div style='text-align: center;'>
+
+[![NPM version][npm-image]][npm-url] [![codecov][codecov-image]][codecov-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
+
+</div>
+
+---
 
 **Features:**
 
