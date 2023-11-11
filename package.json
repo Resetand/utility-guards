@@ -10,7 +10,16 @@
     "typescript",
     "types",
     "is",
-    "ts-guard"
+    "ts-guard",
+    "ts-type-guards",
+    "core-util-is",
+    "lodash",
+    "type-safe",
+    "type-check",
+    "validator",
+    "type-guards",
+    "joi",
+    "schema"
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
