@@ -1,6 +1,6 @@
 {
   "name": "ts-types-guard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Util for runtime types checking for JS(TS)",
   "homepage": "https://github.com/Resetand/ts-types-guard",
   "author": "Resetand",
