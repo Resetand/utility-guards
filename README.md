@@ -8,7 +8,7 @@
 <div style='text-align: center;'>
 <img src="https://github.com/Resetand/ts-types-guard/blob/main/assets/logo.png?raw=true" width="80%" />
 <br/>
-<strong>Util for runtime types checking for JS(TS)</strong>
+<strong style='font-size: 1.5em'>Util for runtime types checking for JS(TS)</strong>
 </div>
 
 <div style='text-align: center;'>
@@ -17,9 +17,7 @@
 
 </div>
 
----
-
-**Features:**
+### **Features:**
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~700 bytes gzipped size
