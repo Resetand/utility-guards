@@ -187,3 +187,35 @@ test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
 });
+
+test('Should curry guard', () => {
+    expect(is.$curried(is.ArrayOf)(is.Number)([1, 2, 3])).toBe(true);
+    expect(is.$curried(is.ArrayOf)(is.Number)([1, 2, '3'])).toBe(false);
+
+    expect(is.$curried(is.InstanceOf)(Cls)(new Cls())).toBe(true);
+    expect(is.$curried(is.InstanceOf)(Cls)(new CustomError())).toBe(false);
+
+    expect(is.$curried(is.HasKey)('prop')({ prop: 1 })).toBe(true);
+    expect(is.$curried(is.HasKey)('prop')({ prop: 1, otherProp: 2 })).toBe(true);
+});
+
+test('Should combine guards with some', () => {
+    const guard = is.$some(is.Number, is.String);
+    expect(guard(1)).toBe(true);
+    expect(guard('1')).toBe(true);
+    expect(guard(true)).toBe(false);
+});
+
+test('Should combine guards with every', () => {
+    const guard = is.$every(is.Array, is.$curried(is.HasKey)('attr'));
+
+    type ArrWithAttr = number[] & { attr: number };
+
+    const arrWithAttr = [1, 2, 3] as ArrWithAttr;
+    arrWithAttr.attr = 42;
+
+    expect(guard(arrWithAttr)).toBe(true);
+
+    expect(guard([1, 2, 3])).toBe(false);
+    expect(guard('some')).toBe(false);
+});
