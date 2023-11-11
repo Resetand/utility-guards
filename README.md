@@ -6,8 +6,11 @@
 # TS Types Guard util
 
 <div style='text-align: center;'>
-<img src="https://raw.githubusercontent.com/Resetand/ts-types-guard/master/logo.png" height="200" />
+<img src="https://github.com/Resetand/ts-types-guard/blob/main/assets/logo.png?raw=true" width="80%" />
+<br/>
+<strong>Util for runtime types checking for JS(TS)</strong>
 </div>
+
 <div style='text-align: center;'>
 
 [![NPM version][npm-image]][npm-url] [![codecov][codecov-image]][codecov-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
