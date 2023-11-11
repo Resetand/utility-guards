@@ -15,5 +15,5 @@
     "strict": true // Enable strict mode
   },
 
-  "include": ["src", "tests"]
+  "include": ["src", "tests", "tests"]
 }

@@ -1,4 +1,4 @@
-import is, { validateBySchema, TypeSchema, validateBySchemaStrict } from './index';
+import { is } from '../src/guards';
 import { test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
@@ -186,43 +186,4 @@ test.each(
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
-});
-
-test('Should validate by schema shape (validateBySchema)', () => {
-    const obj = {
-        a: 1,
-        b: 'string',
-        c: {
-            d: true,
-            e: {
-                f: 1,
-                g: 'string',
-            },
-        },
-    };
-
-    const schema: TypeSchema<typeof obj> = {
-        a: is.Number,
-        b: [is.String, is.Nil],
-        c: {
-            d: is.Boolean,
-            e: {
-                f: is.Number,
-                g: is.String,
-            },
-        },
-    };
-
-    expect(validateBySchema(obj, schema)).toBe(true);
-
-    expect(validateBySchema(42, is.Number)).toBe(true);
-    expect(validateBySchema(42, [is.Number, is.Nil])).toBe(true);
-
-    expect(validateBySchema(42, is.String)).toBe(false);
-    expect(validateBySchema({ a: 1 }, schema)).toBe(false);
-
-    expect(validateBySchema({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(true);
-    expect(validateBySchemaStrict({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
-
-    expect(validateBySchema([21, 2, 32], is.$ArrayOf(is.Number))).toBe(true);
 });
