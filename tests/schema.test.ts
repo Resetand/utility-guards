@@ -1,7 +1,7 @@
-import { TypeSchema } from '../src/types';
 import { validateBySchema, validateBySchemaStrict } from '../src/schema';
 import { test, expect } from 'vitest';
 import { is } from '../src/guards';
+import { createValidateSchema } from '../src/utils';
 
 test('Should validate by schema shape (validateBySchema)', () => {
     const obj = {
@@ -16,9 +16,9 @@ test('Should validate by schema shape (validateBySchema)', () => {
         },
     };
 
-    const schema: TypeSchema<typeof obj> = {
+    const schema = createValidateSchema<typeof obj>({
         a: is.Number,
-        b: [is.String, is.Nil],
+        b: is.$some(is.String, is.Nil),
         c: {
             d: is.Boolean,
             e: {
@@ -26,12 +26,12 @@ test('Should validate by schema shape (validateBySchema)', () => {
                 g: is.String,
             },
         },
-    };
+    });
 
     expect(validateBySchema(obj, schema)).toBe(true);
 
     expect(validateBySchema(42, is.Number)).toBe(true);
-    expect(validateBySchema(42, [is.Number, is.Nil])).toBe(true);
+    expect(validateBySchema(42, is.$some(is.Number, is.Nil))).toBe(true);
 
     expect(validateBySchema(42, is.String)).toBe(false);
     expect(validateBySchema({ a: 1 }, schema)).toBe(false);

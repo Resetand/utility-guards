@@ -2,7 +2,7 @@
 // Types
 // -----------------------------------------------------------------------------
 
-import { CurriedGuard, TypeTag, Guard } from './types';
+import { CurriedGuard, TypeTag, Guard, TypeSchema } from './types';
 
 /**
  * Return object type string representation
@@ -28,3 +28,5 @@ export const curryGuard = <TValue, TRes extends TValue, TArgs extends unknown[]>
         };
     };
 };
+
+export const createValidateSchema = <T = any>(schema: TypeSchema<T>) => schema;

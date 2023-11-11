@@ -21,19 +21,16 @@ export enum TypeTag {
 
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;
 
-export type TypeSchema<T> = T extends Record<string, unknown> ? ObjectSchema<T> : Guard | Guard[];
+export type TypeSchema<T> = T extends Record<string, unknown> ? ObjectSchema<T> : Guard;
 
-export type InferTypeSchema<TSchema, TValue = unknown> = TSchema extends Record<string, unknown>
-    ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K], K extends keyof TValue ? TValue[K] : never> }
-    : TSchema extends Guard
-    ? InferTypeGuard<TSchema> & TValue
-    : TSchema extends Guard[]
-    ? InferTypeGuardArray<TSchema> & TValue
+export type InferTypeSchema<TSchema> = TSchema extends ObjectSchema<infer TGuarded>
+    ? TGuarded
+    : TSchema extends Guard<infer TGuarded, any[]>
+    ? TGuarded
     : never;
 
 export type ObjectSchema<T extends Record<string, unknown>> = {
     [K in keyof T]: Guard | TypeSchema<T[K]>;
 };
 
-type InferTypeGuard<TGuard extends Guard> = TGuard extends (value: unknown) => value is infer T ? T : never;
-type InferTypeGuardArray<TG1 extends Guard[]> = TG1 extends Guard<infer T>[] ? T : never;
+export type InferGuardType<TGuard> = TGuard extends Guard<infer TIs, any[]> ? TIs : never;

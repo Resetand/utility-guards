@@ -1,4 +1,4 @@
-import { AnyFunction, AnyPrimitive, Guard, NullOrUndefined, TypeTag } from './types';
+import { AnyFunction, AnyPrimitive, Guard, InferGuardType, NullOrUndefined, TypeTag } from './types';
 import { curryGuard, getTypeTag } from './utils';
 
 /**
@@ -175,8 +175,8 @@ const isArrayOf = <T>(value: unknown, guard: Guard<T>): value is T[] => {
     return isArray(value) && value.every((value) => guard(value));
 };
 
-type $SomeGuards<T1 extends Guard, T2 extends Guard> = T1 | T2;
-type $EveryGuards<T1 extends Guard, T2 extends Guard> = T1 & T2;
+type $SomeGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> | InferGuardType<T2>>;
+type $EveryGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> & InferGuardType<T2>>;
 
 const someGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $SomeGuards<T1, T2> => {
     return ((value: unknown, ...args: any[]) => [guard1, guard2].some((guard) => guard(value, ...args))) as $SomeGuards<

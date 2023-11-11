@@ -137,12 +137,12 @@ isArrayWithAttribute([1, 2, 3]); // false
 ### Usage
 
 ```tsx
-import { validateBySchema } from 'ts-types-guard';
+import { validateBySchema, createValidateSchema } from 'ts-types-guard';
 
 const obj = ...
-const schema: TypeSchema<typeof obj> = {
+const schema: createValidateSchema({
     a: is.Number,
-    b: [is.String, is.Nil], // string or nil
+    b: is.$some(is.String, is.Nil), // string or nil
     c: {
         d: is.Boolean,
         e: {
@@ -150,7 +150,7 @@ const schema: TypeSchema<typeof obj> = {
             g: is.String,
         },
     },
-};
+});
 
 if (validateBySchema(obj, schema)) {
     obj.c.e.f // OK

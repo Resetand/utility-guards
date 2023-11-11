@@ -8,16 +8,16 @@ import { InferTypeSchema, TypeSchema } from './types';
 const validateBySchemaFactory = (options: { strict: boolean }) => {
     const strict = options?.strict ?? false;
 
-    const validate = <TValue, TSchema extends TypeSchema<any>>(
-        value: TValue,
+    const validate = <TSchema extends TypeSchema<any>>(
+        value: unknown,
         schema: TSchema,
-    ): value is TValue & InferTypeSchema<TSchema, TValue> => {
+    ): value is InferTypeSchema<TSchema> => {
         if (is.Function(schema)) {
             return schema(value);
         }
 
         if (is.Array(schema)) {
-            return schema.some((guard) => validate(value, guard));
+            return schema.some((guard) => validate(value, guard as any));
         }
 
         if (is.PlainObject(value)) {
