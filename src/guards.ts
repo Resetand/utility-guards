@@ -175,6 +175,21 @@ const isArrayOf = <T>(value: unknown, guard: Guard<T>): value is T[] => {
     return isArray(value) && value.every((value) => guard(value));
 };
 
+type $SomeGuards<T1 extends Guard, T2 extends Guard> = T1 | T2;
+type $EveryGuards<T1 extends Guard, T2 extends Guard> = T1 & T2;
+
+const someGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $SomeGuards<T1, T2> => {
+    return ((value: unknown, ...args: any[]) => [guard1, guard2].some((guard) => guard(value, ...args))) as $SomeGuards<
+        T1,
+        T2
+    >;
+};
+
+const everyGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $EveryGuards<T1, T2> => {
+    return ((value: unknown, ...args: any[]) =>
+        [guard1, guard2].every((guard) => guard(value, ...args))) as $EveryGuards<T1, T2>;
+};
+
 const GUARDS = {
     String: isString,
     Number: isNumber,
@@ -204,7 +219,8 @@ const GUARDS = {
 export const is = {
     ...GUARDS,
 
-    $HasKey: curryGuard(isHasKey),
-    $InstanceOf: curryGuard(isInstanceOf),
-    $ArrayOf: curryGuard(isArrayOf),
+    // utility methods
+    $some: someGuards,
+    $every: everyGuards,
+    $curried: curryGuard,
 };

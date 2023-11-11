@@ -180,7 +180,7 @@ test.each(
         failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
     }),
 )('should check on Array of %s', (value, expected) => {
-    expect(is.$ArrayOf(is.Number)(value)).toBe(expected);
+    expect(is.$curried(is.ArrayOf)(is.Number)(value)).toBe(expected);
 });
 
 test('Should work outside this context', () => {

@@ -23,7 +23,7 @@ npm install ts-types-guard
 import is from 'ts-types-guard';
 ```
 
-# `Guards`
+## `Guards`
 
 | Name                                | Description                                                               |
 | ----------------------------------- | ------------------------------------------------------------------------- |
@@ -57,18 +57,7 @@ import is from 'ts-types-guard';
 -   Empty string: `''`
 -   Nullable value: `null or undefined`
 
-**ℹ️ $ Curried functions – some methods of `is` object are curried versions of original functions. It's useful for `validateBySchema` use case**
-
-```tsx
-const isArrayOfNumber = is.$ArrayOf(is.Number);
-
-isArrayOfNumber([1, 2, 3]); // true
-isArrayOfNumber([1, 2, '3']); // false
-
-validateBySchema({ a: [1, 2, 3] }, { a: is.$ArrayOf(is.Number) }); // true
-```
-
-## Usage
+### Usage
 
 ```tsx
 import is from 'ts-types-guard';
@@ -98,9 +87,42 @@ if (is.Empty(dataArr)) {
 }
 ```
 
-# `validateBySchema`
+### `$` Utility methods
 
-## Usage
+#### `$curried`
+
+Curry given guard function for guards with additional arguments
+
+```tsx
+const curriedIsArrayOf = is.$curried(is.ArrayOf);
+
+curriedIsArrayOf(is.Number)([1, 2, 3]); // true
+curriedIsArrayOf(is.Number)([1, 2, '3']); // false
+
+validateBySchema({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
+```
+
+#### `$some` and `$every`
+
+Combine multiple guards with `some` or `every` logic
+
+```tsx
+const isNumberOrString = is.$some(is.Number, is.String);
+const isArrayWithAttribute = is.$every(is.Array, is.$curried(is.HasKey)('attr'));
+
+isNumberOrString(42); // true
+isNumberOrString('42'); // true
+
+const arrWithAttr = [1, 2, 3];
+arrWithAttr.attr = 42;
+isArrayWithAttribute(arrWithAttr); // true
+
+isArrayWithAttribute([1, 2, 3]); // false
+```
+
+## `validateBySchema`
+
+### Usage
 
 ```tsx
 import { validateBySchema } from 'ts-types-guard';
