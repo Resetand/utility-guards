@@ -3,19 +3,21 @@
 [codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
 
-# TS Types Guard util
-
-<center>
+<p align="center" dir="auto">
 <img src="https://github.com/Resetand/ts-types-guard/blob/main/assets/logo.png?raw=true" width="80%" />
 <br/>
 <strong style='font-size: 1.5em'>Util for runtime types checking for JS(TS)</strong>
-</center>
+</p>
 
-<center>
+<p align="center">
+  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/npm/v/ts-types-guard.svg" alt="npm package"></a>
+  <a href="https://codecov.io/gh/Resetand/ts-types-guard"><img src="https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
+  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/bundlejs/size/ts-types-guard" alt="package gzipped size"></a>
+</p>
+<br/>
+<br/>
 
-[![NPM version][npm-image]][npm-url] [![codecov][codecov-image]][codecov-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
-
-</center>
+# TS Types Guard
 
 ### **Features:**
 
