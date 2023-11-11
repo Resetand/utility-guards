@@ -164,8 +164,8 @@ validateBySchema(42, [is.Number, is.String]) // true
 validateBySchema('42', [is.Number, is.String]) // true
 validateBySchema([], is.Number) // false
 
-validateBySchema([1,2,3], is.$ArrayOf(is.Number)) // true
-validateBySchema([1,2,3, 'asd'], is.$ArrayOf(is.Number)) // false
+validateBySchema([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
+validateBySchema([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
 ```
 
 ℹ️ Use `validateBySchemaStrict` to check if object has all properties from schema
