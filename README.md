@@ -13,7 +13,7 @@ Util for runtime types checking for JS(TS)
 
 -   Full typescript guard support
 -   Type inference for guards
--   Type inference for `validateBySchema` function
+-   `validateBySchema` util for runtime object validation
 
 ```bash
 npm install ts-types-guard
@@ -48,7 +48,14 @@ import is from 'ts-types-guard';
 | `is.ArrayOf(array, guard)`          | Check if all elements of array match given guard                          |
 | `is.InstanceOf(value, constructor)` | Check if value is instance of given constructor                           |
 
-ℹ️ Value is considered as empty if it's – empty object: `{}`, empty array: `[]`, empty Map: `new Map()`, empty Set: `new Set()`, empty string: `''`, nullable value: `null or undefined`
+**ℹ️ Value is considered as empty if it's**
+
+-   Empty object: `{}`
+-   Empty array: `[]`
+-   Empty Map: `new Map()`
+-   Empty Set: `new Set()`
+-   Empty string: `''`
+-   Nullable value: `null or undefined`
 
 ## Usage
 

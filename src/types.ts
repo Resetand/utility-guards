@@ -19,10 +19,6 @@ export enum TypeTag {
     ERROR = 'Error',
 }
 
-export type InvertedGuard<TG extends Guard> = TG extends (value: unknown, ...args: infer P) => value is infer R
-    ? (value: unknown, ...args: P) => value is Exclude<unknown, R>
-    : never;
-
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;
 
 export type TypeSchema<T> = T extends Record<string, unknown> ? ObjectSchema<T> : Guard | Guard[];
@@ -41,10 +37,3 @@ export type ObjectSchema<T extends Record<string, unknown>> = {
 
 type InferTypeGuard<TGuard extends Guard> = TGuard extends (value: unknown) => value is infer T ? T : never;
 type InferTypeGuardArray<TG1 extends Guard[]> = TG1 extends Guard<infer T>[] ? T : never;
-
-export type PickByValue<T, ValueType> = Pick<
-    T,
-    {
-        [Key in keyof T]-?: T[Key] extends ValueType ? Key : never;
-    }[keyof T]
->;
