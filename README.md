@@ -11,9 +11,9 @@ Util for runtime types checking for JS(TS)
 
 **Features:**
 
--   Full typescript guard support
--   Type inference for guards
--   `validateBySchema` util for runtime object validation
+-   Reliable type checking for JS runtime
+-   Full Typescript guard support and type inference
+-   `validateBySchema` and `validateBySchemaString` addon: guarded validators for runtime values (object) validation
 
 ```bash
 npm install ts-types-guard
@@ -56,6 +56,17 @@ import is from 'ts-types-guard';
 -   Empty Set: `new Set()`
 -   Empty string: `''`
 -   Nullable value: `null or undefined`
+
+**ℹ️ $ Curried functions – some methods of `is` object are curried versions of original functions. It's useful for `validateBySchema` use case**
+
+```tsx
+const isArrayOfNumber = is.$ArrayOf(is.Number);
+
+isArrayOfNumber([1, 2, 3]); // true
+isArrayOfNumber([1, 2, '3']); // false
+
+validateBySchema({ a: [1, 2, 3] }, { a: is.$ArrayOf(is.Number) }); // true
+```
 
 ## Usage
 
