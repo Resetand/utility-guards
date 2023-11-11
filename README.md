@@ -2,7 +2,7 @@
 
 Util for runtime types checking for JS(TS)
 
-[![codecov][codecov-image]][codecov-url] [![NPM version][npm-image]][npm-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
+[![NPM version][npm-image]][npm-url] [![codecov][codecov-image]][codecov-url] ![package gzipped size](https://img.shields.io/bundlejs/size/ts-types-guard)
 
 [npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
 [npm-url]: http://npmjs.org/package/ts-types-guard
@@ -11,9 +11,11 @@ Util for runtime types checking for JS(TS)
 
 **Features:**
 
--   Reliable type checking for JS runtime
--   Full Typescript guard support and type inference
--   `validateBySchema` and `validateBySchemaString` addon: guarded validators for runtime values (object) validation
+-   🛠️ Reliable type checking for JS runtime
+-   📦 Zero dependencies and only ~700 bytes gzipped size
+-   🔩 Full Typescript guard support
+-   🔩 Isomorphic: works in browser and node.js
+-   🔑 Addon: `validateBySchema` and `validateBySchemaString` validators for runtime values (object) validation
 
 ```bash
 npm install ts-types-guard
