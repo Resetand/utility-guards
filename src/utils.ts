@@ -29,22 +29,45 @@ export const curryGuard = <TValue, TRes extends TValue, TArgs extends unknown[]>
     };
 };
 
-type $SomeGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> | InferGuardType<T2>>;
+type $SomeGuards<TGuards extends Guard[]> = Guard<InferGuardType<TGuards[number]>>;
 
-export const someGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $SomeGuards<T1, T2> => {
-    return ((value: unknown, ...args: any[]) => [guard1, guard2].some((guard) => guard(value, ...args))) as $SomeGuards<
-        T1,
-        T2
-    >;
+/**
+ * Check if any guard return true
+ * @example
+ * const isNumberOrString = someGuards(is.Number, is.String);
+ * isNumberOrString(1); // -> true
+ * isNumberOrString('1'); // -> true
+ * isNumberOrString([]); // -> false
+ */
+export const someGuards = <TGuards extends Guard[]>(...guards: TGuards): $SomeGuards<TGuards> => {
+    return ((value: unknown, ...args: any[]) => guards.some((guard) => guard(value, ...args))) as $SomeGuards<TGuards>;
 };
 
-type $EveryGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> & InferGuardType<T2>>;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type $EveryGuards<TGuards extends Guard[]> = Guard<UnionToIntersection<InferGuardType<TGuards[number]>>>;
 
-export const everyGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $EveryGuards<T1, T2> => {
+/**
+ * Check if all guards return true
+ * @example
+ * const isEmptyArray = everyGuards(is.Array, is.Empty);
+ *
+ * isEmptyArray([]); // -> true
+ * isEmptyArray([1]); // -> false
+ * isEmptyArray(null); // -> false
+ */
+export const everyGuards = <TGuards extends Guard[]>(...guards: TGuards): $EveryGuards<TGuards> => {
     return ((value: unknown, ...args: any[]) =>
-        [guard1, guard2].every((guard) => guard(value, ...args))) as $EveryGuards<T1, T2>;
+        guards.every((guard) => guard(value, ...args))) as $EveryGuards<TGuards>;
 };
 
+/**
+ * Invert given guard
+ *
+ * @example
+ * const isNotString = invertGuard(is.String);
+ * isNotString(1); // -> true
+ * isNotString(''); // -> false
+ */
 export const invertGuard = <TGuarded, TArgs extends unknown[]>(guard: Guard<TGuarded, TArgs>) => {
     return <TValue>(value: TValue, ...args: TArgs): value is Exclude<TValue, TGuarded> => !guard(value as any, ...args);
 };
