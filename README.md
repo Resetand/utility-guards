@@ -132,6 +132,19 @@ isArrayWithAttribute(arrWithAttr); // true
 isArrayWithAttribute([1, 2, 3]); // false
 ```
 
+#### `$not`
+
+Inverse given guard
+
+```tsx
+const notIsNil = is.$not(is.Nil);
+
+const arr = [1, null, 2, undefined, 3];
+const filtered = arr.filter(notIsNil);
+
+console.log(filtered); // [1, 2, 3] (type: number[])
+```
+
 ## `validateBySchema`
 
 ### Usage

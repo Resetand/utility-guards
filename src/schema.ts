@@ -16,10 +16,6 @@ const validateBySchemaFactory = (options: { strict: boolean }) => {
             return schema(value);
         }
 
-        if (is.Array(schema)) {
-            return schema.some((guard) => validate(value, guard as any));
-        }
-
         if (is.PlainObject(value)) {
             if (Object.keys(value).length !== Object.keys(schema).length && strict) {
                 return false;
@@ -28,7 +24,8 @@ const validateBySchemaFactory = (options: { strict: boolean }) => {
                 is.HasKey(value, key) ? validate(value[key], guard) : false,
             );
         }
-        return false;
+
+        throw new Error('Schema must be an object schema or a guard function');
     };
 
     return validate;

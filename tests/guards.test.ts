@@ -180,7 +180,9 @@ test.each(
         failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
     }),
 )('should check on Array of %s', (value, expected) => {
-    expect(is.$curried(is.ArrayOf)(is.Number)(value)).toBe(expected);
+    const $isArrayOf = is.$curried(is.ArrayOf);
+    const isArrayOfNumbers = $isArrayOf(is.Number);
+    expect(isArrayOfNumbers(value)).toBe(expected);
 });
 
 test('Should work outside this context', () => {
@@ -199,14 +201,14 @@ test('Should curry guard', () => {
     expect(is.$curried(is.HasKey)('prop')({ prop: 1, otherProp: 2 })).toBe(true);
 });
 
-test('Should combine guards with some', () => {
+test('Should combine guards with $some', () => {
     const guard = is.$some(is.Number, is.String);
     expect(guard(1)).toBe(true);
     expect(guard('1')).toBe(true);
     expect(guard(true)).toBe(false);
 });
 
-test('Should combine guards with every', () => {
+test('Should combine guards with $every', () => {
     const guard = is.$every(is.Array, is.$curried(is.HasKey)('attr'));
 
     type ArrWithAttr = number[] & { attr: number };
@@ -218,4 +220,15 @@ test('Should combine guards with every', () => {
 
     expect(guard([1, 2, 3])).toBe(false);
     expect(guard('some')).toBe(false);
+});
+
+test('Should invert guard with $not', () => {
+    const guard = is.$curried(is.ArrayOf)(is.Number);
+    const isNotArrayOfNumbers = is.$not(guard);
+
+    expect(isNotArrayOfNumbers([1, 2, 3])).toBe(false);
+    expect(isNotArrayOfNumbers([1, 2, '3'])).toBe(true);
+
+    expect([1, 2, null, 3, undefined].filter(is.$not(is.Nil))).toEqual([1, 2, 3]);
+    expect([1, 2, null, 3, undefined, 'test'].filter(is.$not(is.$some(is.Nil, is.String)))).toEqual([1, 2, 3]);
 });

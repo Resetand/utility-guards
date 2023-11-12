@@ -40,4 +40,6 @@ test('Should validate by schema shape (validateBySchema)', () => {
     expect(validateBySchemaStrict({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
 
     expect(validateBySchema([21, 2, 32], is.$curried(is.ArrayOf)(is.Number))).toBe(true);
+
+    expect(() => validateBySchema(42, 'UNKNOWN_SCHEMA' as any)).toThrowError();
 });

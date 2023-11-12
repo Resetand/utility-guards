@@ -2,7 +2,7 @@
 // Types
 // -----------------------------------------------------------------------------
 
-import { CurriedGuard, TypeTag, Guard, TypeSchema } from './types';
+import { CurriedGuard, TypeTag, Guard, TypeSchema, InferGuardType } from './types';
 
 /**
  * Return object type string representation
@@ -27,6 +27,26 @@ export const curryGuard = <TValue, TRes extends TValue, TArgs extends unknown[]>
             return guard(value as TValue, ...args);
         };
     };
+};
+
+type $SomeGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> | InferGuardType<T2>>;
+
+export const someGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $SomeGuards<T1, T2> => {
+    return ((value: unknown, ...args: any[]) => [guard1, guard2].some((guard) => guard(value, ...args))) as $SomeGuards<
+        T1,
+        T2
+    >;
+};
+
+type $EveryGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> & InferGuardType<T2>>;
+
+export const everyGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $EveryGuards<T1, T2> => {
+    return ((value: unknown, ...args: any[]) =>
+        [guard1, guard2].every((guard) => guard(value, ...args))) as $EveryGuards<T1, T2>;
+};
+
+export const invertGuard = <TGuarded, TArgs extends unknown[]>(guard: Guard<TGuarded, TArgs>) => {
+    return <TValue>(value: TValue, ...args: TArgs): value is Exclude<TValue, TGuarded> => !guard(value as any, ...args);
 };
 
 export const createValidateSchema = <T = any>(schema: TypeSchema<T>) => schema;

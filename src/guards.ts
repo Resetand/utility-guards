@@ -1,59 +1,59 @@
-import { AnyFunction, AnyPrimitive, Guard, InferGuardType, NullOrUndefined, TypeTag } from './types';
-import { curryGuard, getTypeTag } from './utils';
+import { AnyFunction, AnyPrimitive, Guard, NullOrUndefined, TypeTag } from './types';
+import { curryGuard, everyGuards, getTypeTag, invertGuard, someGuards } from './utils';
 
 /**
  * Check if value a string literal or string created by `String` constructor
  */
-const isString = (value: unknown): value is string => {
+const isString = <T>(value: T | string): value is string => {
     return getTypeTag(value) === TypeTag.STRING;
 };
 
 /**
  * Check if value a number literal or number created by `Number` constructor
  */
-const isNumber = (value: unknown): value is number => {
+const isNumber = <T>(value: T | number): value is number => {
     return getTypeTag(value) === TypeTag.NUMBER;
 };
 
 /**
  * Check if value a symbol
  */
-const isSymbol = (value: unknown): value is symbol => {
+const isSymbol = <T>(value: T | symbol): value is symbol => {
     return getTypeTag(value) === TypeTag.SYMBOL;
 };
 
 /**
  * Check if value a regular expression or created by `RegExp` constructor
  */
-const isRegExp = (value: unknown): value is RegExp => {
+const isRegExp = <T>(value: T | RegExp): value is RegExp => {
     return getTypeTag(value) === TypeTag.REGEXP;
 };
 
 /**
  * Check if value a JS error
  */
-const isError = (value: unknown): value is Error => {
+const isError = <T>(value: T | Error): value is Error => {
     return value instanceof Error && getTypeTag(value) === TypeTag.ERROR;
 };
 
 /**
  * Check if value a boolean
  */
-const isBoolean = (value: unknown): value is boolean => {
+const isBoolean = <T>(value: T | boolean): value is boolean => {
     return getTypeTag(value) === TypeTag.BOOLEAN;
 };
 
 /**
  * Check if value is a NaN
  */
-const isNaN_ = (value: unknown): value is number => {
+const isNaN_ = <T>(value: T | number): value is number => {
     return isNumber(value) && isNaN(value);
 };
 
 /**
  * Check if value is a null or undefined
  */
-const isNil = (value: unknown): value is NullOrUndefined => {
+const isNil = <T>(value: T | NullOrUndefined): value is NullOrUndefined => {
     return value === null || value === undefined;
 };
 
@@ -61,7 +61,7 @@ const isNil = (value: unknown): value is NullOrUndefined => {
  * Check if value is a primitive
  * @see `AnyPrimitive`
  */
-const isPrimitive = (value: unknown): value is AnyPrimitive => {
+const isPrimitive = <T>(value: T | AnyPrimitive): value is AnyPrimitive => {
     return value === null || (typeof value !== 'object' && typeof value !== 'function');
 };
 
@@ -70,7 +70,7 @@ const isPrimitive = (value: unknown): value is AnyPrimitive => {
  * It may be object literal `{}` or instance created by `Object` constructor
  * or using `Object.create(null | Object)`
  */
-const isPlainObject = (value: unknown): value is Record<PropertyKey, unknown> => {
+const isPlainObject = <T>(value: T | Record<PropertyKey, unknown>): value is Record<PropertyKey, unknown> => {
     if (getTypeTag(value) !== TypeTag.OBJECT) {
         return false;
     }
@@ -85,42 +85,44 @@ const isPlainObject = (value: unknown): value is Record<PropertyKey, unknown> =>
 /**
  * Check if value is array
  */
-const isArray = (value: unknown): value is unknown[] => {
+const isArray = <T>(value: T | unknown[]): value is unknown[] => {
     return Array.isArray(value);
 };
 
 /**
  * Check if value is an any function
  */
-const isFunction = (value: unknown): value is AnyFunction => {
+const isFunction = <T>(value: T | AnyFunction): value is AnyFunction => {
     return typeof value === 'function';
 };
 
 /**
  * Check if value is a promise object
  */
-const isPromise = (value: unknown): value is Promise<unknown> => {
+const isPromise = <T>(value: T | Promise<unknown>): value is Promise<unknown> => {
     return !!value && getTypeTag(value) === TypeTag.PROMISE;
 };
 
 /**
  * Check if value is a promise-like object (has `then` method)
  */
-const isPromiseLike = (value: unknown): value is Promise<unknown> => {
+const isPromiseLike = <T, TPromiseLike extends { then: AnyFunction }>(
+    value: T | Promise<unknown> | TPromiseLike,
+): value is Promise<unknown> | TPromiseLike => {
     return isPromise(value) || (isHasKey(value, 'then') && isFunction(value.then));
 };
 
 /**
  * Check if value is a valid JS date
  */
-const isDate = (value: unknown): value is Date => {
+const isDate = <T>(value: T | Date): value is Date => {
     return !!value && getTypeTag(value) === TypeTag.DATE && !isNaN_(Number(value));
 };
 
 /**
  * Check if value is iterable (arrays, strings, maps, sets, etc.)
  */
-const isIterable = (value: unknown): value is Iterable<unknown> => {
+const isIterable = <T>(value: T | Iterable<unknown>): value is Iterable<unknown> => {
     return Symbol.iterator in Object(value);
 };
 
@@ -161,8 +163,8 @@ const isInstanceOf = <T>(value: unknown, constructor: new (...args: any[]) => T)
 /**
  * Check if object has own property
  */
-const isHasKey = <P extends string>(
-    value: unknown,
+const isHasKey = <T, P extends string>(
+    value: T | (Record<PropertyKey, unknown> & Record<P, unknown>),
     propertyName: P,
 ): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
     return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
@@ -171,23 +173,8 @@ const isHasKey = <P extends string>(
 /**
  * Check if all elements of array match given guard
  */
-const isArrayOf = <T>(value: unknown, guard: Guard<T>): value is T[] => {
+const isArrayOf = <TItemGuarded>(value: unknown, guard: Guard<TItemGuarded>): value is TItemGuarded[] => {
     return isArray(value) && value.every((value) => guard(value));
-};
-
-type $SomeGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> | InferGuardType<T2>>;
-type $EveryGuards<T1 extends Guard, T2 extends Guard> = Guard<InferGuardType<T1> & InferGuardType<T2>>;
-
-const someGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $SomeGuards<T1, T2> => {
-    return ((value: unknown, ...args: any[]) => [guard1, guard2].some((guard) => guard(value, ...args))) as $SomeGuards<
-        T1,
-        T2
-    >;
-};
-
-const everyGuards = <T1 extends Guard, T2 extends Guard>(guard1: T1, guard2: T2): $EveryGuards<T1, T2> => {
-    return ((value: unknown, ...args: any[]) =>
-        [guard1, guard2].every((guard) => guard(value, ...args))) as $EveryGuards<T1, T2>;
 };
 
 const GUARDS = {
@@ -223,4 +210,5 @@ export const is = {
     $some: someGuards,
     $every: everyGuards,
     $curried: curryGuard,
+    $not: invertGuard,
 };
