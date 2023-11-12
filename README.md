@@ -22,7 +22,7 @@
 ### **Features:**
 
 -   🛠️ Reliable type checking for JS runtime
--   📦 Zero dependencies and only ~700 bytes gzipped size
+-   📦 Zero dependencies and only ~800 bytes gzipped size
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validateBySchema` and `validateBySchemaString` validators for runtime values (object) validation
