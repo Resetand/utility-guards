@@ -4,7 +4,7 @@
 
 import { curriedGuard } from './utils';
 import { is } from './guards';
-import { InferTypeSchema, TypeSchema } from './types';
+import { Guard, InferTypeSchema, TypeSchema } from './types';
 
 type ValidateGuard = {
     <TSchema extends TypeSchema<any>>(value: unknown, schema: TSchema): value is InferTypeSchema<TSchema>;
@@ -20,12 +20,15 @@ const validateFactory = (options: { strict: boolean }) => {
                 return schema(value);
             }
 
-            if (is.PlainObject(value)) {
-                if (Object.keys(value).length !== Object.keys(schema).length && strict) {
+            if (is.PlainObject(schema)) {
+                const keysMismatch =
+                    !is.PlainObject(value) || Object.keys(value).some((key) => !is.HasKey(schema, key));
+
+                if (keysMismatch && strict) {
                     return false;
                 }
                 return Object.entries(schema).every(([key, guard]) =>
-                    is.HasKey(value, key) ? validate(value[key], guard) : false,
+                    is.HasKey(value, key) ? validate(value[key], guard as Guard) : false,
                 );
             }
 
