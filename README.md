@@ -152,7 +152,7 @@ console.log(filtered); // [1, 2, 3] (type: number[])
 ```tsx
 import { validate } from 'ts-types-guard';
 
-const obj = getSomeObject();
+const obj = JSON.parse('...');
 
 const schema = {
     a: is.Number,
