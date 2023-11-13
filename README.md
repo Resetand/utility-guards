@@ -150,10 +150,11 @@ console.log(filtered); // [1, 2, 3] (type: number[])
 ### Usage
 
 ```tsx
-import { validateBySchema, createValidateSchema } from 'ts-types-guard';
+import { validateBySchema } from 'ts-types-guard';
 
-const obj = ...
-const schema: createValidateSchema({
+const obj = getSomeObject();
+
+const schema = {
     a: is.Number,
     b: is.$some(is.String, is.Nil), // string or nil
     c: {
@@ -163,7 +164,7 @@ const schema: createValidateSchema({
             g: is.String,
         },
     },
-});
+};
 
 if (validateBySchema(obj, schema)) {
     obj.c.e.f // OK

@@ -12,7 +12,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
-    "strict": true // Enable strict mode
+    "strict": true, // Enable strict mode
+    "downlevelIteration": true,
+    "experimentalDecorators": true
   },
 
   "include": ["src", "tests", "tests"]

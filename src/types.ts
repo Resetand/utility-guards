@@ -14,6 +14,7 @@ export type GuardsContainerShape = {
 export enum TypeTag {
     STRING = 'String',
     NUMBER = 'Number',
+    BIGINT = 'BigInt',
     OBJECT = 'Object',
     BOOLEAN = 'Boolean',
     PROMISE = 'Promise',
@@ -27,8 +28,8 @@ export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = 
 
 export type TypeSchema<T> = T extends Record<string, unknown> ? ObjectSchema<T> : Guard;
 
-export type InferTypeSchema<TSchema> = TSchema extends ObjectSchema<infer TGuarded>
-    ? TGuarded
+export type InferTypeSchema<TSchema> = TSchema extends Record<string, unknown>
+    ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K]> }
     : TSchema extends Guard<infer TGuarded, any[]>
     ? TGuarded
     : never;
