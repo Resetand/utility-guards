@@ -140,6 +140,27 @@ isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 ```
 
+### `$` Curried guards
+
+**ℹ️ Guards with extra arguments are curried functions**
+
+```tsx
+is.ArrayOf(42, is.Number); // valid
+is.ArrayOf(is.Number)(42); // also valid
+
+is.InstanceOf(null!, ArrayBuffer); // valid
+is.InstanceOf(ArrayBuffer)(null!); // also valid
+```
+
+```tsx
+import is, { validate } from 'ts-types-guard';
+const value = JSON.parse('...');
+
+// validate also supports currying
+validate(value, { someProp: is.ArrayOf(is.Number) }); // valid
+validate({ someProp: is.ArrayOf(is.Number) })(valid); // valid
+```
+
 ## `validate` addon
 
 Allows to validate runtime values (objects) with given schema or guard
