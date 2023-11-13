@@ -25,7 +25,7 @@
 -   📦 Zero dependencies and only ~800 bytes gzipped size
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
--   🔑 Addon: `schemaGuard` and `schemaGuardStrict` validators for runtime values (object) validation
+-   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
 
 ```bash
 npm install ts-types-guard
@@ -111,7 +111,7 @@ const curriedIsArrayOf = is.$curried(is.ArrayOf);
 curriedIsArrayOf(is.Number)([1, 2, 3]); // true
 curriedIsArrayOf(is.Number)([1, 2, '3']); // false
 
-schemaGuard({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
+validate({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
 ```
 
 #### `$some` and `$every`
@@ -145,12 +145,12 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-## `schemaGuard`
+## `validate`
 
 ### Usage
 
 ```tsx
-import { schemaGuard } from 'ts-types-guard';
+import { validate } from 'ts-types-guard';
 
 const obj = getSomeObject();
 
@@ -166,20 +166,20 @@ const schema = {
     },
 };
 
-if (schemaGuard(obj, schema)) {
+if (validate(obj, schema)) {
     obj.c.e.f // OK
 } else {
     obj.c.e.f // TS Error
 }
 
 // usage with guard
-schemaGuard(42, is.Number) // true
-schemaGuard(42, [is.Number, is.String]) // true
-schemaGuard('42', [is.Number, is.String]) // true
-schemaGuard([], is.Number) // false
+validate(42, is.Number) // true
+validate(42, [is.Number, is.String]) // true
+validate('42', [is.Number, is.String]) // true
+validate([], is.Number) // false
 
-schemaGuard([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
-schemaGuard([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
+validate([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
+validate([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
 ```
 
-ℹ️ Use `schemaGuardStrict` to check if object has all properties from schema
+ℹ️ Use `validateStrict` to check if object has all properties from schema
