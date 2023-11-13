@@ -5,7 +5,7 @@
 import { is } from './guards';
 import { InferTypeSchema, TypeSchema } from './types';
 
-const validateBySchemaFactory = (options: { strict: boolean }) => {
+const schemaGuardFactory = (options: { strict: boolean }) => {
     const strict = options?.strict ?? false;
 
     const validate = <TSchema extends TypeSchema<any>>(
@@ -31,5 +31,5 @@ const validateBySchemaFactory = (options: { strict: boolean }) => {
     return validate;
 };
 
-export const validateBySchema = validateBySchemaFactory({ strict: false });
-export const validateBySchemaStrict = validateBySchemaFactory({ strict: true });
+export const schemaGuard = schemaGuardFactory({ strict: false });
+export const schemaGuardStrict = schemaGuardFactory({ strict: true });

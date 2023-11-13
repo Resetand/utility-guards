@@ -1,8 +1,8 @@
-import { validateBySchema, validateBySchemaStrict } from '../src/schema';
+import { schemaGuard, schemaGuardStrict } from '../src/schema';
 import { test, expect } from 'vitest';
 import { is } from '../src/guards';
 
-test('Should validate by schema shape (validateBySchema)', () => {
+test('Should validate by schema shape (schemaGuard)', () => {
     const obj = {
         a: 1,
         b: 'string',
@@ -27,18 +27,18 @@ test('Should validate by schema shape (validateBySchema)', () => {
         },
     };
 
-    expect(validateBySchema(obj, schema)).toBe(true);
+    expect(schemaGuard(obj, schema)).toBe(true);
 
-    expect(validateBySchema(42, is.Number)).toBe(true);
-    expect(validateBySchema(42, is.$some(is.Number, is.Nil))).toBe(true);
+    expect(schemaGuard(42, is.Number)).toBe(true);
+    expect(schemaGuard(42, is.$some(is.Number, is.Nil))).toBe(true);
 
-    expect(validateBySchema(42, is.String)).toBe(false);
-    expect(validateBySchema({ a: 1 }, schema)).toBe(false);
+    expect(schemaGuard(42, is.String)).toBe(false);
+    expect(schemaGuard({ a: 1 }, schema)).toBe(false);
 
-    expect(validateBySchema({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(true);
-    expect(validateBySchemaStrict({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
+    expect(schemaGuard({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(true);
+    expect(schemaGuardStrict({ a: 1, otherParam: 'here' }, { a: is.Number })).toBe(false);
 
-    expect(validateBySchema([21, 2, 32], is.$curried(is.ArrayOf)(is.Number))).toBe(true);
+    expect(schemaGuard([21, 2, 32], is.$curried(is.ArrayOf)(is.Number))).toBe(true);
 
-    expect(() => validateBySchema(42, 'UNKNOWN_SCHEMA' as any)).toThrowError();
+    expect(() => schemaGuard(42, 'UNKNOWN_SCHEMA' as any)).toThrowError();
 });

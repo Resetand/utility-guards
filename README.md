@@ -25,7 +25,7 @@
 -   📦 Zero dependencies and only ~800 bytes gzipped size
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
--   🔑 Addon: `validateBySchema` and `validateBySchemaString` validators for runtime values (object) validation
+-   🔑 Addon: `schemaGuard` and `schemaGuardStrict` validators for runtime values (object) validation
 
 ```bash
 npm install ts-types-guard
@@ -111,7 +111,7 @@ const curriedIsArrayOf = is.$curried(is.ArrayOf);
 curriedIsArrayOf(is.Number)([1, 2, 3]); // true
 curriedIsArrayOf(is.Number)([1, 2, '3']); // false
 
-validateBySchema({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
+schemaGuard({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
 ```
 
 #### `$some` and `$every`
@@ -145,12 +145,12 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-## `validateBySchema`
+## `schemaGuard`
 
 ### Usage
 
 ```tsx
-import { validateBySchema } from 'ts-types-guard';
+import { schemaGuard } from 'ts-types-guard';
 
 const obj = getSomeObject();
 
@@ -166,20 +166,20 @@ const schema = {
     },
 };
 
-if (validateBySchema(obj, schema)) {
+if (schemaGuard(obj, schema)) {
     obj.c.e.f // OK
 } else {
     obj.c.e.f // TS Error
 }
 
 // usage with guard
-validateBySchema(42, is.Number) // true
-validateBySchema(42, [is.Number, is.String]) // true
-validateBySchema('42', [is.Number, is.String]) // true
-validateBySchema([], is.Number) // false
+schemaGuard(42, is.Number) // true
+schemaGuard(42, [is.Number, is.String]) // true
+schemaGuard('42', [is.Number, is.String]) // true
+schemaGuard([], is.Number) // false
 
-validateBySchema([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
-validateBySchema([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
+schemaGuard([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
+schemaGuard([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
 ```
 
-ℹ️ Use `validateBySchemaStrict` to check if object has all properties from schema
+ℹ️ Use `schemaGuardStrict` to check if object has all properties from schema

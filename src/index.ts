@@ -1,6 +1,6 @@
 import { is } from './guards';
 
-export { validateBySchema, validateBySchemaStrict } from './schema';
+export { schemaGuard, schemaGuardStrict } from './schema';
 export type { TypeSchema, InferTypeSchema } from './types';
 
 export default is;
