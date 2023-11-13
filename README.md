@@ -101,26 +101,13 @@ if (is.Empty(dataArr)) {
 
 ### `$` Utility methods
 
-#### `$curried`
-
-Curry given guard function for guards with additional arguments
-
-```tsx
-const curriedIsArrayOf = is.$curried(is.ArrayOf);
-
-curriedIsArrayOf(is.Number)([1, 2, 3]); // true
-curriedIsArrayOf(is.Number)([1, 2, '3']); // false
-
-validate({ a: [1, 2, 3] }, { a: curriedIsArrayOf(is.Number) }); // true
-```
-
 #### `$some` and `$every`
 
 Combine multiple guards with `some` or `every` logic
 
 ```tsx
 const isNumberOrString = is.$some(is.Number, is.String);
-const isArrayWithAttribute = is.$every(is.Array, is.$curried(is.HasKey)('attr'));
+const isArrayWithAttribute = is.$every(is.Array, is.HasKey('attr'));
 
 isNumberOrString(42); // true
 isNumberOrString('42'); // true
@@ -178,8 +165,8 @@ validate(42, is.$some(is.Number, is.String)) // true
 validate('42', is.$some(is.Number, is.String)) // true
 validate([], is.Number) // false
 
-validate([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
-validate([1,2,3, 'asd'], is.$curried(is.ArrayOf)(is.Number))) // false
+validate([1,2,3], is.ArrayOf(is.Number))) // true
+validate([1,2,3, 'asd'], is.ArrayOf(is.Number))) // false
 ```
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema

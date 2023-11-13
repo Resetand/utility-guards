@@ -1,5 +1,5 @@
 import { AnyFunction, AnyPrimitive, Guard, NullOrUndefined, TypeTag } from './types';
-import { curryGuard, everyGuards, getTypeTag, invertGuard, someGuards } from './utils';
+import { curriedGuard, everyGuards, getTypeTag, invertGuard, someGuards } from './utils';
 
 const isString = <T>(value: T | string): value is string => {
     return getTypeTag(value) === TypeTag.STRING;
@@ -94,20 +94,34 @@ const isEmpty = <T>(value: T): value is Extract<T, NullOrUndefined | '' | { [P i
     return isNil(value);
 };
 
-const isInstanceOf = <T>(value: unknown, constructor: new (...args: any[]) => T): value is T => {
+type InstanceOfGuard = {
+    <T>(value: unknown, constructor: new (...args: any[]) => T): value is T;
+    <T>(constructor: new (...args: any[]) => T): (value: unknown) => value is T;
+};
+
+const isInstanceOf: InstanceOfGuard = curriedGuard((value: unknown, constructor: new (...args: any[]) => unknown) => {
     return value instanceof constructor;
+});
+
+type RecordLike<P extends string> = Record<PropertyKey, unknown> & Record<P, unknown>;
+
+type IsHasKeyGuard = {
+    <T, P extends string>(value: T | RecordLike<P>, propertyName: P): value is RecordLike<P>;
+    <P extends string>(propertyName: P): <T>(value: T) => value is RecordLike<P> & T;
 };
 
-const isHasKey = <T, P extends string>(
-    value: T | (Record<PropertyKey, unknown> & Record<P, unknown>),
-    propertyName: P,
-): value is Record<PropertyKey, unknown> & Record<P, unknown> => {
+const isHasKey: IsHasKeyGuard = curriedGuard((value, propertyName: PropertyKey) => {
     return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
+});
+
+type IsArrayOfGuard = {
+    <TItemGuarded>(value: unknown, guard: Guard<TItemGuarded>): value is TItemGuarded[];
+    <TItemGuarded>(guard: Guard<TItemGuarded>): (value: unknown) => value is TItemGuarded[];
 };
 
-const isArrayOf = <TItemGuarded>(value: unknown, guard: Guard<TItemGuarded>): value is TItemGuarded[] => {
+const isArrayOf: IsArrayOfGuard = curriedGuard((value, guard: Guard<unknown>) => {
     return isArray(value) && value.every((value) => guard(value));
-};
+});
 
 const GUARDS = {
     /**
@@ -253,11 +267,6 @@ export const is = {
      * isNumberOrString(null); // -> false
      */
     $every: everyGuards,
-
-    /**
-     * Creates curried version of guard
-     */
-    $curried: curryGuard,
 
     /**
      * Invert given guard

@@ -2,6 +2,7 @@
 // Types
 // -----------------------------------------------------------------------------
 
+import { curriedGuard } from './utils';
 import { is } from './guards';
 import { InferTypeSchema, TypeSchema } from './types';
 
@@ -31,5 +32,10 @@ const validateFactory = (options: { strict: boolean }) => {
     return validate;
 };
 
-export const validate = validateFactory({ strict: false });
-export const validateStrict = validateFactory({ strict: true });
+type ValidateGuard = {
+    <TSchema extends TypeSchema<any>>(value: unknown, schema: TSchema): value is InferTypeSchema<TSchema>;
+    <TSchema extends TypeSchema<any>>(schema: TSchema): (value: unknown) => value is InferTypeSchema<TSchema>;
+};
+
+export const validate: ValidateGuard = curriedGuard(validateFactory({ strict: false }));
+export const validateStrict: ValidateGuard = curriedGuard(validateFactory({ strict: true }));

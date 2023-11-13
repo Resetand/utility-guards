@@ -2,7 +2,7 @@
 // Types
 // -----------------------------------------------------------------------------
 
-import { CurriedGuard, TypeTag, Guard, InferGuardType } from './types';
+import { TypeTag, Guard, InferGuardType } from './types';
 
 /**
  * Return object type string representation
@@ -14,16 +14,6 @@ import { CurriedGuard, TypeTag, Guard, InferGuardType } from './types';
  */
 export const getTypeTag = (value: unknown): TypeTag => {
     return Object.prototype.toString.call(value).slice(8, -1) as TypeTag;
-};
-
-export const curryGuard = <TValue, TRes extends TValue, TArgs extends unknown[]>(
-    guard: (value: TValue, ...args: TArgs) => value is TRes,
-): CurriedGuard<TRes, TArgs> => {
-    return (...args: TArgs): Guard<TRes> => {
-        return (value): value is TRes => {
-            return guard(value as TValue, ...args);
-        };
-    };
 };
 
 type $SomeGuards<TGuards extends Guard[]> = Guard<InferGuardType<TGuards[number]>>;
@@ -42,4 +32,22 @@ export const everyGuards = <TGuards extends Guard[]>(...guards: TGuards): $Every
 
 export const invertGuard = <TGuarded, TArgs extends unknown[]>(guard: Guard<TGuarded, TArgs>) => {
     return <TValue>(value: TValue, ...args: TArgs): value is Exclude<TValue, TGuarded> => !guard(value as any, ...args);
+};
+
+export type CurriedGuard<TArgs extends any[]> = {
+    <T>(value: unknown, ...args: TArgs): value is T;
+    <T>(...args: TArgs): (value: unknown) => value is T;
+};
+
+export const curriedGuard = <TArgs extends any[]>(
+    factory: (value: unknown, ...args: TArgs) => boolean,
+): CurriedGuard<TArgs> => {
+    const extraArgsLength = factory.length - 1;
+    return ((...args: any[]) => {
+        if (args.length <= extraArgsLength) {
+            return (value: unknown) => (factory as any)(value, ...args);
+        }
+
+        return (factory as any)(...args);
+    }) as CurriedGuard<TArgs>;
 };

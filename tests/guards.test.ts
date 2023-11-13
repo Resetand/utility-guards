@@ -180,9 +180,7 @@ test.each(
         failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
     }),
 )('should check on Array of %s', (value, expected) => {
-    const $isArrayOf = is.$curried(is.ArrayOf);
-    const isArrayOfNumbers = $isArrayOf(is.Number);
-    expect(isArrayOfNumbers(value)).toBe(expected);
+    expect(is.ArrayOf(value, is.Number)).toBe(expected);
 });
 
 test('Should work outside this context', () => {
@@ -191,14 +189,14 @@ test('Should work outside this context', () => {
 });
 
 test('Should curry guard', () => {
-    expect(is.$curried(is.ArrayOf)(is.Number)([1, 2, 3])).toBe(true);
-    expect(is.$curried(is.ArrayOf)(is.Number)([1, 2, '3'])).toBe(false);
+    expect(is.ArrayOf(is.Number)([1, 2, 3])).toBe(true);
+    expect(is.ArrayOf(is.Number)([1, 2, '3'])).toBe(false);
 
-    expect(is.$curried(is.InstanceOf)(Cls)(new Cls())).toBe(true);
-    expect(is.$curried(is.InstanceOf)(Cls)(new CustomError())).toBe(false);
+    expect(is.InstanceOf(Cls)(new Cls())).toBe(true);
+    expect(is.InstanceOf(Cls)(new CustomError())).toBe(false);
 
-    expect(is.$curried(is.HasKey)('prop')({ prop: 1 })).toBe(true);
-    expect(is.$curried(is.HasKey)('prop')({ prop: 1, otherProp: 2 })).toBe(true);
+    expect(is.HasKey('prop')({ prop: 1 })).toBe(true);
+    expect(is.HasKey('prop')({ prop: 1, otherProp: 2 })).toBe(true);
 });
 
 test('Should combine guards with $some', () => {
@@ -209,7 +207,7 @@ test('Should combine guards with $some', () => {
 });
 
 test('Should combine guards with $every', () => {
-    const guard = is.$every(is.Array, is.$curried(is.HasKey)('attr'));
+    const guard = is.$every(is.Array, is.HasKey('attr'));
 
     type ArrWithAttr = number[] & { attr: number };
 
@@ -223,7 +221,7 @@ test('Should combine guards with $every', () => {
 });
 
 test('Should invert guard with $not', () => {
-    const guard = is.$curried(is.ArrayOf)(is.Number);
+    const guard = is.ArrayOf(is.Number);
     const isNotArrayOfNumbers = is.$not(guard);
 
     expect(isNotArrayOfNumbers([1, 2, 3])).toBe(false);
