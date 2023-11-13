@@ -42,12 +42,17 @@ export type CurriedGuard<TArgs extends any[]> = {
 export const curriedGuard = <TArgs extends any[]>(
     factory: (value: unknown, ...args: TArgs) => boolean,
 ): CurriedGuard<TArgs> => {
-    const extraArgsLength = factory.length - 1;
+    const expectedArgsCount = factory.length;
+
+    if (expectedArgsCount < 0) {
+        return factory as any;
+    }
+
     return ((...args: any[]) => {
-        if (args.length <= extraArgsLength) {
-            return (value: unknown) => (factory as any)(value, ...args);
+        if (expectedArgsCount === args.length) {
+            return (factory as any)(...args);
         }
 
-        return (factory as any)(...args);
+        return (value: unknown) => (factory as any)(value, ...args);
     }) as CurriedGuard<TArgs>;
 };
