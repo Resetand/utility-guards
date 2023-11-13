@@ -69,21 +69,6 @@ import is from 'ts-types-guard';
 -   Empty string: `''`
 -   Nullable value: `null or undefined`
 
-**ℹ️ Guards with extra arguments are curried functions**
-
-```tsx
-is.ArrayOf(42, is.Number); // valid
-is.ArrayOf(is.Number)(42); // also valid
-
-// use-case
-import is, { validate } from 'ts-types-guard';
-
-const value = JSON.parse('...');
-
-validate(value, { someProp: is.ArrayOf(is.Number) }); // valid
-validate({ someProp: is.ArrayOf(is.Number) })(valid); // valid
-```
-
 ### Usage
 
 ```tsx
