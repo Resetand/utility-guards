@@ -87,52 +87,30 @@ validate({ someProp: is.ArrayOf(is.Number) })(valid); // valid
 ### Usage
 
 ```tsx
-import is from 'ts-types-guard';
+import is from 'ts-guards';
 
-type Data = {
-    prop1: number,
-    prop2: string,
+const value: string | number = get();
+
+if (is.String(value)) {
+    value.toUpperCase(); // Ensures that value is string
+} else {
+    value.toFixed(); // Ensures that value is number
 }
+```
 
-const dataOrNil: Data | null | undefined = ...
+```tsx
+type Data = { prop1: number; prop2: string };
+
+const dataOrNil = null! as Data | null | undefined;
 
 if (!is.Nil(dataOrNil)) {
-    console.log(dataOrNil.prop1) // OK
+    console.log(dataOrNil.prop1); // OK
 } else {
-    console.log(dataOrNil.prop2) // TS Error
-}
-
-
-const dataOrCallback: Data | (() => Data) = ...
-const resolvedData = is.Function(dataOrCallback) ? dataOrCallback() : dataOrCallback
-
-const dataArr: Data[] = []
-
-if (is.Empty(dataArr)) {
-    // nil or no elements
-    console.log('Array is empty')
+    console.log(dataOrNil.prop2); // TS Error
 }
 ```
 
 ### `$` Utility methods
-
-#### `$some` and `$every`
-
-Combine multiple guards with `some` or `every` logic
-
-```tsx
-const isNumberOrString = is.$some(is.Number, is.String);
-const isArrayWithAttribute = is.$every(is.Array, is.HasKey('attr'));
-
-isNumberOrString(42); // true
-isNumberOrString('42'); // true
-
-const arrWithAttr = [1, 2, 3];
-arrWithAttr.attr = 42;
-isArrayWithAttribute(arrWithAttr); // true
-
-isArrayWithAttribute([1, 2, 3]); // false
-```
 
 #### `$not`
 
@@ -147,13 +125,28 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-## `validate`
+#### `$some` and `$every`
+
+Combine multiple guards with `some` or `every` logic
+
+```tsx
+const isNumberOrString = is.$some(is.Number, is.String);
+const isEmptyArray = is.$every(is.Array, is.Empty);
+
+isNumberOrString(42); // true
+isNumberOrString('42'); // true
+
+isEmptyArray([]); // true
+isEmptyArray([1, 2, 3]); // false
+```
+
+## `validate` addon
+
+Allows to validate runtime values (objects) with given schema or guard
 
 ### Usage
 
 ```tsx
-import { validate } from 'ts-types-guard';
-
 const obj = JSON.parse('...');
 
 const schema = {
@@ -169,19 +162,19 @@ const schema = {
 };
 
 if (validate(obj, schema)) {
-    obj.c.e.f // OK
+    obj.c.e.f; // OK
 } else {
-    obj.c.e.f // TS Error
+    obj.c.e.f; // TS Error
 }
 
 // usage with guard
-validate(42, is.Number) // true
-validate(42, is.$some(is.Number, is.String)) // true
-validate('42', is.$some(is.Number, is.String)) // true
-validate([], is.Number) // false
+validate(42, is.Number); // true
+validate(42, is.$some(is.Number, is.String)); // true
+validate('42', is.$some(is.Number, is.String)); // true
+validate([], is.Number); // false
 
-validate([1,2,3], is.ArrayOf(is.Number))) // true
-validate([1,2,3, 'asd'], is.ArrayOf(is.Number))) // false
+validate([1, 2, 3], is.ArrayOf(is.Number)); // true
+validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ```
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
