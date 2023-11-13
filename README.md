@@ -174,8 +174,8 @@ if (validate(obj, schema)) {
 
 // usage with guard
 validate(42, is.Number) // true
-validate(42, [is.Number, is.String]) // true
-validate('42', [is.Number, is.String]) // true
+validate(42, is.$some(is.Number, is.String)) // true
+validate('42', is.$some(is.Number, is.String)) // true
 validate([], is.Number) // false
 
 validate([1,2,3], is.$curried(is.ArrayOf)(is.Number))) // true
