@@ -125,7 +125,7 @@ isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 ```
 
-### `$` Curried guards
+### Curried guards
 
 **ℹ️ Guards with extra arguments are curried functions**
 
