@@ -5,6 +5,7 @@
   "homepage": "https://github.com/Resetand/ts-types-guard",
   "author": "Resetand",
   "license": "MIT",
+  "type": "module",
   "keywords": [
     "guard",
     "typescript",
@@ -22,10 +23,12 @@
     "schema"
   ],
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/index.cjs",
+    "dist/index.d.ts"
   ],
   "scripts": {
     "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
