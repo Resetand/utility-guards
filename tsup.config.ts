@@ -8,7 +8,12 @@ export default defineConfig({
     sourcemap: false,
     clean: true,
     treeshake: true,
-    minify: true,
     platform: 'neutral',
+    target: ['es2015', 'es2019'],
     dts: true,
+    outExtension(ctx) {
+        return {
+            js: ctx.format === 'cjs' ? '.cjs' : '.js',
+        };
+    },
 });
