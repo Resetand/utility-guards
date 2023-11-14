@@ -185,3 +185,44 @@ validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ```
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
+
+### Compose and create custom guard
+
+```tsx
+import is, { validate } from 'ts-types-guard';
+
+function isExact<T>(expected: T) {
+    return (value: unknown): value is T => Object.is(value, expected);
+}
+
+const isUserProfile = validate({
+    id: is.Number,
+    name: is.String,
+    age: is.$some(is.Number, is.Nil),
+    avatarUrl: is.$some(is.String, is.Nil),
+});
+
+const isSuccessResult = validate({
+    ok: isExact(true),
+    result: {
+        id: is.Number,
+        users: is.ArrayOf(isUserProfile),
+    },
+});
+
+// true
+isSuccessResult({
+    ok: true,
+    result: [
+        {
+            id: 42,
+            user: {
+                id: 42,
+                name: 'John',
+                age: null,
+                avatarUrl: null,
+            },
+        },
+    ],
+});
+```
