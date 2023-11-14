@@ -3,10 +3,9 @@ export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
 export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
 
-export type Guard<TGuarded = unknown, TArgs extends unknown[] = unknown[]> = (
-    value: unknown,
-    ...args: TArgs
-) => value is TGuarded;
+export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
+    ? (value: unknown) => value is TGuarded
+    : (value: unknown, ...args: TArgs) => value is TGuarded;
 
 export type GuardsContainerShape = {
     [method: string]: any;
