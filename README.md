@@ -57,7 +57,7 @@ import is from 'ts-types-guard';
 | `is.Iterable(value)`                | Check if value is iterable (arrays, strings, maps, sets, etc.)            |
 | `is.Date(value)`                    | Check if value is a valid JS Date object                                  |
 | `is.Empty(value)`                   | Check if value is empty                                                   |
-| `is.HasKey(obj, propertyName)`      | Check if an object has a property                                         |
+| `is.HasProperty(obj, propertyName)` | Check if an object has a property                                         |
 | `is.ArrayOf(array, guard)`          | Check if all elements of array match given guard                          |
 | `is.InstanceOf(value, constructor)` | Check if value is instance of given constructor                           |
 

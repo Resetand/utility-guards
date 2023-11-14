@@ -59,10 +59,10 @@ test.each(
 });
 
 test('should check on PlainObject with own property - %s', () => {
-    expect(is.HasKey(Cls, 'toString')).toBe(false);
-    expect(is.HasKey({}, 'toString')).toBe(false);
-    expect(is.HasKey([1], '0')).toBe(true);
-    expect(is.HasKey({ prop: 'example' }, 'prop')).toBe(true);
+    expect(is.HasProperty(Cls, 'toString')).toBe(false);
+    expect(is.HasProperty({}, 'toString')).toBe(false);
+    expect(is.HasProperty([1], '0')).toBe(true);
+    expect(is.HasProperty({ prop: 'example' }, 'prop')).toBe(true);
 });
 
 test.each(
@@ -195,8 +195,8 @@ test('Should curry guard', () => {
     expect(is.InstanceOf(Cls)(new Cls())).toBe(true);
     expect(is.InstanceOf(Cls)(new CustomError())).toBe(false);
 
-    expect(is.HasKey('prop')({ prop: 1 })).toBe(true);
-    expect(is.HasKey('prop')({ prop: 1, otherProp: 2 })).toBe(true);
+    expect(is.HasProperty('prop')({ prop: 1 })).toBe(true);
+    expect(is.HasProperty('prop')({ prop: 1, otherProp: 2 })).toBe(true);
 });
 
 test('Should combine guards with $some', () => {
@@ -207,7 +207,7 @@ test('Should combine guards with $some', () => {
 });
 
 test('Should combine guards with $every', () => {
-    const guard = is.$every(is.Array, is.HasKey('attr'));
+    const guard = is.$every(is.Array, is.HasProperty('attr'));
 
     type ArrWithAttr = number[] & { attr: number };
 

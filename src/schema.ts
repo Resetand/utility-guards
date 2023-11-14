@@ -27,7 +27,7 @@ const validateFactory = (options: { strict: boolean }) => {
             const keys = !strict ? Object.keys(schema) : [...new Set([...Object.keys(schema), ...Object.keys(value!)])];
 
             return keys.every((key) =>
-                is.HasKey(value, key) && is.HasKey(schema, key)
+                is.HasProperty(value, key) && is.HasProperty(schema, key)
                     ? validate(value[key], schema[key]) //
                     : false,
             );

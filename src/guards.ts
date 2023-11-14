@@ -68,7 +68,7 @@ const isPromise = <T>(value: T | Promise<unknown>): value is Promise<unknown> =>
 };
 
 const isPromiseLike = <T>(value: T | PromiseLike<any>): value is PromiseLike<any> => {
-    return isPromise(value) || (isHasKey(value, 'then') && isFunction(value.then));
+    return isPromise(value) || (isHasProperty(value, 'then') && isFunction(value.then));
 };
 
 const isDate = <T>(value: T | Date): value is Date => {
@@ -107,12 +107,12 @@ const isInstanceOf: InstanceOfGuard = curriedGuard((value: unknown, constructor:
 
 type RecordLike<P extends PropertyKey = PropertyKey> = Record<PropertyKey, unknown> & Record<P, unknown>;
 
-type IsHasKeyGuard = {
+type IsHasPropertyGuard = {
     <T, P extends PropertyKey>(value: T | RecordLike, propertyName: P): value is RecordLike<P>;
     <P extends PropertyKey>(propertyName: P): <T>(value: T) => value is RecordLike<P> & T;
 };
 
-const isHasKey: IsHasKeyGuard = curriedGuard((value, propertyName) => {
+const isHasProperty: IsHasPropertyGuard = curriedGuard((value, propertyName) => {
     return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
 });
 
@@ -387,15 +387,15 @@ const GUARDS = {
      * Check if object has own property
      *
      * @example
-     * is.HasKey({ a: 1 }, 'a'); // -> true
-     * is.HasKey({ a: 1 }, 'b'); // -> false
-     * is.HasKey({}, 'a'); // -> false
+     * is.HasProperty({ a: 1 }, 'a'); // -> true
+     * is.HasProperty({ a: 1 }, 'b'); // -> false
+     * is.HasProperty({}, 'a'); // -> false
      *
      * // guarded usage
-     * is.HasKey({ a: 1 })('a'); // -> true
-     * validate({value}, {value: is.HasKey({ a: 1 })}); // -> true
+     * is.HasProperty({ a: 1 })('a'); // -> true
+     * validate({value}, {value: is.HasProperty({ a: 1 })}); // -> true
      */
-    HasKey: isHasKey,
+    HasProperty: isHasProperty,
 
     /**
      * Check if all elements of array match given guard
