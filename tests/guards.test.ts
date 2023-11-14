@@ -77,8 +77,8 @@ test.each(
 test.each(
     unwrap({
         /* eslint-disable no-new-func */
-        passed: [() => '123', Cls, func, Function('a, b', 'return a + 2'), parseInt, JSON.stringify],
-        failed: ['string', new Cls(), null, [1, 2, 3], 0],
+        passed: [() => '123', func, Function('a, b', 'return a + 2'), parseInt, JSON.stringify],
+        failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls],
     }),
 )('should check on Function - %s', (value, expected) => {
     expect(is.Function(value)).toBe(expected);
