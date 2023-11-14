@@ -50,7 +50,8 @@ import is from 'ts-types-guard';
 | `is.Primitive(value)`               | Check if value is a primitive                                             |
 | `is.PlainObject(value)`             | Check if value is a plain JavaScript object                               |
 | `is.Array(value)`                   | Check if value is array                                                   |
-| `is.Function(value)`                | Check if value is an any function                                         |
+| `is.Function(value)`                | Check if value is an any function (except class definition)               |
+| `is.Class(value)`                   | Check if value is a class definition                                      |
 | `is.Promise(value)`                 | Check if value is a promise object                                        |
 | `is.PromiseLike(value)`             | Check if value is a promise-like object (has `then` method)               |
 | `is.Iterable(value)`                | Check if value is iterable (arrays, strings, maps, sets, etc.)            |
