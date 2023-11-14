@@ -105,10 +105,10 @@ const isInstanceOf: InstanceOfGuard = curriedGuard((value: unknown, constructor:
     return value instanceof constructor;
 });
 
-type RecordLike<P extends PropertyKey> = Record<PropertyKey, unknown> & Record<P, unknown>;
+type RecordLike<P extends PropertyKey = PropertyKey> = Record<PropertyKey, unknown> & Record<P, unknown>;
 
 type IsHasKeyGuard = {
-    <T, P extends PropertyKey>(value: T | RecordLike<P>, propertyName: P): value is RecordLike<P>;
+    <T, P extends PropertyKey>(value: T | RecordLike, propertyName: P): value is RecordLike<P>;
     <P extends PropertyKey>(propertyName: P): <T>(value: T) => value is RecordLike<P> & T;
 };
 
