@@ -25,9 +25,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/index.js",
-    "dist/index.cjs",
-    "dist/index.d.ts"
+    "dist"
   ],
   "scripts": {
     "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
