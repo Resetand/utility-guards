@@ -39,7 +39,7 @@ const validateFactory = (options: { strict: boolean }) => {
 /**
  * Validate value against schema
  * @example
- * import { isString, isNumber, validate } from 'ts-type-guards';
+ * import { isString, isNumber, validate } from 'utility-guards';
  *
  * const schema = { a: isNumber, b: isString };
  * validate({ a: 1, b: '2' }, schema); // -> true
@@ -51,7 +51,7 @@ const validate: ValidateGuard = validateFactory({ strict: false });
 /**
  * Validate value against schema
  * @example
- * import { isString, isNumber, validateStrict } from 'ts-type-guards';
+ * import { isString, isNumber, validateStrict } from 'utility-guards';
  *
  * const schema = { a: isNumber, b: isString };
  * validateStrict({ a: 1, b: '2' }, schema); // -> true
