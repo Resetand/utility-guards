@@ -1,5 +1,5 @@
-import isFunction from './isFunction';
 import type { ClassConstructor } from '../_types';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a class.
@@ -16,5 +16,5 @@ import type { ClassConstructor } from '../_types';
  * isClass(new Function()); // -> false
  */
 export default function isClass<T>(value: T | ClassConstructor): value is ClassConstructor {
-    return isFunction(value) && /^class\s/.test(Function.prototype.toString.call(value));
+    return isType(value, 'Function') && /^class\s/.test(Function.prototype.toString.call(value));
 }

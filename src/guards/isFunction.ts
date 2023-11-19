@@ -1,7 +1,6 @@
+import isClass from './isClass';
 import type { AnyFunction } from '../_types';
 import { isType } from '../_utils';
-
-import isClass from './isClass';
 
 /**
  * Check if value is an any function

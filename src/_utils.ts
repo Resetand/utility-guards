@@ -12,7 +12,7 @@ export const getTypeTag = (value: unknown): TypeTag => {
     return Object.prototype.toString.call(value).slice(8, -1) as TypeTag;
 };
 
-export const isType = (value: unknown, typeTag: TypeTag | `${TypeTag}`): boolean => {
+export const isType = (value: unknown, typeTag: `${TypeTag}`): boolean => {
     return getTypeTag(value) === typeTag;
 };
 
