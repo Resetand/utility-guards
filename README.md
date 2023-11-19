@@ -212,16 +212,24 @@ Allows to validate runtime values (objects) with given schema or guard
 ### Usage
 
 ```tsx
+import { validate } from 'utility-guards';
+```
+
+```tsx
+import validate from 'utility-guards/validate';
+```
+
+```tsx
 const obj = JSON.parse('...');
 
 const schema = {
-    a: is.Number,
-    b: is.$some(is.String, is.Nil), // string or nil
+    a: isNumber,
+    b: $some(isString, isNil), // string or nil
     c: {
-        d: is.Boolean,
+        d: isBoolean,
         e: {
-            f: is.Number,
-            g: is.String,
+            f: isNumber,
+            g: isString,
         },
     },
 };
@@ -233,13 +241,13 @@ if (validate(obj, schema)) {
 }
 
 // usage with guard
-validate(42, is.Number); // true
-validate(42, is.$some(is.Number, is.String)); // true
-validate('42', is.$some(is.Number, is.String)); // true
-validate([], is.Number); // false
+validate(42, isNumber); // true
+validate(42, $some(isNumber, isString)); // true
+validate('42', $some(isNumber, isString)); // true
+validate([], isNumber); // false
 
-validate([1, 2, 3], is.ArrayOf(is.Number)); // true
-validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
+validate([1, 2, 3], isArrayOf(isNumber)); // true
+validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
@@ -247,21 +255,18 @@ validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ### Compose and create custom guard
 
 ```tsx
-import is, { validate } from 'utility-guards';
-
-function isExact<T>(expected: T) {
-    return (value: unknown): value is T => Object.is(value, expected);
-}
+const isOkCode = $some(is(200), is(201), is(202));
 
 const isUserProfile = validate({
-    id: is.Number,
-    name: is.String,
-    age: is.$some(is.Number, is.Nil),
-    avatarUrl: is.$some(is.String, is.Nil),
+    id: isNumber,
+    name: isString,
+    age: $some(isNumber, isNil),
+    avatarUrl: $some(isString, isNil),
 });
 
 const isSuccessResult = validate({
-    ok: isExact(true),
+    ok: is(true),
+    code: isOkCode,
     result: {
         id: is.Number,
         users: is.ArrayOf(isUserProfile),
@@ -271,6 +276,7 @@ const isSuccessResult = validate({
 // true
 isSuccessResult({
     ok: true,
+    code: 200,
     result: [
         {
             id: 42,
