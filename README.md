@@ -187,7 +187,7 @@ import is from 'utility-guards';
 
 is(42, 42); // true
 
-const isNumber42 = is(42, 42);
+const isNumber42 = is(42);
 isNumber42(42); // true
 ```
 
