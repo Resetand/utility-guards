@@ -12,6 +12,7 @@
     "is",
     "ts-guard",
     "ts-type-guards",
+    "is-what",
     "core-util-is",
     "lodash",
     "type-safe",
