@@ -1,3 +1,4 @@
+import isPromise from './isPromise';
 import isFunction from './isFunction';
 import isHasProperty from './isHasProperty';
 
@@ -11,5 +12,5 @@ import isHasProperty from './isHasProperty';
  * isPromiseLike({}); // -> false
  */
 export default function isPromiseLike<T>(value: T | PromiseLike<any>): value is PromiseLike<any> {
-    return isHasProperty(value, 'then') && isFunction(value.then);
+    return isPromise(value) || (isHasProperty(value, 'then') && isFunction(value.then));
 }
