@@ -26,12 +26,14 @@ import isPromiseLike from './guards/isPromiseLike';
 import isRegExp from './guards/isRegExp';
 import isSymbol from './guards/isSymbol';
 
+import _isGuard, { IsGuard } from './_is-guard';
+
 import validate, { validateStrict } from './validate';
 
 /**
  * Container with type guards
  */
-const is = {
+const _container = {
     String: isString,
     Number: isNumber,
     BigInt: isBigInt,
@@ -61,6 +63,16 @@ const is = {
     $every,
     $not,
 };
+
+type IsGuardContainer = IsGuard & typeof _container;
+
+/**
+ * Singleton container with type guards
+ *
+ * @note
+ * `is` is callable function, use can use it as a guard to check is value equals to some type (Object.is)
+ */
+const is: IsGuardContainer = Object.assign(_isGuard, _container);
 
 export {
     is as default,

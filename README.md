@@ -1,19 +1,26 @@
-[npm-image]: http://img.shields.io/npm/v/is-guards.svg
-[npm-url]: http://npmjs.org/package/is-guards
-[codecov-image]: https://codecov.io/gh/Resetand/is-guards/graph/badge.svg?token=W0mWVyiEng
-[codecov-url]: https://codecov.io/gh/Resetand/is-guards
+[npm-image]: http://img.shields.io/npm/v/utility-guards.svg
+[npm-url]: http://npmjs.org/package/utility-guards
+[codecov-image]: https://codecov.io/gh/Resetand/utility-guards/graph/badge.svg?token=W0mWVyiEng
+[codecov-url]: https://codecov.io/gh/Resetand/utility-guards
 
 <p align="center" dir="auto">
-<strong style='font-size: 2em'>IS Guards</strong>
-</br>
-<strong style='font-size: 1.5em'>Utils for runtime types checking with full TypeScript support</strong>
 
+<h1 align="center">utility-guards</h1>
+<h3 align="center">
+Utils for runtime and static type checking in JS and TS
+<br/>
+All base type guards that you used to copy from project to project in one place
+</h3>
+
+<strong>
+
+</strong>
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/is-guards"><img src="https://img.shields.io/npm/v/is-guards.svg" alt="npm package"></a>
-  <a href="https://codecov.io/gh/Resetand/is-guards"><img src="https://codecov.io/gh/Resetand/is-guards/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
-  <a href="https://npmjs.com/package/is-guards"><img src="https://img.shields.io/bundlejs/size/is-guards" alt="package gzipped size"></a>
+  <a href="https://npmjs.com/package/utility-guards"><img src="https://img.shields.io/npm/v/utility-guards.svg" alt="npm package"></a>
+  <a href="https://codecov.io/gh/Resetand/utility-guards"><img src="https://codecov.io/gh/Resetand/utility-guards/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
+  <a href="https://npmjs.com/package/utility-guards"><img src="https://img.shields.io/bundlejs/size/utility-guards" alt="package gzipped size"></a>
 </p>
 <br/>
 <br/>
@@ -28,14 +35,14 @@
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
 
 ```bash
-npm install is-guards
+npm install utility-guards
 ```
 
 ### Usage
 
 ```tsx
 // Using default import – `is` namespace object
-import is from 'is-guards';
+import is from 'utility-guards';
 
 is.String('42'); // true
 is.Number(42); // false
@@ -44,7 +51,7 @@ is.$not(is.Nil)(0); // true
 
 ```tsx
 // using named imports (tree-shaking friendly)
-import { isString, isNumber, isNil, $not } from 'is-guards';
+import { isString, isNumber, isNil, $not } from 'utility-guards';
 
 isString('42'); // true
 isNumber(42); // false
@@ -56,10 +63,10 @@ $not(isNil)(0); // true
 
 ```tsx
 // using standalone imports (tree-shaking friendly)
-import isString from 'is-guards/isString';
-import isNumber from 'is-guards/isNumber';
-import isNil from 'is-guards/isNil';
-import $not from 'is-guards/$not';
+import isString from 'utility-guards/isString';
+import isNumber from 'utility-guards/isNumber';
+import isNil from 'utility-guards/isNil';
+import $not from 'utility-guards/$not';
 
 isString('42'); // true
 isNumber(42); // false
@@ -130,7 +137,7 @@ $not(isNil)(0); // true
 #### `$not` – Inverse given guard
 
 ```tsx
-import { $not } from 'is-guards'; // or is.$not if you use default import
+import { $not } from 'utility-guards'; // or is.$not if you use default import
 const notIsNil = $not(is.Nil);
 
 const arr = [1, null, 2, undefined, 3];
@@ -142,7 +149,7 @@ console.log(filtered); // [1, 2, 3] (type: number[])
 #### `$some` – Combine multiple guards with `some` logic (logical OR)
 
 ```tsx
-import { $some, isNumber, isString } from 'is-guards';
+import { $some, isNumber, isString } from 'utility-guards';
 
 const isNumberOrString = $some(isNumber, isString);
 
@@ -154,7 +161,7 @@ isNumberOrString(true); // false
 #### `$every` – Combine multiple guards with `every` logic (logical AND)
 
 ```tsx
-import { $every, isNumber, isArray } from 'is-guards';
+import { $every, isNumber, isArray } from 'utility-guards';
 
 const isEmptyArray = $every(isArray, isEmpty);
 
@@ -163,6 +170,22 @@ isEmptyArray([1, 2, 3]); // false
 ```
 
 ---
+
+### is as a function guard
+
+You can use `is` as a function guard.
+It will check if value is equal to a given expected value.
+
+Based on `Object.is` method for comparison
+
+```tsx
+import is from 'utility-guards';
+
+is(42, 42); // true
+
+const isNumber42 = is(42, 42);
+isNumber42(42); // true
+```
 
 ### Curried guards
 
@@ -220,7 +243,7 @@ validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ### Compose and create custom guard
 
 ```tsx
-import is, { validate } from 'is-guards';
+import is, { validate } from 'utility-guards';
 
 function isExact<T>(expected: T) {
     return (value: unknown): value is T => Object.is(value, expected);
