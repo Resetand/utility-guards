@@ -1,3 +1,7 @@
+import $every from './guards/$every';
+import $not from './guards/$not';
+import $some from './guards/$some';
+
 import isString from './guards/isString';
 import isArray from './guards/isArray';
 import isArrayOf from './guards/isArrayOf';
@@ -22,10 +26,10 @@ import isPromiseLike from './guards/isPromiseLike';
 import isRegExp from './guards/isRegExp';
 import isSymbol from './guards/isSymbol';
 
-import { everyGuards, invertGuard, someGuards } from './utils';
+import validate, { validateStrict } from './validate';
 
 /**
- * Container for type guards
+ * Container with type guards
  */
 const is = {
     String: isString,
@@ -53,23 +57,14 @@ const is = {
     ArrayOf: isArrayOf,
 
     // utility methods
-    $some: someGuards,
-    $every: everyGuards,
-    $not: invertGuard,
-};
-
-export default is;
-
-export { validate, validateStrict } from './validate';
-
-export {
-    // public utils
-    someGuards as $some,
-    everyGuards as $every,
-    invertGuard as $not,
+    $some,
+    $every,
+    $not,
 };
 
 export {
+    is as default,
+
     // public guards
     isArray,
     isArrayOf,
@@ -93,4 +88,13 @@ export {
     isRegExp,
     isString,
     isSymbol,
+
+    // public utils
+    $some,
+    $every,
+    $not,
+
+    // validate methods
+    validate,
+    validateStrict,
 };

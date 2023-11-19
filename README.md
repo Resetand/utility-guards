@@ -1,7 +1,7 @@
-[npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
-[npm-url]: http://npmjs.org/package/ts-types-guard
-[codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
-[codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
+[npm-image]: http://img.shields.io/npm/v/is-guards.svg
+[npm-url]: http://npmjs.org/package/is-guards
+[codecov-image]: https://codecov.io/gh/Resetand/is-guards/graph/badge.svg?token=W0mWVyiEng
+[codecov-url]: https://codecov.io/gh/Resetand/is-guards
 
 <p align="center" dir="auto">
 <strong style='font-size: 2em'>IS Guards</strong>
@@ -34,6 +34,7 @@ npm install is-guards
 ### Usage
 
 ```tsx
+// using named imports (tree-shaking friendly)
 import { isString, isNumber } from 'is-guards';
 
 isString('42'); // true
@@ -41,12 +42,21 @@ isNumber(42); // false
 ```
 
 ```tsx
+// using standalone imports (tree-shaking friendly)
 import isString from 'is-guards/isString';
 import isNumber from 'is-guards/isNumber';
 ```
 
 ```tsx
-import is from 'ts-types-guard'; // is.String, is.Number;
+// Using default import with `is` namespace object
+import is from 'is-guards';
+
+is.String('42'); // true
+is.Number(42); // false
+
+const isNotString = is.$not(is.String);
+
+isNotString(42); // true
 ```
 
 ---
@@ -110,12 +120,14 @@ import is from 'ts-types-guard'; // is.String, is.Number;
 
 ### `$` Utility methods
 
-#### `$not`
+> All `$` methods is utility methods for manipulating with guards
+> They are exposed as named imports and as methods of `is` namespace object
 
-Inverse given guard
+#### `$not` – Inverse given guard
 
 ```tsx
-const notIsNil = is.$not(is.Nil);
+import { $not } from 'is-guards'; // or is.$not if you use default import
+const notIsNil = $not(is.Nil);
 
 const arr = [1, null, 2, undefined, 3];
 const filtered = arr.filter(notIsNil);
@@ -123,13 +135,13 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-#### `$some` and `$every`
-
-Combine multiple guards with `some` or `every` logic
+#### `$some` and `$every` – Combine multiple guards with `some` or `every` logic
 
 ```tsx
-const isNumberOrString = is.$some(is.Number, is.String);
-const isEmptyArray = is.$every(is.Array, is.Empty);
+import { $some, $every, isNumber, isString } from 'is-guards';
+
+const isNumberOrString = $some(isNumber, isString);
+const isEmptyArray = $every(isArray, isEmpty);
 
 isNumberOrString(42); // true
 isNumberOrString('42'); // true
@@ -148,17 +160,6 @@ is.ArrayOf(is.Number)(42); // also valid
 
 is.InstanceOf(null!, ArrayBuffer); // valid
 is.InstanceOf(ArrayBuffer)(null!); // also valid
-```
-
-```tsx
-import is from 'ts-types-guard';
-import validate from 'ts-types-guard/validate';
-
-const value = JSON.parse('...');
-
-// validate also supports currying
-validate(value, { someProp: is.ArrayOf(is.Number) }); // valid
-validate({ someProp: is.ArrayOf(is.Number) })(valid); // valid
 ```
 
 ## `validate` addon
@@ -203,7 +204,7 @@ validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ### Compose and create custom guard
 
 ```tsx
-import is, { validate } from 'ts-types-guard';
+import is, { validate } from 'is-guards';
 
 function isExact<T>(expected: T) {
     return (value: unknown): value is T => Object.is(value, expected);

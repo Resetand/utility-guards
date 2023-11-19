@@ -46,7 +46,7 @@ const validateFactory = (options: { strict: boolean }) => {
  * validate({ a: 1, b: 2, extra: true }, schema); // -> true
  * validate({ a: 1, b: 2 }, schema); // -> false
  */
-export const validate: ValidateGuard = validateFactory({ strict: false });
+const validate: ValidateGuard = validateFactory({ strict: false });
 
 /**
  * Validate value against schema
@@ -58,4 +58,9 @@ export const validate: ValidateGuard = validateFactory({ strict: false });
  * validateStrict({ a: 1, b: 2, extra: true }, schema); // -> false
  * validateStrict({ a: 1, b: 2 }, schema); // -> false
  */
-export const validateStrict: ValidateGuard = validateFactory({ strict: true });
+const validateStrict: ValidateGuard = validateFactory({ strict: true });
+
+export {
+    validate as default, //
+    validateStrict,
+};

@@ -10,7 +10,11 @@ const GUARDS_SRC_DIR = path.resolve(SRC_DIR, 'guards');
 
 export default defineConfig(async () => ({
     outDir: OUT_DIR,
-    entry: { index: 'src/index.ts', ...createStandaloneEntryMap(GUARDS_SRC_DIR) },
+    entry: {
+        index: 'src/index.ts',
+        validate: 'src/validate.ts',
+        ...createStandaloneEntryMap(GUARDS_SRC_DIR),
+    },
     format: ['cjs', 'esm'],
     splitting: false,
     sourcemap: true,

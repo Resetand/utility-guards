@@ -1,11 +1,10 @@
-import { someGuards } from '../utils';
-
 import isBigInt from './isBigInt';
 import isBoolean from './isBoolean';
 import isNumber from './isNumber';
 import isString from './isString';
 import isSymbol from './isSymbol';
 import isNil from './isNil';
+import $some from './$some';
 
 /**
  * Check if value is a primitive
@@ -23,6 +22,6 @@ import isNil from './isNil';
  * isPrimitive({}); // -> false
  * isPrimitive([]); // -> false
  */
-const isPrimitive = someGuards(isNil, isBoolean, isString, isNumber, isBigInt, isSymbol);
+const isPrimitive = $some(isNil, isBoolean, isString, isNumber, isBigInt, isSymbol);
 
 export default isPrimitive;
