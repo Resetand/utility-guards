@@ -50,14 +50,12 @@
     "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
-    "@vitest/coverage-v8": "^0.34.6",
     "eslint": "8.26.0",
     "eslint-config-prettier": "8.5.0",
-    "fs-extra": "^11.1.1",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
-    "tsup": "^7.2.0",
+    "tsup": "7.2.0",
     "typescript": "5.2.2",
-    "vitest": "^0.34.6"
+    "vitest": "0.34.6"
   }
 }
