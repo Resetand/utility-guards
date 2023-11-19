@@ -12,6 +12,10 @@ export const getTypeTag = (value: unknown): TypeTag => {
     return Object.prototype.toString.call(value).slice(8, -1) as TypeTag;
 };
 
+export const isType = (value: unknown, typeTag: TypeTag | `${TypeTag}`): boolean => {
+    return getTypeTag(value) === typeTag;
+};
+
 export type CurriedGuard<TArgs extends any[]> = {
     <T>(value: unknown, ...args: TArgs): value is T;
     <T>(...args: TArgs): (value: unknown) => value is T;

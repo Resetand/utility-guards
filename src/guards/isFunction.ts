@@ -1,6 +1,7 @@
 import type { AnyFunction } from '../_types';
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
+
+import isClass from './isClass';
 
 /**
  * Check if value is an any function
@@ -14,5 +15,5 @@ import { getTypeTag } from '../_utils';
  * isFunction(class {}); // -> false (although class is a constructor function in JS, it's expected behavior)
  */
 export default function isFunction<T>(value: T | AnyFunction): value is AnyFunction {
-    return getTypeTag(value) === TypeTag.FUNCTION && !/^class\s/.test(Function.prototype.toString.call(value));
+    return isType(value, 'Function') && !isClass(value);
 }

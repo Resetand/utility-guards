@@ -1,6 +1,5 @@
 import type { AnyRecord } from '../_types';
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes)
@@ -17,7 +16,7 @@ import { getTypeTag } from '../_utils';
  * isPlainObject(null); // -> false
  */
 export default function isPlainObject<T>(value: T | AnyRecord): value is AnyRecord {
-    if (getTypeTag(value) !== TypeTag.OBJECT) {
+    if (!isType(value, 'Object')) {
         return false;
     }
 

@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value a boolean
@@ -10,5 +9,5 @@ import { getTypeTag } from '../_utils';
  * isBoolean(1); // -> false
  */
 export default function isBoolean<T>(value: T | boolean): value is boolean {
-    return getTypeTag(value) === TypeTag.BOOLEAN;
+    return isType(value, 'Boolean');
 }

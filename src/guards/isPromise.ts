@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a promise object
@@ -11,5 +10,5 @@ import { getTypeTag } from '../_utils';
  * isPromise({}); // -> false
  */
 export default function isPromise<T>(value: T | Promise<unknown>): value is Promise<unknown> {
-    return !!value && getTypeTag(value) === TypeTag.PROMISE;
+    return isType(value, 'Promise');
 }

@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value a number literal or number created by `Number` constructor
@@ -17,5 +16,5 @@ import { getTypeTag } from '../_utils';
  * in most cases you want to check if value is a valid number, so `isNumber(NaN)` returns `false`
  */
 export default function isNumber<T>(value: T | number): value is number {
-    return getTypeTag(value) === TypeTag.NUMBER && !isNaN(Number(value));
+    return isType(value, 'Number') && !Number.isNaN(value);
 }

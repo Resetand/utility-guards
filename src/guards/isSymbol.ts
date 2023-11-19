@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value a symbol
@@ -11,5 +10,5 @@ import { getTypeTag } from '../_utils';
  * isSymbol(''); // -> false
  */
 export default function isSymbol<T>(value: T | symbol): value is symbol {
-    return getTypeTag(value) === TypeTag.SYMBOL;
+    return isType(value, 'Symbol');
 }

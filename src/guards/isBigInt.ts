@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value a bigint literal or bigint created by `BigInt` constructor
@@ -12,5 +11,5 @@ import { getTypeTag } from '../_utils';
  * isBigInt(1); // -> false
  */
 export default function isBigInt<T>(value: T | bigint): value is bigint {
-    return getTypeTag(value) === TypeTag.BIGINT;
+    return isType(value, 'BigInt');
 }

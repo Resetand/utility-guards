@@ -1,7 +1,5 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
-
 import isNaN from './isNaN';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a valid JS date
@@ -12,5 +10,5 @@ import isNaN from './isNaN';
  * isDate(new Date('invalid date')); // -> false
  */
 export default function isDate<T>(value: T | Date): value is Date {
-    return !!value && getTypeTag(value) === TypeTag.DATE && !isNaN(Number(value));
+    return !!value && isType(value, 'Date') && !isNaN(Number(value));
 }

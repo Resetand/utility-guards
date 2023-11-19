@@ -1,5 +1,4 @@
-import { TypeTag } from '_types';
-import { getTypeTag } from '_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a null
@@ -10,5 +9,5 @@ import { getTypeTag } from '_utils';
  * isNil(''); // -> false
  */
 export default function isNull<T>(value: T | null): value is null {
-    return getTypeTag(value) === TypeTag.NULL;
+    return isType(value, 'Null');
 }

@@ -1,5 +1,4 @@
-import { TypeTag } from '../_types';
-import { getTypeTag } from '../_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value a JS error
@@ -10,5 +9,5 @@ import { getTypeTag } from '../_utils';
  * isError(''); // -> false
  */
 export default function isError<T>(value: T | Error): value is Error {
-    return getTypeTag(value) === TypeTag.ERROR && value instanceof Error;
+    return isType(value, 'Error') && value instanceof Error;
 }

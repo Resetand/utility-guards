@@ -1,5 +1,4 @@
-import { TypeTag } from '_types';
-import { getTypeTag } from '_utils';
+import { isType } from '../_utils';
 
 /**
  * Check if value is a undefined
@@ -10,5 +9,5 @@ import { getTypeTag } from '_utils';
  * isNil(''); // -> false
  */
 export default function isUndefined<T>(value: T | undefined): value is undefined {
-    return getTypeTag(value) === TypeTag.UNDEFINED;
+    return isType(value, 'Undefined');
 }
