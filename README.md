@@ -22,7 +22,7 @@
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~800 bytes gzipped size
--   📦 Supports tree-shaking
+-   📦 tree-shaking friendly
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
@@ -34,29 +34,36 @@ npm install is-guards
 ### Usage
 
 ```tsx
+// Using default import – `is` namespace object
+import is from 'is-guards';
+
+is.String('42'); // true
+is.Number(42); // false
+is.$not(is.Nil)(0); // true
+```
+
+```tsx
 // using named imports (tree-shaking friendly)
-import { isString, isNumber } from 'is-guards';
+import { isString, isNumber, isNil, $not } from 'is-guards';
 
 isString('42'); // true
 isNumber(42); // false
+
+isString('42'); // true
+isNumber(42); // false
+$not(isNil)(0); // true
 ```
 
 ```tsx
 // using standalone imports (tree-shaking friendly)
 import isString from 'is-guards/isString';
 import isNumber from 'is-guards/isNumber';
-```
+import isNil from 'is-guards/isNil';
+import $not from 'is-guards/$not';
 
-```tsx
-// Using default import with `is` namespace object
-import is from 'is-guards';
-
-is.String('42'); // true
-is.Number(42); // false
-
-const isNotString = is.$not(is.String);
-
-isNotString(42); // true
+isString('42'); // true
+isNumber(42); // false
+$not(isNil)(0); // true
 ```
 
 ---
@@ -118,10 +125,7 @@ isNotString(42); // true
 
 ---
 
-### `$` Utility methods
-
-> All `$` methods is utility methods for manipulating with guards
-> They are exposed as named imports and as methods of `is` namespace object
+> All methods that starts with `$` are utility methods for manipulating with guards
 
 #### `$not` – Inverse given guard
 
@@ -135,20 +139,30 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-#### `$some` and `$every` – Combine multiple guards with `some` or `every` logic
+#### `$some` – Combine multiple guards with `some` logic (logical OR)
 
 ```tsx
-import { $some, $every, isNumber, isString } from 'is-guards';
+import { $some, isNumber, isString } from 'is-guards';
 
 const isNumberOrString = $some(isNumber, isString);
-const isEmptyArray = $every(isArray, isEmpty);
 
 isNumberOrString(42); // true
 isNumberOrString('42'); // true
+isNumberOrString(true); // false
+```
+
+#### `$every` – Combine multiple guards with `every` logic (logical AND)
+
+```tsx
+import { $every, isNumber, isArray } from 'is-guards';
+
+const isEmptyArray = $every(isArray, isEmpty);
 
 isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 ```
+
+---
 
 ### Curried guards
 
@@ -161,6 +175,8 @@ is.ArrayOf(is.Number)(42); // also valid
 is.InstanceOf(null!, ArrayBuffer); // valid
 is.InstanceOf(ArrayBuffer)(null!); // also valid
 ```
+
+---
 
 ## `validate` addon
 
