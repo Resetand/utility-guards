@@ -76,6 +76,24 @@ test('should check on PlainObject with own property - %s', () => {
 
 test.each(
     unwrap({
+        passed: [undefined],
+        failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test', null],
+    }),
+)('should check on undefined - %s', (value, expected) => {
+    expect(is.Undefined(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
+        passed: [null],
+        failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test', undefined],
+    }),
+)('should check on null - %s', (value, expected) => {
+    expect(is.Null(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
         passed: [null, undefined],
         failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test'],
     }),

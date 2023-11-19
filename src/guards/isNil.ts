@@ -1,4 +1,6 @@
-import type { NullOrUndefined } from '../types';
+import $some from '../$some';
+import isNull from './isNull';
+import isUndefined from './isUndefined';
 
 /**
  * Check if value is a null or undefined
@@ -9,6 +11,6 @@ import type { NullOrUndefined } from '../types';
  * isNil(0); // -> false
  * isNil(''); // -> false
  */
-export default function isNil<T>(value: T | NullOrUndefined): value is NullOrUndefined {
-    return value === null || value === undefined;
-}
+const isNil = $some(isNull, isUndefined);
+
+export default isNil;

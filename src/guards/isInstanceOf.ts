@@ -1,5 +1,5 @@
-import type { ClassConstructor } from '../types';
-import { curriedGuard } from '../utils';
+import type { ClassConstructor } from '../_types';
+import { curriedGuard } from '../_utils';
 
 type InstanceOfGuard = {
     /**

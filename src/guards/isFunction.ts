@@ -1,6 +1,6 @@
-import type { AnyFunction } from '../types';
-import { TypeTag } from '../types';
-import { getTypeTag } from '../utils';
+import type { AnyFunction } from '../_types';
+import { TypeTag } from '../_types';
+import { getTypeTag } from '../_utils';
 
 /**
  * Check if value is an any function

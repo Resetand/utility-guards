@@ -1,4 +1,4 @@
-import type { Guard, InferGuardType } from '../types';
+import type { Guard, InferGuardType } from './_types';
 
 type $SomeGuards<TGuards extends Guard[]> = Guard<InferGuardType<TGuards[number]>>;
 

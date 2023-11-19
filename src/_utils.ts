@@ -1,4 +1,4 @@
-import type { TypeTag } from './types';
+import type { TypeTag } from './_types';
 
 /**
  * Return object type string representation

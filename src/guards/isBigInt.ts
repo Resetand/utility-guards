@@ -1,5 +1,5 @@
-import { TypeTag } from '../types';
-import { getTypeTag } from '../utils';
+import { TypeTag } from '../_types';
+import { getTypeTag } from '../_utils';
 
 /**
  * Check if value a bigint literal or bigint created by `BigInt` constructor

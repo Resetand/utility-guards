@@ -85,6 +85,10 @@ $not(isNil)(0); // true
 
 #### `isNaN(value)` – Check if value a NaN value
 
+#### `isUndefined(value)` – Check if value is a undefined
+
+#### `isNull(value)` – Check if value is a null
+
 #### `isNil(value)` – Check if value is a null or undefined
 
 #### `isPrimitive(value)` – Check if value is a primitive

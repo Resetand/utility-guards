@@ -1,6 +1,6 @@
 import isArray from './isArray';
-import type { Guard } from '../types';
-import { curriedGuard } from '../utils';
+import type { Guard } from '../_types';
+import { curriedGuard } from '../_utils';
 
 type IsArrayOfGuard = {
     /**

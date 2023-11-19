@@ -1,6 +1,6 @@
-import type { AnyRecord } from '../types';
-import { TypeTag } from '../types';
-import { getTypeTag } from '../utils';
+import type { AnyRecord } from '../_types';
+import { TypeTag } from '../_types';
+import { getTypeTag } from '../_utils';
 
 /**
  * Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes)

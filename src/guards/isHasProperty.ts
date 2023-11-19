@@ -1,4 +1,4 @@
-import { curriedGuard } from '../utils';
+import { curriedGuard } from '../_utils';
 
 type RecordLike<P extends PropertyKey = PropertyKey> = Record<PropertyKey, unknown> & Record<P, unknown>;
 

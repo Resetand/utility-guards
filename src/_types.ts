@@ -5,12 +5,33 @@ export type AnyRecord = Record<PropertyKey, unknown>;
 export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
-    ? (value: unknown) => value is TGuarded
-    : (value: unknown, ...args: TArgs) => value is TGuarded;
+    ? (value: unknown | TGuarded) => value is TGuarded
+    : (value: unknown | TGuarded, ...args: TArgs) => value is TGuarded;
 
 export type GuardsContainerShape = {
     [method: string]: any;
 };
+
+// proxyTag = '[object Proxy]',
+//       regexpTag = '[object RegExp]',
+//       setTag = '[object Set]',
+//       stringTag = '[object String]',
+//       symbolTag = '[object Symbol]',
+//       undefinedTag = '[object Undefined]',
+//       weakMapTag = '[object WeakMap]',
+//       weakSetTag = '[object WeakSet]';
+
+//   var arrayBufferTag = '[object ArrayBuffer]',
+//       dataViewTag = '[object DataView]',
+//       float32Tag = '[object Float32Array]',
+//       float64Tag = '[object Float64Array]',
+//       int8Tag = '[object Int8Array]',
+//       int16Tag = '[object Int16Array]',
+//       int32Tag = '[object Int32Array]',
+//       uint8Tag = '[object Uint8Array]',
+//       uint8ClampedTag = '[object Uint8ClampedArray]',
+//       uint16Tag = '[object Uint16Array]',
+//       uint32Tag = '[object Uint32Array]';
 
 export enum TypeTag {
     STRING = 'String',
@@ -24,6 +45,9 @@ export enum TypeTag {
     REGEXP = 'RegExp',
     ERROR = 'Error',
     FUNCTION = 'Function',
+    PROXY = 'Proxy',
+    UNDEFINED = 'Undefined',
+    NULL = 'Null',
 }
 
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;

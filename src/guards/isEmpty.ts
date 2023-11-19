@@ -1,4 +1,4 @@
-import type { NullOrUndefined } from '../types';
+import type { NullOrUndefined } from '../_types';
 
 import isPlainObject from './isPlainObject';
 import isArray from './isArray';

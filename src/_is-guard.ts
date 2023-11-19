@@ -1,4 +1,4 @@
-import { curriedGuard } from 'utils';
+import { curriedGuard } from './_utils';
 
 export type IsGuard = {
     /**

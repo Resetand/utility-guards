@@ -1,5 +1,5 @@
 import isFunction from './isFunction';
-import type { ClassConstructor } from '../types';
+import type { ClassConstructor } from '../_types';
 
 /**
  * Check if value is a class.

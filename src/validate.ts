@@ -1,5 +1,5 @@
-import type { InferTypeSchema, TypeSchema } from './types';
-import { curriedGuard } from './utils';
+import type { InferTypeSchema, TypeSchema } from './_types';
+import { curriedGuard } from './_utils';
 
 import isFunction from './guards/isFunction';
 import isPlainObject from './guards/isPlainObject';

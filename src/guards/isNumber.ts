@@ -1,5 +1,5 @@
-import { TypeTag } from '../types';
-import { getTypeTag } from '../utils';
+import { TypeTag } from '../_types';
+import { getTypeTag } from '../_utils';
 
 /**
  * Check if value a number literal or number created by `Number` constructor

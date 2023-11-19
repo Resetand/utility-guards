@@ -1,6 +1,6 @@
-import $every from './guards/$every';
-import $not from './guards/$not';
-import $some from './guards/$some';
+import $every from './$every';
+import $not from './$not';
+import $some from './$some';
 
 import isString from './guards/isString';
 import isArray from './guards/isArray';
@@ -16,6 +16,8 @@ import isHasProperty from './guards/isHasProperty';
 import isInstanceOf from './guards/isInstanceOf';
 import isIterable from './guards/isIterable';
 import isNaN from './guards/isNaN';
+import isUndefined from './guards/isUndefined';
+import isNull from './guards/isNull';
 import isNil from './guards/isNil';
 import isNumber from './guards/isNumber';
 import isAnyObject from './guards/isAnyObject';
@@ -42,6 +44,8 @@ const _container = {
     Error: isError,
     Boolean: isBoolean,
     NaN: isNaN,
+    Undefined: isUndefined,
+    Null: isNull,
     Nil: isNil,
     Primitive: isPrimitive,
     Object: isAnyObject,
@@ -91,6 +95,8 @@ export {
     isInstanceOf,
     isIterable,
     isNaN,
+    isUndefined,
+    isNull,
     isNil,
     isNumber,
     isPlainObject,

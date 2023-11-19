@@ -1,8 +1,8 @@
 {
-  "name": "ts-types-guard",
+  "name": "utility-guards",
   "version": "1.4.3",
   "description": "Util for runtime types checking for JS(TS)",
-  "homepage": "https://github.com/Resetand/ts-types-guard",
+  "homepage": "https://github.com/Resetand/utility-guards",
   "author": "Resetand",
   "license": "MIT",
   "keywords": [
