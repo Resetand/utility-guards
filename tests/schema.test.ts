@@ -1,6 +1,5 @@
-import { validate, validateStrict } from '../src/schema';
 import { test, expect } from 'vitest';
-import { is } from '../src/guards';
+import is, { validate, validateStrict } from '../src';
 
 test('Should validate by schema shape (validate)', () => {
     const obj = {

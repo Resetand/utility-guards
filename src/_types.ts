@@ -1,11 +1,12 @@
 export type NullOrUndefined = null | undefined;
 export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
+export type AnyRecord = Record<PropertyKey, unknown>;
 export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
-    ? (value: unknown) => value is TGuarded
-    : (value: unknown, ...args: TArgs) => value is TGuarded;
+    ? (value: unknown | TGuarded) => value is TGuarded
+    : (value: unknown | TGuarded, ...args: TArgs) => value is TGuarded;
 
 export type GuardsContainerShape = {
     [method: string]: any;
@@ -23,6 +24,8 @@ export enum TypeTag {
     REGEXP = 'RegExp',
     ERROR = 'Error',
     FUNCTION = 'Function',
+    UNDEFINED = 'Undefined',
+    NULL = 'Null',
 }
 
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;

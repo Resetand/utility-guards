@@ -1,109 +1,148 @@
-[npm-image]: http://img.shields.io/npm/v/ts-types-guard.svg
-[npm-url]: http://npmjs.org/package/ts-types-guard
-[codecov-image]: https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng
-[codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
+[npm-image]: http://img.shields.io/npm/v/utility-guards.svg
+[npm-url]: http://npmjs.org/package/utility-guards
+[codecov-image]: https://codecov.io/gh/Resetand/utility-guards/graph/badge.svg?token=W0mWVyiEng
+[codecov-url]: https://codecov.io/gh/Resetand/utility-guards
 
 <p align="center" dir="auto">
-<img src="https://github.com/Resetand/ts-types-guard/blob/main/assets/logo.png?raw=true" width="80%" />
+
+<h1 align="center">utility-guards</h1>
+<h3 align="center">
+Utils for runtime and static type checking in JS and TS
 <br/>
-<strong style='font-size: 1.5em'>Util for runtime types checking for JS(TS)</strong>
+All base type guards that you used to copy from project to project in one place
+</h3>
+
+<strong>
+
+</strong>
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/npm/v/ts-types-guard.svg" alt="npm package"></a>
-  <a href="https://codecov.io/gh/Resetand/ts-types-guard"><img src="https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
-  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/bundlejs/size/ts-types-guard" alt="package gzipped size"></a>
+  <a href="https://npmjs.com/package/utility-guards"><img src="https://img.shields.io/npm/v/utility-guards.svg" alt="npm package"></a>
+  <a href="https://codecov.io/gh/Resetand/utility-guards"><img src="https://codecov.io/gh/Resetand/utility-guards/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
+  <a href="https://npmjs.com/package/utility-guards"><img src="https://img.shields.io/bundlejs/size/utility-guards" alt="package gzipped size"></a>
 </p>
 <br/>
 <br/>
-
-# TS Types Guard
 
 ### **Features:**
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~800 bytes gzipped size
+-   📦 tree-shaking friendly
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
 
 ```bash
-npm install ts-types-guard
+npm install utility-guards
 ```
-
-```tsx
-import is from 'ts-types-guard';
-```
-
-## `Guards`
-
-| Name                                | Description                                                               |
-| ----------------------------------- | ------------------------------------------------------------------------- |
-| `is.String(value)`                  | Check if value a string literal or string created by `String` constructor |
-| `is.Number(value)`                  | Check if value a number literal or number created by `Number` constructor |
-| `is.Boolean(value)`                 | Check if value a boolean                                                  |
-| `is.NaN(value)`                     | Check if value is a NaN value                                             |
-| `is.Nil(value)`                     | Check if value is a null or undefined                                     |
-| `is.Symbol(value)`                  | Check if value is a `Symbol`                                              |
-| `is.RegExp(value)`                  | Check if value is a RegExp object or RegExp literal                       |
-| `is.Error(value)`                   | Check if value is an JS Error object                                      |
-| `is.Primitive(value)`               | Check if value is a primitive                                             |
-| `is.PlainObject(value)`             | Check if value is a plain JavaScript object                               |
-| `is.Array(value)`                   | Check if value is array                                                   |
-| `is.Function(value)`                | Check if value is an any function (except class definition)               |
-| `is.Class(value)`                   | Check if value is a class definition                                      |
-| `is.Promise(value)`                 | Check if value is a promise object                                        |
-| `is.PromiseLike(value)`             | Check if value is a promise-like object (has `then` method)               |
-| `is.Iterable(value)`                | Check if value is iterable (arrays, strings, maps, sets, etc.)            |
-| `is.Date(value)`                    | Check if value is a valid JS Date object                                  |
-| `is.Empty(value)`                   | Check if value is empty                                                   |
-| `is.HasProperty(obj, propertyName)` | Check if an object has a property                                         |
-| `is.ArrayOf(array, guard)`          | Check if all elements of array match given guard                          |
-| `is.InstanceOf(value, constructor)` | Check if value is instance of given constructor                           |
-
-**ℹ️ Value is considered as empty if it's**
-
--   Empty object: `{}`
--   Empty array: `[]`
--   Empty Map: `new Map()`
--   Empty Set: `new Set()`
--   Empty string: `''`
--   Nullable value: `null or undefined`
 
 ### Usage
 
 ```tsx
-import is from 'ts-guards';
+// Using default import – `is` namespace object
+import is from 'utility-guards';
 
-const value: string | number = get();
-
-if (is.String(value)) {
-    value.toUpperCase(); // Ensures that value is string
-} else {
-    value.toFixed(); // Ensures that value is number
-}
+is.String('42'); // true
+is.Number(42); // false
+is.$not(is.Nil)(0); // true
 ```
 
 ```tsx
-type Data = { prop1: number; prop2: string };
+// using named imports (tree-shaking friendly)
+import { isString, isNumber, isNil, $not } from 'utility-guards';
 
-const dataOrNil = null! as Data | null | undefined;
+isString('42'); // true
+isNumber(42); // false
 
-if (!is.Nil(dataOrNil)) {
-    console.log(dataOrNil.prop1); // OK
-} else {
-    console.log(dataOrNil.prop2); // TS Error
-}
+isString('42'); // true
+isNumber(42); // false
+$not(isNil)(0); // true
 ```
 
-### `$` Utility methods
+```tsx
+// using standalone imports (tree-shaking friendly)
+import isString from 'utility-guards/isString';
+import isNumber from 'utility-guards/isNumber';
+import isNil from 'utility-guards/isNil';
+import $not from 'utility-guards/$not';
 
-#### `$not`
+isString('42'); // true
+isNumber(42); // false
+$not(isNil)(0); // true
+```
 
-Inverse given guard
+---
+
+## `Guards`
+
+#### `isString(value)` – Check if value a string literal or string created by `String` constructor
+
+#### `isNumber(value)` – Check if value a number literal or number created by `Number` constructor
+
+#### `isBoolean(value)` – Check if value a boolean
+
+#### `isNaN(value)` – Check if value a NaN value
+
+#### `isUndefined(value)` – Check if value is a undefined
+
+#### `isNull(value)` – Check if value is a null
+
+#### `isNil(value)` – Check if value is a null or undefined
+
+#### `isPrimitive(value)` – Check if value is a primitive
+
+#### `isSymbol(value)` – Check if value is a `Symbol`
+
+#### `isRegExp(value)` – Check if value is a RegExp object or RegExp literal
+
+#### `isError(value)` – Check if value is an JS Error object
+
+#### `isAnyObject(value)` – Check if value is a language type object (except null)
+
+#### `isPlainObject(value)` – Check if value is a plain JavaScript object
+
+#### `isArray(value)` – Check if value is array
+
+#### `isFunction(value)` – Check if value is an any function (except class definition)
+
+#### `isClass(value)` – Check if value is a class definition
+
+#### `isPromise(value)` – Check if value is a promise object
+
+#### `isPromiseLike(value)` – Check if value is a promise-like object (has `then` method)
+
+#### `isIterable(value)` – Check if value is iterable (arrays, strings, maps, sets, etc.)
+
+#### `isDate(value)` – Check if value is a valid JS Date object
+
+#### `isHasProperty(obj, propertyName)` – Check if an object has a property
+
+#### `isArrayOf(array, guard)` – Check if all elements of array match given guard
+
+#### `isInstanceOf(value, constructor)` – Check if value is instance of given constructor
+
+#### `isEmpty(value)` – Check if value is empty.
+
+> Value is considered as empty if it's:
+>
+> -   Empty object: `{}`
+> -   Empty array: `[]`
+> -   Empty Map: `new Map()`
+> -   Empty Set: `new Set()`
+> -   Empty string: `''`
+> -   Nullable value: `null or undefined`
+
+---
+
+> All methods that starts with `$` are utility methods for manipulating with guards
+
+#### `$not` – Inverse given guard
 
 ```tsx
-const notIsNil = is.$not(is.Nil);
+import { $not } from 'utility-guards'; // or is.$not if you use default import
+const notIsNil = $not(is.Nil);
 
 const arr = [1, null, 2, undefined, 3];
 const filtered = arr.filter(notIsNil);
@@ -111,19 +150,45 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-#### `$some` and `$every`
-
-Combine multiple guards with `some` or `every` logic
+#### `$some` – Combine multiple guards with `some` logic (logical OR)
 
 ```tsx
-const isNumberOrString = is.$some(is.Number, is.String);
-const isEmptyArray = is.$every(is.Array, is.Empty);
+import { $some, isNumber, isString } from 'utility-guards';
+
+const isNumberOrString = $some(isNumber, isString);
 
 isNumberOrString(42); // true
 isNumberOrString('42'); // true
+isNumberOrString(true); // false
+```
+
+#### `$every` – Combine multiple guards with `every` logic (logical AND)
+
+```tsx
+import { $every, isNumber, isArray } from 'utility-guards';
+
+const isEmptyArray = $every(isArray, isEmpty);
 
 isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
+```
+
+---
+
+### is as a function guard
+
+You can use `is` as a function guard.
+It will check if value is equal to a given expected value.
+
+Based on `Object.is` method for comparison
+
+```tsx
+import is from 'utility-guards';
+
+is(42, 42); // true
+
+const isNumber42 = is(42);
+isNumber42(42); // true
 ```
 
 ### Curried guards
@@ -138,14 +203,7 @@ is.InstanceOf(null!, ArrayBuffer); // valid
 is.InstanceOf(ArrayBuffer)(null!); // also valid
 ```
 
-```tsx
-import is, { validate } from 'ts-types-guard';
-const value = JSON.parse('...');
-
-// validate also supports currying
-validate(value, { someProp: is.ArrayOf(is.Number) }); // valid
-validate({ someProp: is.ArrayOf(is.Number) })(valid); // valid
-```
+---
 
 ## `validate` addon
 
@@ -154,16 +212,24 @@ Allows to validate runtime values (objects) with given schema or guard
 ### Usage
 
 ```tsx
+import { validate } from 'utility-guards';
+```
+
+```tsx
+import validate from 'utility-guards/validate';
+```
+
+```tsx
 const obj = JSON.parse('...');
 
 const schema = {
-    a: is.Number,
-    b: is.$some(is.String, is.Nil), // string or nil
+    a: isNumber,
+    b: $some(isString, isNil), // string or nil
     c: {
-        d: is.Boolean,
+        d: isBoolean,
         e: {
-            f: is.Number,
-            g: is.String,
+            f: isNumber,
+            g: isString,
         },
     },
 };
@@ -175,13 +241,13 @@ if (validate(obj, schema)) {
 }
 
 // usage with guard
-validate(42, is.Number); // true
-validate(42, is.$some(is.Number, is.String)); // true
-validate('42', is.$some(is.Number, is.String)); // true
-validate([], is.Number); // false
+validate(42, isNumber); // true
+validate(42, $some(isNumber, isString)); // true
+validate('42', $some(isNumber, isString)); // true
+validate([], isNumber); // false
 
-validate([1, 2, 3], is.ArrayOf(is.Number)); // true
-validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
+validate([1, 2, 3], isArrayOf(isNumber)); // true
+validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
@@ -189,21 +255,18 @@ validate([1, 2, 3, 'asd'], is.ArrayOf(is.Number)); // false
 ### Compose and create custom guard
 
 ```tsx
-import is, { validate } from 'ts-types-guard';
-
-function isExact<T>(expected: T) {
-    return (value: unknown): value is T => Object.is(value, expected);
-}
+const isOkCode = $some(is(200), is(201), is(202));
 
 const isUserProfile = validate({
-    id: is.Number,
-    name: is.String,
-    age: is.$some(is.Number, is.Nil),
-    avatarUrl: is.$some(is.String, is.Nil),
+    id: isNumber,
+    name: isString,
+    age: $some(isNumber, isNil),
+    avatarUrl: $some(isString, isNil),
 });
 
 const isSuccessResult = validate({
-    ok: isExact(true),
+    ok: is(true),
+    code: isOkCode,
     result: {
         id: is.Number,
         users: is.ArrayOf(isUserProfile),
@@ -213,6 +276,7 @@ const isSuccessResult = validate({
 // true
 isSuccessResult({
     ok: true,
+    code: 200,
     result: [
         {
             id: 42,

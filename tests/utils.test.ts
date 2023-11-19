@@ -1,4 +1,4 @@
-import { curriedGuard } from '../src/utils';
+import { curriedGuard } from '../src/_utils';
 import { expect, test } from 'vitest';
 
 class Cls {}
