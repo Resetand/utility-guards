@@ -1,4 +1,4 @@
-import { is } from '../src/guards';
+import is from '../src';
 import { test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
@@ -24,8 +24,8 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [23, 0x23, 1e1, NaN, Infinity, Number(123)],
-        failed: [[], null, 'string', undefined],
+        passed: [23, 0x23, 1e1, Infinity, Number(123)],
+        failed: [[], null, 'string', undefined, NaN],
     }),
 )('should check on Number - %s', (value, expected) => {
     expect(is.Number(value)).toBe(expected);
@@ -51,8 +51,17 @@ test.each(
 
 test.each(
     unwrap({
+        passed: [{}, Object.create(null), new String(''), [1, 2, 3], new Cls()],
+        failed: ['string', null, 0, false],
+    }),
+)('should check on Object - %s', (value, expected) => {
+    expect(is.Object(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
         passed: [{}, Object.create(null)],
-        failed: ['string', new Cls(), null, [1, 2, 3], 0, () => 'test'],
+        failed: ['string', new Cls(), null, [1, 2, 3], 0, () => 'test', new String('')],
     }),
 )('should check on PlainObject - %s', (value, expected) => {
     expect(is.PlainObject(value)).toBe(expected);

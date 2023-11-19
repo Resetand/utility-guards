@@ -1,6 +1,7 @@
 export type NullOrUndefined = null | undefined;
 export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
+export type AnyRecord = Record<PropertyKey, unknown>;
 export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]

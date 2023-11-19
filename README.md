@@ -4,97 +4,109 @@
 [codecov-url]: https://codecov.io/gh/Resetand/ts-types-guard
 
 <p align="center" dir="auto">
-<img src="https://github.com/Resetand/ts-types-guard/blob/main/assets/logo.png?raw=true" width="80%" />
-<br/>
-<strong style='font-size: 1.5em'>Util for runtime types checking for JS(TS)</strong>
+<strong style='font-size: 2em'>IS Guards</strong>
+</br>
+<strong style='font-size: 1.5em'>Utils for runtime types checking with full TypeScript support</strong>
+
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/npm/v/ts-types-guard.svg" alt="npm package"></a>
-  <a href="https://codecov.io/gh/Resetand/ts-types-guard"><img src="https://codecov.io/gh/Resetand/ts-types-guard/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
-  <a href="https://npmjs.com/package/ts-types-guard"><img src="https://img.shields.io/bundlejs/size/ts-types-guard" alt="package gzipped size"></a>
+  <a href="https://npmjs.com/package/is-guards"><img src="https://img.shields.io/npm/v/is-guards.svg" alt="npm package"></a>
+  <a href="https://codecov.io/gh/Resetand/is-guards"><img src="https://codecov.io/gh/Resetand/is-guards/graph/badge.svg?token=W0mWVyiEng" alt="codecov"></a>
+  <a href="https://npmjs.com/package/is-guards"><img src="https://img.shields.io/bundlejs/size/is-guards" alt="package gzipped size"></a>
 </p>
 <br/>
 <br/>
-
-# TS Types Guard
 
 ### **Features:**
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~800 bytes gzipped size
+-   📦 Supports tree-shaking
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
 
 ```bash
-npm install ts-types-guard
+npm install is-guards
 ```
-
-```tsx
-import is from 'ts-types-guard';
-```
-
-## `Guards`
-
-| Name                                | Description                                                               |
-| ----------------------------------- | ------------------------------------------------------------------------- |
-| `is.String(value)`                  | Check if value a string literal or string created by `String` constructor |
-| `is.Number(value)`                  | Check if value a number literal or number created by `Number` constructor |
-| `is.Boolean(value)`                 | Check if value a boolean                                                  |
-| `is.NaN(value)`                     | Check if value is a NaN value                                             |
-| `is.Nil(value)`                     | Check if value is a null or undefined                                     |
-| `is.Symbol(value)`                  | Check if value is a `Symbol`                                              |
-| `is.RegExp(value)`                  | Check if value is a RegExp object or RegExp literal                       |
-| `is.Error(value)`                   | Check if value is an JS Error object                                      |
-| `is.Primitive(value)`               | Check if value is a primitive                                             |
-| `is.PlainObject(value)`             | Check if value is a plain JavaScript object                               |
-| `is.Array(value)`                   | Check if value is array                                                   |
-| `is.Function(value)`                | Check if value is an any function (except class definition)               |
-| `is.Class(value)`                   | Check if value is a class definition                                      |
-| `is.Promise(value)`                 | Check if value is a promise object                                        |
-| `is.PromiseLike(value)`             | Check if value is a promise-like object (has `then` method)               |
-| `is.Iterable(value)`                | Check if value is iterable (arrays, strings, maps, sets, etc.)            |
-| `is.Date(value)`                    | Check if value is a valid JS Date object                                  |
-| `is.Empty(value)`                   | Check if value is empty                                                   |
-| `is.HasProperty(obj, propertyName)` | Check if an object has a property                                         |
-| `is.ArrayOf(array, guard)`          | Check if all elements of array match given guard                          |
-| `is.InstanceOf(value, constructor)` | Check if value is instance of given constructor                           |
-
-**ℹ️ Value is considered as empty if it's**
-
--   Empty object: `{}`
--   Empty array: `[]`
--   Empty Map: `new Map()`
--   Empty Set: `new Set()`
--   Empty string: `''`
--   Nullable value: `null or undefined`
 
 ### Usage
 
 ```tsx
-import is from 'ts-guards';
+import { isString, isNumber } from 'is-guards';
 
-const value: string | number = get();
-
-if (is.String(value)) {
-    value.toUpperCase(); // Ensures that value is string
-} else {
-    value.toFixed(); // Ensures that value is number
-}
+isString('42'); // true
+isNumber(42); // false
 ```
 
 ```tsx
-type Data = { prop1: number; prop2: string };
-
-const dataOrNil = null! as Data | null | undefined;
-
-if (!is.Nil(dataOrNil)) {
-    console.log(dataOrNil.prop1); // OK
-} else {
-    console.log(dataOrNil.prop2); // TS Error
-}
+import isString from 'is-guards/isString';
+import isNumber from 'is-guards/isNumber';
 ```
+
+```tsx
+import is from 'ts-types-guard'; // is.String, is.Number;
+```
+
+---
+
+## `Guards`
+
+#### `isString(value)` – Check if value a string literal or string created by `String` constructor
+
+#### `isNumber(value)` – Check if value a number literal or number created by `Number` constructor
+
+#### `isBoolean(value)` – Check if value a boolean
+
+#### `isNaN(value)` – Check if value a NaN value
+
+#### `isNil(value)` – Check if value is a null or undefined
+
+#### `isPrimitive(value)` – Check if value is a primitive
+
+#### `isSymbol(value)` – Check if value is a `Symbol`
+
+#### `isRegExp(value)` – Check if value is a RegExp object or RegExp literal
+
+#### `isError(value)` – Check if value is an JS Error object
+
+#### `isAnyObject(value)` – Check if value is a language type object (except null)
+
+#### `isPlainObject(value)` – Check if value is a plain JavaScript object
+
+#### `isArray(value)` – Check if value is array
+
+#### `isFunction(value)` – Check if value is an any function (except class definition)
+
+#### `isClass(value)` – Check if value is a class definition
+
+#### `isPromise(value)` – Check if value is a promise object
+
+#### `isPromiseLike(value)` – Check if value is a promise-like object (has `then` method)
+
+#### `isIterable(value)` – Check if value is iterable (arrays, strings, maps, sets, etc.)
+
+#### `isDate(value)` – Check if value is a valid JS Date object
+
+#### `isHasProperty(obj, propertyName)` – Check if an object has a property
+
+#### `isArrayOf(array, guard)` – Check if all elements of array match given guard
+
+#### `isInstanceOf(value, constructor)` – Check if value is instance of given constructor
+
+#### `isEmpty(value)` – Check if value is empty.
+
+> Value is considered as empty if it's:
+>
+> -   Empty object: `{}`
+> -   Empty array: `[]`
+> -   Empty Map: `new Map()`
+> -   Empty Set: `new Set()`
+> -   Empty string: `''`
+> -   Nullable value: `null or undefined`
+
+---
 
 ### `$` Utility methods
 
@@ -139,7 +151,9 @@ is.InstanceOf(ArrayBuffer)(null!); // also valid
 ```
 
 ```tsx
-import is, { validate } from 'ts-types-guard';
+import is from 'ts-types-guard';
+import validate from 'ts-types-guard/validate';
+
 const value = JSON.parse('...');
 
 // validate also supports currying

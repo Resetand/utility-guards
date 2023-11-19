@@ -13,6 +13,8 @@
 build
 **/*/build
 
+lib
+
 dist
 **/*/dist
 
