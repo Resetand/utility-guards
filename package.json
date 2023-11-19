@@ -37,7 +37,7 @@
   },
   "scripts": {
     "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
-    "build": "tsup && mv dist/guards/* dist && rm -rf dist/guards",
+    "build": "tsup",
     "test": "vitest --watch=false",
     "test:coverage": "npm run test -- --coverage",
     "prepublish": "npm run lint && npm run test && npm run build",

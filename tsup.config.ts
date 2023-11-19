@@ -5,10 +5,12 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 const OUT_DIR = path.resolve(__dirname, 'lib');
+const SRC_DIR = path.resolve(__dirname, 'src');
+const GUARDS_SRC_DIR = path.resolve(SRC_DIR, 'guards');
 
 export default defineConfig(async () => ({
     outDir: OUT_DIR,
-    entry: { index: 'src/index.ts', ...(await getGuardsEntries()) },
+    entry: { index: 'src/index.ts', ...createStandaloneEntryMap(GUARDS_SRC_DIR) },
     format: ['cjs', 'esm'],
     splitting: false,
     sourcemap: true,
@@ -20,10 +22,12 @@ export default defineConfig(async () => ({
     dts: true,
 }));
 
-async function getGuardsEntries() {
-    const guardSrcFiles = await fs.promises.readdir(path.resolve(__dirname, 'src/guards'));
-    return guardSrcFiles.reduce((acc, name) => {
+/**
+ * Create a mapping between standalone entry name and path to the file.
+ */
+function createStandaloneEntryMap(pathToDir: string): Record<string, string> {
+    return fs.readdirSync(pathToDir).reduce((acc, name) => {
         acc[name.split('.')[0]] = `src/guards/${name}`;
         return acc;
-    }, {} as Record<string, string>);
+    }, {});
 }
