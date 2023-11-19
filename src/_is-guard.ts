@@ -13,7 +13,7 @@ export type IsGuard = {
      * is(1)(1); // -> true
      * is(1)(2); // -> false
      */
-    <const T>(expectedValue: T): (value: unknown) => value is T;
+    <const T>(expectedValue: T): (value: unknown | T) => value is T;
     <const T>(value: unknown | T, expectedValue: T): value is T;
 };
 
