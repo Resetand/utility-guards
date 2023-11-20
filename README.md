@@ -119,7 +119,7 @@ is.$not(is.Nil)(0); // true
 
 ## API
 
-### <a href="isString"></a>`isString(value)`
+### <a href="#isString"></a>`isString(value)`
 
 Check if value is an string literal or string created by `String` constructor
 
@@ -131,7 +131,7 @@ isString(42); // false
 
 ---
 
-### <a href="isNumber"></a>`isNumber(value)`
+### <a href="#isNumber"></a>`isNumber(value)`
 
 Check if value is an number literal or number created by `Number` constructor and **not `NaN`**
 
@@ -146,7 +146,7 @@ isNumber(NaN); // false
 
 ---
 
-### <a href="isBoolean"></a>`isBoolean(value)`
+### <a href="#isBoolean"></a>`isBoolean(value)`
 
 Check if value is an boolean
 
@@ -158,7 +158,7 @@ isBoolean(42); // false
 
 ---
 
-### <a href="isNaN"></a>`isNaN(value)`
+### <a href="#isNaN"></a>`isNaN(value)`
 
 Check if value is an NaN value.
 
@@ -171,7 +171,7 @@ isNaN(2 + {}); // false
 
 ---
 
-### <a href="isUndefined"></a>`isUndefined(value)`
+### <a href="#isUndefined"></a>`isUndefined(value)`
 
 Check if value is a undefined
 
@@ -182,7 +182,7 @@ isUndefined(null); // false
 
 ---
 
-### <a href="isNull"></a>`isNull(value)`
+### <a href="#isNull"></a>`isNull(value)`
 
 Check if value is a null
 
@@ -193,7 +193,7 @@ isNull(undefined); // false
 
 ---
 
-### <a href="isNil"></a>`isNil(value)`
+### <a href="#isNil"></a>`isNil(value)`
 
 Check if value is a null or undefined
 
@@ -205,7 +205,7 @@ isNil(0); // false
 
 ---
 
-### <a href="isPrimitive"></a>`isPrimitive(value)`
+### <a href="#isPrimitive"></a>`isPrimitive(value)`
 
 Check if value is a primitive
 
@@ -218,7 +218,7 @@ isPrimitive([1, 2, 3]); // false
 
 ---
 
-### <a href="isSymbol"></a>`isSymbol(value)`
+### <a href="#isSymbol"></a>`isSymbol(value)`
 
 Check if value is a `Symbol`
 
@@ -229,7 +229,7 @@ isSymbol('42'); // false
 
 ---
 
-### <a href="isRegExp"></a>`isRegExp(value)`
+### <a href="#isRegExp"></a>`isRegExp(value)`
 
 Check if value is a RegExp object or RegExp literal
 
@@ -240,7 +240,7 @@ isRegExp(new RegExp('\\w+')); // true
 
 ---
 
-### <a href="isError"></a>`isError(value)`
+### <a href="#isError"></a>`isError(value)`
 
 Check if value is an JS Error object
 
@@ -251,7 +251,7 @@ isError(new TypeError()); // true
 
 ---
 
-### <a href="isAnyObject"></a>`isAnyObject(value)`
+### <a href="#isAnyObject"></a>`isAnyObject(value)`
 
 Check if value is a language type object (except null)
 
@@ -266,7 +266,7 @@ isAnyObject(new String()); // true
 
 ---
 
-### <a href="isPlainObject"></a>`isPlainObject(value)`
+### <a href="#isPlainObject"></a>`isPlainObject(value)`
 
 Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes). It may be object literal `{}`, instance created by `Object` constructor or using `Object.create(null | Object)`
 
@@ -279,7 +279,7 @@ isPlainObject(new String()); // false
 
 ---
 
-### <a href="isArray"></a>`isArray(value)`
+### <a href="#isArray"></a>`isArray(value)`
 
 Check if value is array
 
@@ -290,7 +290,7 @@ isArray({ 0: 'a', length: 10 }); // false
 
 ---
 
-### <a href="isFunction"></a>`isFunction(value)`
+### <a href="#isFunction"></a>`isFunction(value)`
 
 Check if value is an any function (except class definition)
 
@@ -302,7 +302,7 @@ isFunction(class {}); // false
 
 ---
 
-### <a href="isClass"></a>`isClass(value)`
+### <a href="#isClass"></a>`isClass(value)`
 
 Check if value is a class definition
 
@@ -314,7 +314,7 @@ isClass(function () {}); // false
 
 ---
 
-### <a href="isPromise"></a>`isPromise(value)`
+### <a href="#isPromise"></a>`isPromise(value)`
 
 Check if value is a native promise object
 
@@ -326,7 +326,7 @@ isPromise({ then: () => {} }); // false
 
 ---
 
-### <a href="isPromiseLike"></a>`isPromiseLike(value)`
+### <a href="#isPromiseLike"></a>`isPromiseLike(value)`
 
 Check if value is a promise-like object (has `then` method)
 
@@ -338,7 +338,7 @@ isPromiseLike({ then: () => {} }); // true
 
 ---
 
-### <a href="isIterable"></a>`isIterable(value)`
+### <a href="#isIterable"></a>`isIterable(value)`
 
 Check if value is iterable (arrays, strings, maps, sets, etc.)
 
@@ -350,7 +350,7 @@ isIterable(new Map()); // true
 
 ---
 
-### <a href="isDate"></a>`isDate(value)`
+### <a href="#isDate"></a>`isDate(value)`
 
 Check if value is a valid JS Date object
 
@@ -361,7 +361,7 @@ isDate(new Date('Invalid Date')); // false
 
 ---
 
-### <a href="isHasProperty"></a> `isHasProperty(obj, propertyName)`
+### <a href="#isHasProperty"></a> `isHasProperty(obj, propertyName)`
 
 Check if an object has a property
 
@@ -372,7 +372,7 @@ isHasProperty({ a: 42 }, 'b'); // false
 
 ---
 
-### <a href="isArrayOf"></a>`isArrayOf(array, guard)`
+### <a href="#isArrayOf"></a>`isArrayOf(array, guard)`
 
 Check if all elements of array match given guard
 
@@ -383,7 +383,7 @@ isArrayOf([1, 2, 3], isString); // false
 
 ---
 
-### <a href="isInstanceOf"></a>`isInstanceOf(value, constructor)`
+### <a href="#isInstanceOf"></a>`isInstanceOf(value, constructor)`
 
 Check if value is instance of given constructor
 
@@ -394,7 +394,7 @@ isInstanceOf(new Map(), Set); // false
 
 ---
 
-### <a href="isEmpty"></a>`isEmpty(value)`
+### <a href="#isEmpty"></a>`isEmpty(value)`
 
 Check if value is empty.
 
@@ -417,7 +417,7 @@ isEmpty(0); // false
 
 ---
 
-### <a href="is"></a>`is(value, expectedValue)`
+### <a href="#is"></a>`is(value, expectedValue)`
 
 Check if value is equal to a given expected value.
 
@@ -434,7 +434,7 @@ is(42, '42'); // false
 
 > All methods that starts with `$` are utility methods for manipulating with guards
 
-### <a href="_not"></a>`$not(guard)`
+### <a href="#_not"></a>`$not(guard)`
 
 Inverse given guard
 
@@ -447,7 +447,7 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-### <a href="_some"></a>`$some(guard1, guard2, ...)`
+### <a href="#_some"></a>`$some(guard1, guard2, ...)`
 
 Combine multiple guards with `some` logic (logical OR)
 
@@ -459,7 +459,7 @@ isNumberOrString('42'); // true
 isNumberOrString(true); // false
 ```
 
-### <a href="every"></a>`$every(guard1, guard2, ...)`
+### <a href="#every"></a>`$every(guard1, guard2, ...)`
 
 Combine multiple guards with `every` logic (logical AND)
 
@@ -486,7 +486,7 @@ is.InstanceOf(ArrayBuffer)(null!); // also valid
 
 ## `validate` addon
 
-### <a href="validate"></a>`validate(value, schema)`
+### <a href="#validate"></a>`validate(value, schema)`
 
 Allows to validate runtime values (objects) with given schema or guard
 
@@ -525,7 +525,7 @@ validate([1, 2, 3], isArrayOf(isNumber)); // true
 validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
-### <a href="validateStrict"></a>`validateStrict(value, schema)`
+### <a href="#validateStrict"></a>`validateStrict(value, schema)`
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
 
