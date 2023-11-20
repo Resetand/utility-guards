@@ -39,36 +39,36 @@ All base type guards that you used to copy from project to project in one place
 
 ## `API Reference`
 
--   [`isString`](#isString)
--   [`isNumber`](#isNumber)
--   [`isBoolean`](#isBoolean)
--   [`isNaN`](#isNaN)
--   [`isUndefined`](#isUndefined)
--   [`isNull`](#isNull)
--   [`isNil`](#isNil)
--   [`isPrimitive`](#isPrimitive)
--   [`isSymbol`](#isSymbol)
--   [`isRegExp`](#isRegExp)
--   [`isError`](#isError)
--   [`isAnyObject`](#isAnyObject)
--   [`isPlainObject`](#isPlainObject)
--   [`isArray`](#isArray)
--   [`isFunction`](#isFunction)
--   [`isClass`](#isClass)
--   [`isPromise`](#isPromise)
--   [`isPromiseLike`](#isPromiseLike)
--   [`isIterable`](#isIterable)
--   [`isDate`](#isDate)
--   [`isHasProperty`](#isHasProperty)
--   [`isArrayOf`](#isArrayOf)
--   [`isInstanceOf`](#isInstanceOf)
--   [`isEmpty`](#isEmpty)
--   [`is`](#is)
--   [`$not`](#_not)
--   [`$some`](#_some)
--   [`$every`](#_every)
--   [`validate`](#validate)
--   [`validateStrict`](#validatestrict)
+-   [`isString`](#isstringvalue)
+-   [`isNumber`](#isnumbervalue)
+-   [`isBoolean`](#isbooleanvalue)
+-   [`isNaN`](#isnanvalue)
+-   [`isUndefined`](#isundefinedvalue)
+-   [`isNull`](#isnullvalue)
+-   [`isNil`](#isnilvalue)
+-   [`isPrimitive`](#isprimitivevalue)
+-   [`isSymbol`](#issymbolvalue)
+-   [`isRegExp`](#isregexpvalue)
+-   [`isError`](#iserrorvalue)
+-   [`isAnyObject`](#isanyobjectvalue)
+-   [`isPlainObject`](#isplainobjectvalue)
+-   [`isArray`](#isarrayvalue)
+-   [`isFunction`](#isfunctionvalue)
+-   [`isClass`](#isclassvalue)
+-   [`isPromise`](#ispromisevalue)
+-   [`isPromiseLike`](#ispromiselikevalue)
+-   [`isIterable`](#isiterablevalue)
+-   [`isDate`](#isdatevalue)
+-   [`isHasProperty`](#ishaspropertyobj-propertyname)
+-   [`isArrayOf`](#isarrayofarray-guard)
+-   [`isInstanceOf`](#instanceofvalue-constructor)
+-   [`isEmpty`](#isemptyvalue)
+-   [`is`](#isvalue-expectedvalue)
+-   [`$not](#notguard)
+-   [`$some`](#someguard1-guard2)
+-   [`$every`](#everyguard1-guard2)
+-   [`validate`](#validatevalue-schema)
+-   [`validateStrict`](#validatestrictvalue-schema)
 
 <br/>
 
@@ -131,7 +131,7 @@ isString(42); // false
 
 ---
 
-### <a href="#isNumber"></a>`isNumber(value)`
+### `isNumber(value)`
 
 Check if value is an number literal or number created by `Number` constructor and **not `NaN`**
 
@@ -146,7 +146,7 @@ isNumber(NaN); // false
 
 ---
 
-### <a href="#isBoolean"></a>`isBoolean(value)`
+### `isBoolean(value)`
 
 Check if value is an boolean
 
@@ -158,7 +158,7 @@ isBoolean(42); // false
 
 ---
 
-### <a href="#isNaN"></a>`isNaN(value)`
+### `isNaN(value)`
 
 Check if value is an NaN value.
 
@@ -171,7 +171,7 @@ isNaN(2 + {}); // false
 
 ---
 
-### <a href="#isUndefined"></a>`isUndefined(value)`
+### `isUndefined(value)`
 
 Check if value is a undefined
 
@@ -182,7 +182,7 @@ isUndefined(null); // false
 
 ---
 
-### <a href="#isNull"></a>`isNull(value)`
+### `isNull(value)`
 
 Check if value is a null
 
@@ -193,7 +193,7 @@ isNull(undefined); // false
 
 ---
 
-### <a href="#isNil"></a>`isNil(value)`
+### `isNil(value)`
 
 Check if value is a null or undefined
 
@@ -205,7 +205,7 @@ isNil(0); // false
 
 ---
 
-### <a href="#isPrimitive"></a>`isPrimitive(value)`
+### `isPrimitive(value)`
 
 Check if value is a primitive
 
@@ -218,7 +218,7 @@ isPrimitive([1, 2, 3]); // false
 
 ---
 
-### <a href="#isSymbol"></a>`isSymbol(value)`
+### `isSymbol(value)`
 
 Check if value is a `Symbol`
 
@@ -229,7 +229,7 @@ isSymbol('42'); // false
 
 ---
 
-### <a href="#isRegExp"></a>`isRegExp(value)`
+### `isRegExp(value)`
 
 Check if value is a RegExp object or RegExp literal
 
@@ -240,7 +240,7 @@ isRegExp(new RegExp('\\w+')); // true
 
 ---
 
-### <a href="#isError"></a>`isError(value)`
+### `isError(value)`
 
 Check if value is an JS Error object
 
@@ -251,7 +251,7 @@ isError(new TypeError()); // true
 
 ---
 
-### <a href="#isAnyObject"></a>`isAnyObject(value)`
+### `isAnyObject(value)`
 
 Check if value is a language type object (except null)
 
@@ -266,7 +266,7 @@ isAnyObject(new String()); // true
 
 ---
 
-### <a href="#isPlainObject"></a>`isPlainObject(value)`
+### `isPlainObject(value)`
 
 Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes). It may be object literal `{}`, instance created by `Object` constructor or using `Object.create(null | Object)`
 
@@ -279,7 +279,7 @@ isPlainObject(new String()); // false
 
 ---
 
-### <a href="#isArray"></a>`isArray(value)`
+### `isArray(value)`
 
 Check if value is array
 
@@ -290,7 +290,7 @@ isArray({ 0: 'a', length: 10 }); // false
 
 ---
 
-### <a href="#isFunction"></a>`isFunction(value)`
+### `isFunction(value)`
 
 Check if value is an any function (except class definition)
 
@@ -302,7 +302,7 @@ isFunction(class {}); // false
 
 ---
 
-### <a href="#isClass"></a>`isClass(value)`
+### `isClass(value)`
 
 Check if value is a class definition
 
@@ -314,7 +314,7 @@ isClass(function () {}); // false
 
 ---
 
-### <a href="#isPromise"></a>`isPromise(value)`
+### `isPromise(value)`
 
 Check if value is a native promise object
 
@@ -326,7 +326,7 @@ isPromise({ then: () => {} }); // false
 
 ---
 
-### <a href="#isPromiseLike"></a>`isPromiseLike(value)`
+### `isPromiseLike(value)`
 
 Check if value is a promise-like object (has `then` method)
 
@@ -338,7 +338,7 @@ isPromiseLike({ then: () => {} }); // true
 
 ---
 
-### <a href="#isIterable"></a>`isIterable(value)`
+### `isIterable(value)`
 
 Check if value is iterable (arrays, strings, maps, sets, etc.)
 
@@ -350,7 +350,7 @@ isIterable(new Map()); // true
 
 ---
 
-### <a href="#isDate"></a>`isDate(value)`
+### `isDate(value)`
 
 Check if value is a valid JS Date object
 
@@ -361,7 +361,7 @@ isDate(new Date('Invalid Date')); // false
 
 ---
 
-### <a href="#isHasProperty"></a> `isHasProperty(obj, propertyName)`
+### `isHasProperty(obj, propertyName)`
 
 Check if an object has a property
 
@@ -372,7 +372,7 @@ isHasProperty({ a: 42 }, 'b'); // false
 
 ---
 
-### <a href="#isArrayOf"></a>`isArrayOf(array, guard)`
+### `isArrayOf(array, guard)`
 
 Check if all elements of array match given guard
 
@@ -383,7 +383,7 @@ isArrayOf([1, 2, 3], isString); // false
 
 ---
 
-### <a href="#isInstanceOf"></a>`isInstanceOf(value, constructor)`
+### `isInstanceOf(value, constructor)`
 
 Check if value is instance of given constructor
 
@@ -394,7 +394,7 @@ isInstanceOf(new Map(), Set); // false
 
 ---
 
-### <a href="#isEmpty"></a>`isEmpty(value)`
+### `isEmpty(value)`
 
 Check if value is empty.
 
@@ -417,7 +417,7 @@ isEmpty(0); // false
 
 ---
 
-### <a href="#is"></a>`is(value, expectedValue)`
+### `is(value, expectedValue)`
 
 Check if value is equal to a given expected value.
 
@@ -434,7 +434,7 @@ is(42, '42'); // false
 
 > All methods that starts with `$` are utility methods for manipulating with guards
 
-### <a href="#_not"></a>`$not(guard)`
+### `$not(guard)`
 
 Inverse given guard
 
@@ -447,7 +447,7 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-### <a href="#_some"></a>`$some(guard1, guard2, ...)`
+### `$some(guard1, guard2, ...)`
 
 Combine multiple guards with `some` logic (logical OR)
 
@@ -459,7 +459,7 @@ isNumberOrString('42'); // true
 isNumberOrString(true); // false
 ```
 
-### <a href="#every"></a>`$every(guard1, guard2, ...)`
+### `$every(guard1, guard2, ...)`
 
 Combine multiple guards with `every` logic (logical AND)
 
@@ -486,7 +486,7 @@ is.InstanceOf(ArrayBuffer)(null!); // also valid
 
 ## `validate` addon
 
-### <a href="#validate"></a>`validate(value, schema)`
+### `validate(value, schema)`
 
 Allows to validate runtime values (objects) with given schema or guard
 
@@ -525,7 +525,7 @@ validate([1, 2, 3], isArrayOf(isNumber)); // true
 validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
-### <a href="#validateStrict"></a>`validateStrict(value, schema)`
+### `validateStrict(value, schema)`
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
 
