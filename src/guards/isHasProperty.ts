@@ -4,7 +4,8 @@ type RecordLike<P extends PropertyKey = PropertyKey> = Record<PropertyKey, unkno
 
 type IsHasPropertyGuard = {
     /**
-     * Check if object has own property
+     * Check if value is an any object and has a given property
+     * This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
      *
      * @example
      * isHasProperty({ a: 1 }, 'a'); // -> true

@@ -29,25 +29,58 @@ All base type guards that you used to copy from project to project in one place
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~800 bytes gzipped size
--   📦 tree-shaking friendly
+-   📦 Tree-shaking friendly
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
+
+<br/>
+<br/>
+
+## `API Reference`
+
+-   [`isString`](#isstringvalue)
+-   [`isNumber`](#isnumbervalue)
+-   [`isBoolean`](#isbooleanvalue)
+-   [`isNaN`](#isnanvalue)
+-   [`isUndefined`](#isundefinedvalue)
+-   [`isNull`](#isnullvalue)
+-   [`isNil`](#isnilvalue)
+-   [`isPrimitive`](#isprimitivevalue)
+-   [`isSymbol`](#issymbolvalue)
+-   [`isRegExp`](#isregexpvalue)
+-   [`isError`](#iserrorvalue)
+-   [`isAnyObject`](#isanyobjectvalue)
+-   [`isPlainObject`](#isplainobjectvalue)
+-   [`isArray`](#isarrayvalue)
+-   [`isFunction`](#isfunctionvalue)
+-   [`isClass`](#isclassvalue)
+-   [`isPromise`](#ispromisevalue)
+-   [`isPromiseLike`](#ispromiselikevalue)
+-   [`isIterable`](#isiterablevalue)
+-   [`isDate`](#isdatevalue)
+-   [`isHasProperty`](#ishaspropertyvalue-propertyname)
+-   [`isArrayOf`](#isarrayofvalue-guard)
+-   [`isInstanceOf`](#isinstanceofvalue-constructor)
+-   [`isEmpty`](#isemptyvalue)
+-   [`is`](#isvalue-expectedvalue)
+-   [`$not`](#notguard)
+-   [`$some`](#_some)
+-   [`$every`](#_every)
+-   [`validate`](#validatevalue-schema)
+-   [`validateStrict`](#validatestrictvalue-schema)
+
+<br/>
+
+---
+
+<br/>
 
 ```bash
 npm install utility-guards
 ```
 
 ### Usage
-
-```tsx
-// Using default import – `is` namespace object
-import is from 'utility-guards';
-
-is.String('42'); // true
-is.Number(42); // false
-is.$not(is.Nil)(0); // true
-```
 
 ```tsx
 // using named imports (tree-shaking friendly)
@@ -73,57 +106,310 @@ isNumber(42); // false
 $not(isNil)(0); // true
 ```
 
+```tsx
+// Using default import – `is` namespace object
+import is from 'utility-guards';
+
+is.String('42'); // true
+is.Number(42); // false
+is.$not(is.Nil)(0); // true
+```
+
+<br/>
+
+## API
+
+### `isString(value)`
+
+Check if value is an string literal or string created by `String` constructor
+
+```tsx
+isString('abc'); // true
+isString(new String('abc')); // true
+isString(42); // false
+```
+
 ---
 
-## `Guards`
+### `isNumber(value)`
 
-#### `isString(value)` – Check if value a string literal or string created by `String` constructor
+Check if value is an number literal or number created by `Number` constructor and **not `NaN`**
 
-#### `isNumber(value)` – Check if value a number literal or number created by `Number` constructor
+ℹ️ Although `NaN` is considered a number in JS, it's not a valid number in most cases you want to check if value is a valid number, so `isNumber(NaN)` returns `false`
 
-#### `isBoolean(value)` – Check if value a boolean
+```tsx
+isNumber(42); // true
+isNumber(new Number(42)); // true
+isNumber('42'); // false
+isNumber(NaN); // false
+```
 
-#### `isNaN(value)` – Check if value a NaN value
+---
 
-#### `isUndefined(value)` – Check if value is a undefined
+### `isBoolean(value)`
 
-#### `isNull(value)` – Check if value is a null
+Check if value is an boolean
 
-#### `isNil(value)` – Check if value is a null or undefined
+```tsx
+isBoolean(true); // true
+isBoolean(false); // true
+isBoolean(42); // false
+```
 
-#### `isPrimitive(value)` – Check if value is a primitive
+---
 
-#### `isSymbol(value)` – Check if value is a `Symbol`
+### `isNaN(value)`
 
-#### `isRegExp(value)` – Check if value is a RegExp object or RegExp literal
+Check if value is an NaN value.
 
-#### `isError(value)` – Check if value is an JS Error object
+ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which returns true for undefined and other non-number values
 
-#### `isAnyObject(value)` – Check if value is a language type object (except null)
+```tsx
+isNaN(NaN); // true
+isNaN(2 + {}); // false
+```
 
-#### `isPlainObject(value)` – Check if value is a plain JavaScript object
+---
 
-#### `isArray(value)` – Check if value is array
+### `isUndefined(value)`
 
-#### `isFunction(value)` – Check if value is an any function (except class definition)
+Check if value is a undefined
 
-#### `isClass(value)` – Check if value is a class definition
+```tsx
+isUndefined(undefined); // true
+isUndefined(null); // false
+```
 
-#### `isPromise(value)` – Check if value is a promise object
+---
 
-#### `isPromiseLike(value)` – Check if value is a promise-like object (has `then` method)
+### `isNull(value)`
 
-#### `isIterable(value)` – Check if value is iterable (arrays, strings, maps, sets, etc.)
+Check if value is a null
 
-#### `isDate(value)` – Check if value is a valid JS Date object
+```tsx
+isNull(null); // true
+isNull(undefined); // false
+```
 
-#### `isHasProperty(obj, propertyName)` – Check if an object has a property
+---
 
-#### `isArrayOf(array, guard)` – Check if all elements of array match given guard
+### `isNil(value)`
 
-#### `isInstanceOf(value, constructor)` – Check if value is instance of given constructor
+Check if value is a null or undefined
 
-#### `isEmpty(value)` – Check if value is empty.
+```tsx
+isNil(null); // true
+isNil(undefined); // true
+isNil(0); // false
+```
+
+---
+
+### `isPrimitive(value)`
+
+Check if value is a primitive
+
+ℹ️ Primitive values in JS are: `string`, `number`, `boolean`, `null`, `undefined`, `symbol`, `bigint`
+
+```tsx
+isPrimitive(42); // true
+isPrimitive([1, 2, 3]); // false
+```
+
+---
+
+### `isSymbol(value)`
+
+Check if value is a `Symbol`
+
+```tsx
+isSymbol(Symbol('42')); // true
+isSymbol('42'); // false
+```
+
+---
+
+### `isRegExp(value)`
+
+Check if value is a RegExp object or RegExp literal
+
+```tsx
+isRegExp(/\w+/); // true
+isRegExp(new RegExp('\\w+')); // true
+```
+
+---
+
+### `isError(value)`
+
+Check if value is an JS Error object
+
+```tsx
+isError(new Error()); // true
+isError(new TypeError()); // true
+```
+
+---
+
+### `isAnyObject(value)`
+
+Check if value is a language type object (except null)
+
+ℹ️ This method is not type safe and may lead to unexpected runtime errors. You probably want to use `isPlainObject` instead
+
+```tsx
+isAnyObject({}); // true
+isAnyObject([]); // true
+isAnyObject(new Map()); // true
+isAnyObject(new String()); // true
+```
+
+---
+
+### `isPlainObject(value)`
+
+Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes). It may be object literal `{}`, instance created by `Object` constructor or using `Object.create(null | Object)`
+
+```tsx
+isPlainObject({}); // true
+isPlainObject([]); // false
+isPlainObject(new Map()); // false
+isPlainObject(new String()); // false
+```
+
+---
+
+### `isArray(value)`
+
+Check if value is array
+
+```tsx
+isArray([]); // true
+isArray({ 0: 'a', length: 10 }); // false
+```
+
+---
+
+### `isFunction(value)`
+
+Check if value is an any function (except class definition)
+
+```tsx
+isFunction(() => {}); // true
+isFunction(function () {}); // true
+isFunction(class {}); // false
+```
+
+---
+
+### `isClass(value)`
+
+Check if value is a class definition
+
+```tsx
+isClass(class {}); // true
+isClass(() => {}); // false
+isClass(function () {}); // false
+```
+
+---
+
+### `isPromise(value)`
+
+Check if value is a native promise object
+
+```tsx
+isPromise(Promise.resolve()); // true
+isPromise(new Promise(() => {})); // true
+isPromise({ then: () => {} }); // false
+```
+
+---
+
+### `isPromiseLike(value)`
+
+Check if value is a promise-like object (has `then` method)
+
+```tsx
+isPromiseLike(Promise.resolve()); // true
+isPromiseLike(new Promise(() => {})); // true
+isPromiseLike({ then: () => {} }); // true
+```
+
+---
+
+### `isIterable(value)`
+
+Check if value is iterable (arrays, strings, maps, sets, etc.)
+
+```tsx
+isIterable([]); // true
+isIterable('42'); // true
+isIterable(new Map()); // true
+```
+
+---
+
+### `isDate(value)`
+
+Check if value is a valid JS Date object
+
+```tsx
+isDate(new Date()); // true
+isDate(new Date('Invalid Date')); // false
+```
+
+---
+
+### `isHasProperty(value, propertyName)`
+
+> `(value, propertyName) => boolean`\
+> `(propertyName) => (value) => boolean`
+
+Check if value is an any object and has a given property
+
+> ℹ️ This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
+
+```tsx
+isHasProperty({ a: 42 }, 'a'); // true
+isHasProperty({ a: 42 }, 'b'); // false
+```
+
+---
+
+### `isArrayOf(value, guard)`
+
+> `(value, guard) => boolean`\
+> `(guard) => (value) => boolean`
+
+Check if value is an array and all elements of the array match a given guard
+
+```tsx
+isArrayOf([1, 2, 3], isNumber); // true
+isArrayOf([1, 2, 3], isString); // false
+```
+
+---
+
+### `isInstanceOf(value, constructor)`
+
+> `(value, constructor) => boolean`\
+> `(constructor) => (value) => boolean`
+
+Check if value is instance of given constructor
+
+> ℹ️ This method based on `instanceof` operator
+
+```tsx
+isInstanceOf(new Map(), Map); // true
+isInstanceOf(new Map(), Set); // false
+```
+
+---
+
+### `isEmpty(value)`
+
+Check if value is empty.
 
 > Value is considered as empty if it's:
 >
@@ -134,15 +420,61 @@ $not(isNil)(0); // true
 > -   Empty string: `''`
 > -   Nullable value: `null or undefined`
 
+```tsx
+isEmpty({}); // true
+isEmpty(new Set()); // true
+isEmpty(null); // true
+isEmpty(''); // true
+isEmpty(0); // false
+```
+
 ---
+
+### `is(value, expectedValue)`
+
+> 💡 You can use `is` container as a guard function
+
+> `(value, expectedValue) => boolean`\
+> `(value, expectedValue, isEqual) => boolean`
+>
+> `(expectedValue) => (value) => boolean`\
+> `(expectedValue, isEqual) => (value) => boolean`
+
+Check if value is equal to a given expected value.
+
+ℹ️ By default will use `Object.is` for comparison, but you can pass custom `isEqual` function as a third argument
+
+```tsx
+is(42, 42); // true
+
+const isExactly42 = is(42);
+
+isExactly42(42); // true
+isExactly42('anything else'); // false
+```
+
+```tsx
+import is from 'utility-guards';
+import isEqual from 'lodash/isEqual';
+
+const isMyObject = is({ a: 3 }, isEqual);
+
+isMyObject({ a: 3 }); // true
+isMyObject({ a: 3, b: 4 }); // false
+```
+
+---
+
+## utility methods
 
 > All methods that starts with `$` are utility methods for manipulating with guards
 
-#### `$not` – Inverse given guard
+### `$not(guard)`
+
+Inverse given guard
 
 ```tsx
-import { $not } from 'utility-guards'; // or is.$not if you use default import
-const notIsNil = $not(is.Nil);
+const notIsNil = $not(isNil);
 
 const arr = [1, null, 2, undefined, 3];
 const filtered = arr.filter(notIsNil);
@@ -150,11 +482,11 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-#### `$some` – Combine multiple guards with `some` logic (logical OR)
+### `$some(guard1, guard2, ...)`<a name="_some"></a>
+
+Combine multiple guards with `some` logic (logical OR)
 
 ```tsx
-import { $some, isNumber, isString } from 'utility-guards';
-
 const isNumberOrString = $some(isNumber, isString);
 
 isNumberOrString(42); // true
@@ -162,64 +494,33 @@ isNumberOrString('42'); // true
 isNumberOrString(true); // false
 ```
 
-#### `$every` – Combine multiple guards with `every` logic (logical AND)
+### `$every(guard1, guard2, ...)`<a name="_every"></a>
+
+Combine multiple guards with `every` logic (logical AND)
 
 ```tsx
-import { $every, isNumber, isArray } from 'utility-guards';
-
 const isEmptyArray = $every(isArray, isEmpty);
 
 isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 ```
 
----
-
-### is as a function guard
-
-You can use `is` as a function guard.
-It will check if value is equal to a given expected value.
-
-Based on `Object.is` method for comparison
-
-```tsx
-import is from 'utility-guards';
-
-is(42, 42); // true
-
-const isNumber42 = is(42);
-isNumber42(42); // true
-```
-
-### Curried guards
-
-**ℹ️ Guards with extra arguments are curried functions**
-
-```tsx
-is.ArrayOf(42, is.Number); // valid
-is.ArrayOf(is.Number)(42); // also valid
-
-is.InstanceOf(null!, ArrayBuffer); // valid
-is.InstanceOf(ArrayBuffer)(null!); // also valid
-```
-
----
-
 ## `validate` addon
+
+### `validate(value, schema)`
+
+> `(value, schema) => boolean`\
+> `(schema) => (value) => boolean`
 
 Allows to validate runtime values (objects) with given schema or guard
 
 ### Usage
 
-```tsx
-import { validate } from 'utility-guards';
-```
+#### Validate object with schema
 
 ```tsx
-import validate from 'utility-guards/validate';
-```
+import { validate, isString, isNil, isBoolean } from 'utility-guards';
 
-```tsx
 const obj = JSON.parse('...');
 
 const schema = {
@@ -235,22 +536,81 @@ const schema = {
 };
 
 if (validate(obj, schema)) {
+    // type of obj is inferred
+    // { a: number, b: string | null, c: { d: boolean, e: { f: number, g: string } } }
     obj.c.e.f; // OK
 } else {
     obj.c.e.f; // TS Error
 }
+```
 
-// usage with guard
-validate(42, isNumber); // true
-validate(42, $some(isNumber, isString)); // true
-validate('42', $some(isNumber, isString)); // true
-validate([], isNumber); // false
+#### Validate array with schema
+
+```tsx
+import { validate, isString, isNil, isBoolean, isArrayOf } from 'utility-guards';
+
+const arr = JSON.parse('...');
+
+const schema = [
+    isString,
+    isNil, // string or nil
+    {
+        d: isBoolean,
+        e: isArrayOf(isNumber), // array of numbers only
+    },
+];
+
+if (validate(arr, schema)) {
+    // type of arr is inferred
+    // [string, string | null, { d: boolean, e: number[] }]
+    arr[2].e[0]; // OK
+} else {
+    arr[2].e[0]; // TS Error
+}
+```
+
+#### Validate value with guard
+
+```tsx
+import { validate, isArray, isEmpty, isString, isNil, isBoolean, $every, $some } from 'utility-guards';
+
+const value = JSON.parse('...');
+
+validate(value, isNumber); // is number
+validate(value, $some(isNumber, isString)); // is number | string
+validate(value, $every(isArray, isEmpty)); // is []
 
 validate([1, 2, 3], isArrayOf(isNumber)); // true
 validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
+### `validateStrict(value, schema)`
+
+> `(value, schema) => boolean`\
+> `(schema) => (value) => boolean`
+
 ℹ️ Use `validateStrict` to check if object has all properties from schema
+
+Same as `validate` but also checks if object no extra properties
+
+```tsx
+import { validateStrict, isString, isNumber } from 'utility-guards';
+
+const schema = {
+    a: isNumber,
+    b: isString,
+};
+
+validateStrict({ a: 42, b: '42' }, schema); // true
+validateStrict({ a: 42, b: '42', c: true }, schema); // false
+validateStrict({ a: 42 }, schema); // false
+```
+
+<br/>
+
+---
+
+<br/>
 
 ### Compose and create custom guard
 

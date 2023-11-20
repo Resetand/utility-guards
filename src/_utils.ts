@@ -21,20 +21,25 @@ export type CurriedGuard<TArgs extends any[]> = {
     <T>(...args: TArgs): (value: unknown) => value is T;
 };
 
-export const curriedGuard = <TArgs extends any[]>(
-    factory: (value: unknown, ...args: TArgs) => boolean,
-): CurriedGuard<TArgs> => {
-    const expectedArgsCount = factory.length;
+type Discriminator<TArgs extends any[]> = (
+    args: TArgs | [value: unknown, ...args: TArgs],
+    guard: (value: unknown, ...args: TArgs) => boolean,
+) => boolean | ((value: unknown) => boolean);
 
-    if (expectedArgsCount < 0) {
-        return factory as any;
+const _defaultDiscriminator: Discriminator<unknown[]> = (args, guard) => {
+    const expectedArgsCount = guard.length;
+    const actualArgsCount = args.length;
+
+    if (actualArgsCount >= expectedArgsCount) {
+        return guard(args[0]!, ...args.slice(1));
+    } else {
+        return (value: unknown) => guard(value, ...args);
     }
+};
 
-    return ((...args: any[]) => {
-        if (expectedArgsCount === args.length) {
-            return (factory as any)(...args);
-        }
-
-        return (value: unknown) => (factory as any)(value, ...args);
-    }) as CurriedGuard<TArgs>;
+export const curriedGuard = <TArgs extends any[]>(
+    guard: (value: unknown, ...args: TArgs) => boolean,
+    discriminator: Discriminator<TArgs> = _defaultDiscriminator as unknown as Discriminator<TArgs>,
+): CurriedGuard<TArgs> => {
+    return ((...args: unknown[]) => (discriminator as any)(args, guard)) as unknown as CurriedGuard<TArgs>;
 };
