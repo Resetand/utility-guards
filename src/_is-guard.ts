@@ -8,7 +8,7 @@ export type IsGuard = {
     /**
      * Check if value is equal to expected value
      *
-     * Based on Object.is
+     * Based on Object.is by default
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
      *
      * @example

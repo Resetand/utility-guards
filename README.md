@@ -516,6 +516,8 @@ Allows to validate runtime values (objects) with given schema or guard
 
 ### Usage
 
+#### Validate object with schema
+
 ```tsx
 import { validate, isString, isNil, isBoolean } from 'utility-guards';
 
@@ -534,16 +536,49 @@ const schema = {
 };
 
 if (validate(obj, schema)) {
+    // type of obj is inferred
+    // { a: number, b: string | null, c: { d: boolean, e: { f: number, g: string } } }
     obj.c.e.f; // OK
 } else {
     obj.c.e.f; // TS Error
 }
+```
 
-// usage with guard
-validate(42, isNumber); // true
-validate(42, $some(isNumber, isString)); // true
-validate('42', $some(isNumber, isString)); // true
-validate([], isNumber); // false
+#### Validate array with schema
+
+```tsx
+import { validate, isString, isNil, isBoolean, isArrayOf } from 'utility-guards';
+
+const arr = JSON.parse('...');
+
+const schema = [
+    isString,
+    isNil, // string or nil
+    {
+        d: isBoolean,
+        e: isArrayOf(isNumber), // array of numbers only
+    },
+];
+
+if (validate(arr, schema)) {
+    // type of arr is inferred
+    // [string, string | null, { d: boolean, e: number[] }]
+    arr[2].e[0]; // OK
+} else {
+    arr[2].e[0]; // TS Error
+}
+```
+
+#### Validate value with guard
+
+```tsx
+import { validate, isArray, isEmpty, isString, isNil, isBoolean, $every, $some } from 'utility-guards';
+
+const value = JSON.parse('...');
+
+validate(value, isNumber); // is number
+validate(value, $some(isNumber, isString)); // is number | string
+validate(value, $every(isArray, isEmpty)); // is []
 
 validate([1, 2, 3], isArrayOf(isNumber)); // true
 validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
