@@ -22,18 +22,18 @@
     "joi",
     "schema"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
   "files": [
-    "dist"
+    "lib"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "node": "./dist/index.js"
+      "import": "./lib/index.mjs",
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "node": "./lib/index.js"
     }
   },
   "scripts": {
@@ -45,12 +45,12 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.23.3",
-    "@swc/core": "^1.3.96",
-    "@types/node": "^20.9.0",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
-    "@vitest/coverage-v8": "^0.34.6",
+    "@babel/preset-typescript": "7.23.3",
+    "@swc/core": "1.3.96",
+    "@types/node": "20.9.0",
+    "@typescript-eslint/eslint-plugin": "6.10.0",
+    "@typescript-eslint/parser": "6.10.0",
+    "@vitest/coverage-v8": "0.34.6",
     "eslint": "8.26.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "8.0.1",
