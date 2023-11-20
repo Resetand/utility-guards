@@ -59,14 +59,14 @@ All base type guards that you used to copy from project to project in one place
 -   [`isPromiseLike`](#ispromiselikevalue)
 -   [`isIterable`](#isiterablevalue)
 -   [`isDate`](#isdatevalue)
--   [`isHasProperty`](#ishaspropertyobj-propertyname)
--   [`isArrayOf`](#isarrayofarray-guard)
+-   [`isHasProperty`](#ishaspropertyvalue-propertyname)
+-   [`isArrayOf`](#isarrayofvalue-guard)
 -   [`isInstanceOf`](#isinstanceofvalue-constructor)
 -   [`isEmpty`](#isemptyvalue)
 -   [`is`](#isvalue-expectedvalue)
 -   [`$not`](#notguard)
--   [`$some`](#someguard1-guard2)
--   [`$every`](#everyguard1-guard2)
+-   [`$some`](#_some)
+-   [`$every`](#_every)
 -   [`validate`](#validatevalue-schema)
 -   [`validateStrict`](#validatestrictvalue-schema)
 
@@ -119,7 +119,7 @@ is.$not(is.Nil)(0); // true
 
 ## API
 
-### <a href="#isString"></a>`isString(value)`
+### `isString(value)`
 
 Check if value is an string literal or string created by `String` constructor
 
@@ -361,9 +361,14 @@ isDate(new Date('Invalid Date')); // false
 
 ---
 
-### `isHasProperty(obj, propertyName)`
+### `isHasProperty(value, propertyName)`
 
-Check if an object has a property
+> `(value, propertyName) => boolean`\
+> `(propertyName) => (value) => boolean`
+
+Check if value is an any object and has a given property
+
+> ℹ️ This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
 
 ```tsx
 isHasProperty({ a: 42 }, 'a'); // true
@@ -372,9 +377,12 @@ isHasProperty({ a: 42 }, 'b'); // false
 
 ---
 
-### `isArrayOf(array, guard)`
+### `isArrayOf(value, guard)`
 
-Check if all elements of array match given guard
+> `(value, guard) => boolean`\
+> `(guard) => (value) => boolean`
+
+Check if value is an array and all elements of the array match a given guard
 
 ```tsx
 isArrayOf([1, 2, 3], isNumber); // true
@@ -385,7 +393,12 @@ isArrayOf([1, 2, 3], isString); // false
 
 ### `isInstanceOf(value, constructor)`
 
+> `(value, constructor) => boolean`\
+> `(constructor) => (value) => boolean`
+
 Check if value is instance of given constructor
+
+> ℹ️ This method based on `instanceof` operator
 
 ```tsx
 isInstanceOf(new Map(), Map); // true
@@ -419,13 +432,35 @@ isEmpty(0); // false
 
 ### `is(value, expectedValue)`
 
+> 💡 You can use `is` container as a guard function
+
+> `(value, expectedValue) => boolean`\
+> `(value, expectedValue, isEqual) => boolean`
+>
+> `(expectedValue) => (value) => boolean`\
+> `(expectedValue, isEqual) => (value) => boolean`
+
 Check if value is equal to a given expected value.
 
-ℹ️ Based on `Object.is` method for comparison
+ℹ️ By default will use `Object.is` for comparison, but you can pass custom `isEqual` function as a third argument
 
 ```tsx
 is(42, 42); // true
-is(42, '42'); // false
+
+const isExactly42 = is(42);
+
+isExactly42(42); // true
+isExactly42('anything else'); // false
+```
+
+```tsx
+import is from 'utility-guards';
+import isEqual from 'lodash/isEqual';
+
+const isMyObject = is({ a: 3 }, isEqual);
+
+isMyObject({ a: 3 }); // true
+isMyObject({ a: 3, b: 4 }); // false
 ```
 
 ---
@@ -447,7 +482,7 @@ const filtered = arr.filter(notIsNil);
 console.log(filtered); // [1, 2, 3] (type: number[])
 ```
 
-### `$some(guard1, guard2, ...)`
+### `$some(guard1, guard2, ...)`<a name="_some"></a>
 
 Combine multiple guards with `some` logic (logical OR)
 
@@ -459,7 +494,7 @@ isNumberOrString('42'); // true
 isNumberOrString(true); // false
 ```
 
-### `$every(guard1, guard2, ...)`
+### `$every(guard1, guard2, ...)`<a name="_every"></a>
 
 Combine multiple guards with `every` logic (logical AND)
 
@@ -470,23 +505,12 @@ isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 ```
 
-<!-- ### Curried guards
-
-**ℹ️ Guards with extra arguments are curried functions**
-
-```tsx
-is.ArrayOf(42, is.Number); // valid
-is.ArrayOf(is.Number)(42); // also valid
-
-is.InstanceOf(null!, ArrayBuffer); // valid
-is.InstanceOf(ArrayBuffer)(null!); // also valid
-```
-
---- -->
-
 ## `validate` addon
 
 ### `validate(value, schema)`
+
+> `(value, schema) => boolean`\
+> `(schema) => (value) => boolean`
 
 Allows to validate runtime values (objects) with given schema or guard
 
@@ -526,6 +550,9 @@ validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
 ### `validateStrict(value, schema)`
+
+> `(value, schema) => boolean`\
+> `(schema) => (value) => boolean`
 
 ℹ️ Use `validateStrict` to check if object has all properties from schema
 

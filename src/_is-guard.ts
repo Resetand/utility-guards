@@ -1,5 +1,7 @@
 import { curriedGuard } from './_utils';
 
+type IsEqualCallback = (value: unknown, expectedValue: unknown) => boolean;
+
 export type IsGuard = {
     /**
      * Check if value is equal to expected value
@@ -14,9 +16,19 @@ export type IsGuard = {
      * is(1)(2); // -> false
      */
     <const T>(expectedValue: T): (value: unknown | T) => value is T;
+    <const T>(expectedValue: T, isEqual: IsEqualCallback): (value: unknown | T) => value is T;
     <const T>(value: unknown | T, expectedValue: T): value is T;
+    <const T>(value: unknown | T, expectedValue: T, isEqual: IsEqualCallback): value is T;
 };
 
-const is: IsGuard = curriedGuard((value: unknown, expectedValue: unknown) => Object.is(value, expectedValue));
+const defaultIsEqual = Object.is;
+
+const is: IsGuard = curriedGuard((value: unknown, expectedValue: unknown, isEqual: IsEqualCallback = defaultIsEqual) =>
+    isEqual(value, expectedValue),
+);
 
 export default is;
+
+const isSome = is('some', Object.is);
+
+isSome('some');
