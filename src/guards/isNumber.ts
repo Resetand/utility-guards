@@ -1,7 +1,8 @@
 import { isType } from '../_utils';
 
 /**
- * Check if value a number literal or number created by `Number` constructor
+ * Check if value a number literal or number created by `Number` constructor and not `NaN`
+ *
  *
  * @example
  * isNumber(1); // -> true
