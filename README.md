@@ -29,7 +29,7 @@ All base type guards that you used to copy from project to project in one place
 
 -   🛠️ Reliable type checking for JS runtime
 -   📦 Zero dependencies and only ~800 bytes gzipped size
--   📦 tree-shaking friendly
+-   📦 Tree-shaking friendly
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
 -   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
