@@ -1,3 +1,7 @@
+export type IndexOf<A extends unknown[]> = {
+    [K in keyof A]: A[K] extends A[number] ? K : never;
+}[number];
+
 export type NullOrUndefined = null | undefined;
 export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
@@ -30,16 +34,16 @@ export enum TypeTag {
 
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;
 
-export type TypeSchema<T> = T extends Record<string, unknown> ? ObjectSchema<T> : Guard;
-
-export type InferTypeSchema<TSchema> = TSchema extends Record<string, unknown>
+export type InferTypeSchema<TSchema> = TSchema extends unknown[]
+    ? { [K in IndexOf<TSchema>]: InferTypeSchema<TSchema[K]> }
+    : TSchema extends AnyRecord
     ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K]> }
-    : TSchema extends Guard<infer TGuarded, any[]>
-    ? TGuarded
-    : never;
+    : InferGuardType<TSchema>;
 
-export type ObjectSchema<T extends Record<string, unknown>> = {
-    [K in keyof T]: Guard | TypeSchema<T[K]>;
+export type ObjectSchema = {
+    [key: string]: TypeSchema;
 };
 
-export type InferGuardType<TGuard> = TGuard extends Guard<infer TIs, any[]> ? TIs : never;
+export type TypeSchema = ObjectSchema | TypeSchema[] | Guard;
+
+export type InferGuardType<TGuard> = TGuard extends Guard<infer TGuarded, any[]> ? TGuarded : never;

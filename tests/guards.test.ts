@@ -210,6 +210,19 @@ test.each(
     expect(is.ArrayOf(value, is.Number)).toBe(expected);
 });
 
+test('should check on exact match (is)', () => {
+    expect(is(42, 42)).toBe(true);
+    expect(is(42)(42)).toBe(true);
+    expect(is(42)(43)).toBe(false);
+    expect(is(NaN, NaN));
+    expect(is(NaN)(NaN));
+
+    const fakeEqual = (_a: unknown, _b: unknown) => true;
+
+    expect(is(42, 'test', fakeEqual)).toBe(true);
+    expect(is('test', fakeEqual)(42)).toBe(true);
+});
+
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);

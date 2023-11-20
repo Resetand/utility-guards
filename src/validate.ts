@@ -4,18 +4,24 @@ import { curriedGuard } from './_utils';
 import isFunction from './guards/isFunction';
 import isPlainObject from './guards/isPlainObject';
 import isHasProperty from './guards/isHasProperty';
+import isArray from './guards/isArray';
 
 type ValidateGuard = {
-    <TSchema extends TypeSchema<any>>(value: unknown, schema: TSchema): value is InferTypeSchema<TSchema>;
-    <TSchema extends TypeSchema<any>>(schema: TSchema): (value: unknown) => value is InferTypeSchema<TSchema>;
+    <const TSchema extends TypeSchema>(value: unknown, schema: TSchema): value is InferTypeSchema<TSchema>;
+    <const TSchema extends TypeSchema>(schema: TSchema): (value: unknown) => value is InferTypeSchema<TSchema>;
 };
 
 const validateFactory = (options: { strict: boolean }) => {
     const strict = options?.strict ?? false;
 
-    return curriedGuard<[schema: TypeSchema<any>]>((value, schema) => {
+    const _validate = curriedGuard<[schema: TypeSchema]>((value, schema): boolean => {
         if (isFunction(schema)) {
             return schema(value);
+        }
+
+        if (isArray(schema)) {
+            const isSameLength = isArray(value) && schema.length === value.length;
+            return isSameLength ? value.every((item, index) => _validate(item, schema[index])) : false;
         }
 
         if (isPlainObject(schema) && !isPlainObject(value)) {
@@ -27,13 +33,15 @@ const validateFactory = (options: { strict: boolean }) => {
 
             return keys.every((key) =>
                 isHasProperty(value, key) && isHasProperty(schema, key)
-                    ? validate(value[key], schema[key]) //
+                    ? _validate(value[key], schema[key]) //
                     : false,
             );
         }
 
         throw new Error('Schema must be an object schema or a guard function');
     });
+
+    return _validate;
 };
 
 /**
@@ -45,6 +53,11 @@ const validateFactory = (options: { strict: boolean }) => {
  * validate({ a: 1, b: '2' }, schema); // -> true
  * validate({ a: 1, b: 2, extra: true }, schema); // -> true
  * validate({ a: 1, b: 2 }, schema); // -> false
+ *
+ * const tupleSchema = [isNumber, isString];
+ *
+ * validate([1, '2'], tupleSchema); // -> true
+ * validate([1, 2], tupleSchema); // -> false
  */
 const validate: ValidateGuard = validateFactory({ strict: false });
 
