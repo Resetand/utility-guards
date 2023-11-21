@@ -26,8 +26,6 @@ async function copyPackageFilesToTmp() {
     const packageFiles = ['package.json', 'README.md', '.npmignore'];
     const filePathsToCopy = await glob(packageFiles, { cwd: '.' });
     await copyToTmp(...filePathsToCopy);
-
-    await exec(`npm pack`);
 }
 
 async function copyToTmp(...paths) {
