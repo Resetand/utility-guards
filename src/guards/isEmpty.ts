@@ -18,7 +18,7 @@ type $ExtractEmpty<T> =
     | $ExtractEmptyNull<T>
     | $ExtractEmptyUndefined<T>;
 
-type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : never;
+type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : $ExtractEmpty<T> & T;
 
 /**
  * Check if value is empty:

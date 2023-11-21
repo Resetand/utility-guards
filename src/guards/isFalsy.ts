@@ -10,7 +10,7 @@ type $ExtractFalsy<T> =
     | $ExtractNull<T>
     | $ExtractUndefined<T>;
 
-type $ExtractFalsyFor<T> = $ExtractFalsy<T> extends T ? $ExtractFalsy<T> : never;
+type $ExtractFalsyFor<T> = $ExtractFalsy<T> extends T ? $ExtractFalsy<T> : $ExtractFalsy<T> & T;
 
 /**
  * Check if value is falsy.
