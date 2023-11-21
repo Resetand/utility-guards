@@ -40,7 +40,8 @@
     "test:coverage": "npm run test -- --coverage",
     "prepare": "husky install",
     "pack": "npm run lint && npm run test && npm run build && node scripts/pack.js",
-    "publish": "npm run pack && npm publish $(ls utility-guards-*.tgz) -- --access public && rm utility-guards-*.tgz"
+    "publish": "npm publish $(ls utility-guards-*.tgz) --access public",
+    "postpublish": "rm utility-guards-*.tgz"
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.23.3",
