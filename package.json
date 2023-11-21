@@ -1,6 +1,6 @@
 {
   "name": "utility-guards",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Utils for runtime and static type checking in JS and TS",
   "homepage": "https://github.com/Resetand/utility-guards",
   "author": "Resetand",
