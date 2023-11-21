@@ -40,6 +40,7 @@
     "test:coverage": "npm run test -- --coverage",
     "prepare": "husky install",
     "pack": "npm run lint && npm run test && npm run build && node scripts/pack.js",
+    "prepublish": "npm run pack",
     "publish": "npm publish $(ls utility-guards-*.tgz) --access public",
     "postpublish": "rm utility-guards-*.tgz"
   },
