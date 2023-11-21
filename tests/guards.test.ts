@@ -13,6 +13,20 @@ function* generator() {
     yield 2;
 }
 
+class CustomPromise {
+    then() {
+        return this;
+    }
+
+    catch() {
+        return this;
+    }
+
+    finally() {
+        return this;
+    }
+}
+
 test.each(
     unwrap({
         passed: ['test', String('test2')],
@@ -51,10 +65,10 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [{}, Object.create(null), new String(''), [1, 2, 3], new Cls()],
+        passed: [{}, Object.create(null), new String(''), [1, 2, 3], new Cls(), new CustomError()],
         failed: ['string', null, 0, false],
     }),
-)('should check on Object - %s', (value, expected) => {
+)('should check on AnyObject - %s', (value, expected) => {
     expect(is.AnyObject(value)).toBe(expected);
 });
 
@@ -138,7 +152,7 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [new Promise((res) => res(1)), Promise.resolve(), { then: () => void 0 }],
+        passed: [new Promise((res) => res(1)), Promise.resolve(), { then: () => void 0 }, new CustomPromise()],
         failed: [{}, () => 'test'],
     }),
 )('should check on PromiseLike object - %s', (value, expected) => {
@@ -147,7 +161,17 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [[], [1, 2, 3], Array(10), new Map(), new Set(), new Set([1, 2, 3]), 'some string', generator()],
+        passed: [
+            [],
+            [1, 2, 3],
+            Array(10),
+            new Map(),
+            new Set(),
+            new Set([1, 2, 3]),
+            'some string',
+            generator(),
+            new Set([1, 2]).entries(),
+        ],
         failed: [{}, () => 'test', { then: () => void 0 }, new Promise((res) => res(1))],
     }),
 )('should check on Iterable', (value, expected) => {
@@ -177,8 +201,28 @@ test.each(
         passed: ['', [], {}, new Map(), new Set()],
         failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a', new Set([1, 2, 3]), new Date()],
     }),
-)('should check on Not Empty - %s', (value, expected) => {
+)('should check on Empty - %s', (value, expected) => {
     expect(is.Empty(value)).toBe(expected);
+});
+
+test.each(
+    unwrap({
+        passed: ['', false, 0, null, undefined, NaN],
+        failed: [
+            [1, 2],
+            { a: 'some' },
+            'string',
+            Cls,
+            () => 'a',
+            new Set([1, 2, 3]),
+            new Date(),
+            new Boolean(false),
+            new Number(0),
+            new String(''),
+        ],
+    }),
+)('should check on Falsy - %s', (value, expected) => {
+    expect(is.Falsy(value)).toBe(expected);
 });
 
 test.each(
@@ -201,7 +245,7 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [new Error('example'), new CustomError()],
+        passed: [new Error('example'), new CustomError(), new TypeError()],
         failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a'],
     }),
 )('should check on Error - %s', (value, expected) => {
@@ -210,7 +254,7 @@ test.each(
 
 test.each(
     unwrap({
-        passed: [[1, 2], [], [32, 3, new Number(32)]],
+        passed: [[1, 2], [], [32, 3, new Number(32)], [Number(2)]],
         failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
     }),
 )('should check on Array of %s', (value, expected) => {
@@ -242,8 +286,8 @@ test('Should curry guard', () => {
     expect(is.InstanceOf(Cls)(new Cls())).toBe(true);
     expect(is.InstanceOf(Cls)(new CustomError())).toBe(false);
 
-    expect(is.HasProperty('prop')({ prop: 1 })).toBe(true);
-    expect(is.HasProperty('prop')({ prop: 1, otherProp: 2 })).toBe(true);
+    expect(is.Has('prop')({ prop: 1 })).toBe(true);
+    expect(is.Has('prop')({ prop: 1, otherProp: 2 })).toBe(true);
 });
 
 test('Should combine guards with $some', () => {

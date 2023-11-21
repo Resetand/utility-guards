@@ -42,7 +42,9 @@
     "test": "vitest --watch=false",
     "test:coverage": "npm run test -- --coverage",
     "prepublish": "npm run lint && npm run test && npm run build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepack": "npm run build && cp -r ./lib/* . && rm -rf ./lib",
+    "postpack": "git clean -fd"
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.23.3",

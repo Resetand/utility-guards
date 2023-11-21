@@ -29,6 +29,7 @@ import isPromise from './guards/isPromise';
 import isPromiseLike from './guards/isPromiseLike';
 import isRegExp from './guards/isRegExp';
 import isSymbol from './guards/isSymbol';
+import isFalsy from './guards/isFalsy';
 
 import _isGuard, { IsGuard } from './_is-guard';
 
@@ -60,6 +61,7 @@ const _container = {
     Date: isDate,
     Iterable: isIterable,
     Empty: isEmpty,
+    Falsy: isFalsy,
     InstanceOf: isInstanceOf,
 
     /** @deprecated – use `Has` instead */
@@ -96,6 +98,7 @@ export {
     isClass,
     isDate,
     isEmpty,
+    isFalsy,
     isError,
     isFunction,
     isHasProperty,
