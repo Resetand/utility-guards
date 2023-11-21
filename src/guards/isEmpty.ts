@@ -1,12 +1,24 @@
-import type { NullOrUndefined } from '../_types';
-
 import isPlainObject from './isPlainObject';
 import isArray from './isArray';
 import isString from './isString';
 import isNil from './isNil';
 import isInstanceOf from './isInstanceOf';
 
-type EmptyValue = '' | [] | {} | NullOrUndefined;
+type EmptyObject = Record<PropertyKey, never>;
+
+type $ExtractEmptyArray<T> = T extends any[] ? [] : never;
+type $ExtractEmptyObject<T> = T extends Record<PropertyKey, unknown> ? EmptyObject : never;
+type $ExtractEmptyString<T> = T extends string ? '' : never;
+type $ExtractEmptyNull<T> = T extends null ? null : never;
+type $ExtractEmptyUndefined<T> = T extends undefined ? undefined : never;
+type $ExtractEmpty<T> =
+    | $ExtractEmptyArray<T>
+    | $ExtractEmptyObject<T>
+    | $ExtractEmptyString<T>
+    | $ExtractEmptyNull<T>
+    | $ExtractEmptyUndefined<T>;
+
+type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : never;
 
 /**
  * Check if value is empty:
@@ -29,7 +41,7 @@ type EmptyValue = '' | [] | {} | NullOrUndefined;
  * isEmpty('a'); // -> false
  *
  */
-export default function isEmpty<T>(value: T): value is Extract<T, EmptyValue> {
+export default function isEmpty<T>(value: T): value is $ExtractEmptyFor<T> {
     if (isPlainObject(value)) {
         return !Object.keys(value).length;
     }
