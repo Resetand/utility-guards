@@ -17,10 +17,10 @@ export type IsGuard = {
      * is(1)(1); // -> true
      * is(1)(2); // -> false
      */
-    <const T>(expectedValue: T): (value: unknown | T) => value is T;
-    <const T>(expectedValue: T, isEqual: IsEqualFn): (value: unknown | T) => value is T;
-    <const T>(value: unknown | T, expectedValue: T): value is T;
-    <const T>(value: unknown | T, expectedValue: T, isEqual: IsEqualFn): value is T;
+    <T>(expectedValue: T): (value: unknown | T) => value is T;
+    <T>(expectedValue: T, isEqual: IsEqualFn): (value: unknown | T) => value is T;
+    <T>(value: unknown | T, expectedValue: T): value is T;
+    <T>(value: unknown | T, expectedValue: T, isEqual: IsEqualFn): value is T;
 };
 
 const isAny = (_v: unknown): _v is unknown => true;
