@@ -59,7 +59,8 @@ All base type guards that you used to copy from project to project in one place
 -   [`isPromiseLike`](#ispromiselikevalue)
 -   [`isIterable`](#isiterablevalue)
 -   [`isDate`](#isdatevalue)
--   [`isHasProperty`](#ishaspropertyvalue-propertyname)
+-   [`isHas`](#ishasvalue-propertyname)
+-   [`isHasIn`](#ishasinvalue-propertyname)
 -   [`isArrayOf`](#isarrayofvalue-guard)
 -   [`isInstanceOf`](#isinstanceofvalue-constructor)
 -   [`isEmpty`](#isemptyvalue)
@@ -361,18 +362,41 @@ isDate(new Date('Invalid Date')); // false
 
 ---
 
-### `isHasProperty(value, propertyName)`
+### `isHas(value, propertyName)`
 
 > `(value, propertyName) => boolean`\
 > `(propertyName) => (value) => boolean`
 
-Check if value is an any object and has a given property
+Check if value is an any object and has a direct property with given name
 
 > ℹ️ This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
 
 ```tsx
-isHasProperty({ a: 42 }, 'a'); // true
-isHasProperty({ a: 42 }, 'b'); // false
+isHas({ a: 42 }, 'a'); // true
+isHas({ a: 42 }, 'b'); // false
+```
+
+---
+
+### `isHasIn(value, propertyName)`
+
+> `(value, propertyName) => boolean`\
+> `(propertyName) => (value) => boolean`
+
+Check if value is an any object and has a direct or inherited property with given name
+
+> ℹ️ This method based on `in` operator and checks prototype chain
+
+```tsx
+isHasIn({ a: 42 }, 'a'); // true
+isHasIn({ a: 42 }, 'b'); // false
+isHasIn({ a: 42 }, 'toString'); // true
+
+class A {
+    method() {}
+}
+
+isHasIn(new A(), 'method'); // true
 ```
 
 ---

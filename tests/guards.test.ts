@@ -68,10 +68,17 @@ test.each(
 });
 
 test('should check on PlainObject with own property - %s', () => {
-    expect(is.HasProperty(Cls, 'toString')).toBe(false);
-    expect(is.HasProperty({}, 'toString')).toBe(false);
-    expect(is.HasProperty([1], '0')).toBe(true);
-    expect(is.HasProperty({ prop: 'example' }, 'prop')).toBe(true);
+    expect(is.Has(Cls, 'toString')).toBe(false);
+    expect(is.Has({}, 'toString')).toBe(false);
+    expect(is.Has([1], '0')).toBe(true);
+    expect(is.Has({ prop: 'example' }, 'prop')).toBe(true);
+});
+
+test('should check on value has direct or inherit property - %s', () => {
+    expect(is.HasIn(Cls, 'toString')).toBe(true);
+    expect(is.HasIn({}, 'toString')).toBe(true);
+    expect(is.HasIn([1], '0')).toBe(true);
+    expect(is.HasIn({ prop: 'example' }, 'prop')).toBe(true);
 });
 
 test.each(
@@ -247,7 +254,7 @@ test('Should combine guards with $some', () => {
 });
 
 test('Should combine guards with $every', () => {
-    const guard = is.$every(is.Array, is.HasProperty('attr'));
+    const guard = is.$every(is.Array, is.HasIn('attr'));
 
     type ArrWithAttr = number[] & { attr: number };
 
@@ -258,6 +265,14 @@ test('Should combine guards with $every', () => {
 
     expect(guard([1, 2, 3])).toBe(false);
     expect(guard('some')).toBe(false);
+});
+
+test('Should combine guards with $every #2', () => {
+    const isNotEmptyArray = is.$every(is.Array, is.$not(is.Empty));
+
+    expect(isNotEmptyArray([])).toBe(false);
+    expect(isNotEmptyArray('anything else')).toBe(false);
+    expect(isNotEmptyArray([1, 2, 3])).toBe(true);
 });
 
 test('Should invert guard with $not', () => {

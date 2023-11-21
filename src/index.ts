@@ -13,6 +13,8 @@ import isEmpty from './guards/isEmpty';
 import isError from './guards/isError';
 import isFunction from './guards/isFunction';
 import isHasProperty from './guards/isHasProperty';
+import isHas from './guards/isHas';
+import isHasIn from './guards/isHasIn';
 import isInstanceOf from './guards/isInstanceOf';
 import isIterable from './guards/isIterable';
 import isNaN from './guards/isNaN';
@@ -59,7 +61,12 @@ const _container = {
     Iterable: isIterable,
     Empty: isEmpty,
     InstanceOf: isInstanceOf,
+
+    /** @deprecated – use `Has` instead */
     HasProperty: isHasProperty,
+    Has: isHas,
+    HasIn: isHasIn,
+
     ArrayOf: isArrayOf,
 
     // utility methods

@@ -7,6 +7,7 @@ export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
 export type AnyRecord = Record<PropertyKey, unknown>;
 export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
+export type RecordLike<P extends PropertyKey = PropertyKey> = Record<PropertyKey, unknown> & Record<P, unknown>;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
     ? (value: unknown | TGuarded) => value is TGuarded
@@ -35,15 +36,11 @@ export enum TypeTag {
 export type CurriedGuard<TRes = unknown, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => Guard<TRes>;
 
 export type InferTypeSchema<TSchema> = TSchema extends unknown[]
-    ? { [K in IndexOf<TSchema>]: InferTypeSchema<TSchema[K]> }
+    ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K]> }
     : TSchema extends AnyRecord
     ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K]> }
     : InferGuardType<TSchema>;
 
-export type ObjectSchema = {
-    [key: string]: TypeSchema;
-};
-
-export type TypeSchema = ObjectSchema | TypeSchema[] | Guard;
+export type TypeSchema = { [key: PropertyKey]: TypeSchema } | TypeSchema[] | Guard;
 
 export type InferGuardType<TGuard> = TGuard extends Guard<infer TGuarded, any[]> ? TGuarded : never;
