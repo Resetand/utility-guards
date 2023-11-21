@@ -25,9 +25,6 @@
   "main": "index.js",
   "module": "index.mjs",
   "types": "index.d.ts",
-  "files": [
-    "."
-  ],
   "exports": {
     ".": {
       "import": "./index.mjs",
@@ -41,9 +38,9 @@
     "build": "tsup",
     "test": "vitest --watch=false",
     "test:coverage": "npm run test -- --coverage",
-    "prepublish": "npm run lint && npm run test && npm run build",
     "prepare": "husky install",
-    "pack": "npm run build && node scripts/pack.js"
+    "pack": "npm run lint && npm run test && npm run build && node scripts/pack.js",
+    "publish": "npm run pack && npm publish $(ls utility-guards-*.tgz) -- --access public && rm utility-guards-*.tgz"
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.23.3",
