@@ -48,7 +48,7 @@ const _container = {
     Null: isNull,
     Nil: isNil,
     Primitive: isPrimitive,
-    Object: isAnyObject,
+    AnyObject: isAnyObject,
     PlainObject: isPlainObject,
     Array: isArray,
     Class: isClass,
@@ -99,6 +99,7 @@ export {
     isNull,
     isNil,
     isNumber,
+    isAnyObject,
     isPlainObject,
     isPrimitive,
     isPromise,
@@ -116,4 +117,3 @@ export {
     validate,
     validateStrict,
 };
-

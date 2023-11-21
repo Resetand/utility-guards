@@ -1,6 +1,8 @@
 /**
  * Check if value is a NaN.
- * This method is based on Number.isNaN and is not the same as global isNaN which returns true for undefined and other non-number values
+ *
+ * This method is based on Number.isNaN.
+ * Is not the same as global isNaN which returns true for undefined and other non-number values
  *
  * @example
  * isNaN(NaN); // -> true

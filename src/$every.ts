@@ -6,10 +6,10 @@ type $EveryGuards<TGuards extends Guard[]> = Guard<UnionToIntersection<InferGuar
 /**
  * Combine multiple guards into intersection guard
  * @example
- * const isNumberOrString = $every(is.Empty, isArray);
- * isNumberOrString([]); // -> true
- * isNumberOrString([1]); // -> false
- * isNumberOrString(null); // -> false
+ * const isEmptyArray = $every(is.Empty, isArray);
+ * isEmptyArray([]); // -> true
+ * isEmptyArray([1]); // -> false
+ * isEmptyArray(null); // -> false
  */
 export default function $every<TGuards extends Guard[]>(...guards: TGuards): $EveryGuards<TGuards> {
     return ((value: unknown) => guards.every((guard) => guard(value))) as $EveryGuards<TGuards>;

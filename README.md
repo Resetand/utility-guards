@@ -96,10 +96,10 @@ $not(isNil)(0); // true
 
 ```tsx
 // using standalone imports (tree-shaking friendly)
-import isString from 'utility-guards/isString';
-import isNumber from 'utility-guards/isNumber';
-import isNil from 'utility-guards/isNil';
-import $not from 'utility-guards/$not';
+import isString from 'utility-guards/lib/isString';
+import isNumber from 'utility-guards/lib/isNumber';
+import isNil from 'utility-guards/lib/isNil';
+import $not from 'utility-guards/lib/$not';
 
 isString('42'); // true
 isNumber(42); // false

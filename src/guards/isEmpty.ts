@@ -6,30 +6,40 @@ import isString from './isString';
 import isNil from './isNil';
 import isInstanceOf from './isInstanceOf';
 
-type ExtractEmpty<T> = Extract<T, NullOrUndefined | '' | { [P in keyof T]: never } | never>;
+// type ExtractEmpty<T> = Extract<T, NullOrUndefined | '' | [] | { [P in keyof T]: never } | never>;
+
+type ExtractEmpty<T> = T extends unknown[]
+    ? []
+    : T extends string
+    ? ''
+    : T extends { [P in keyof T]: never }
+    ? {}
+    : T extends NullOrUndefined
+    ? NullOrUndefined
+    : never;
 
 /**
  * Check if value is empty:
  *
  * @example
- * is.Empty({}); // -> true
- * is.Empty([]); // -> true
- * is.Empty(new Set()); // -> true
- * is.Empty(new Map()); // -> true
- * is.Empty(''); // -> true
- * is.Empty(null); // -> true
- * is.Empty(undefined); // -> true
+ * isEmpty({}); // -> true
+ * isEmpty([]); // -> true
+ * isEmpty(new Set()); // -> true
+ * isEmpty(new Map()); // -> true
+ * isEmpty(''); // -> true
+ * isEmpty(null); // -> true
+ * isEmpty(undefined); // -> true
  *
- * is.Empty(0); // -> false
- * is.Empty(false); // -> false
- * is.Empty({ a: 1 }); // -> false
- * is.Empty([1]); // -> false
- * is.Empty(new Set([1])); // -> false
- * is.Empty(new Map([['a', 1]])); // -> false
- * is.Empty('a'); // -> false
+ * isEmpty(0); // -> false
+ * isEmpty(false); // -> false
+ * isEmpty({ a: 1 }); // -> false
+ * isEmpty([1]); // -> false
+ * isEmpty(new Set([1])); // -> false
+ * isEmpty(new Map([['a', 1]])); // -> false
+ * isEmpty('a'); // -> false
  *
  */
-export default function isEmpty<T>(value: T): value is ExtractEmpty<T> {
+export default function isEmpty<T>(value: T): value is T & ExtractEmpty<T> {
     if (isPlainObject(value)) {
         return !Object.keys(value).length;
     }

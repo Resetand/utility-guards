@@ -13,8 +13,9 @@ import { isType } from '../_utils';
  * isNumber(''); // -> false
  *
  * @note
- * Although `NaN` is considered a number in JS, it's not a valid number
- * in most cases you want to check if value is a valid number, so `isNumber(NaN)` returns `false`
+ * Although `NaN` is considered a number in JS `isNumber` will return `false` for `NaN`.
+ * `NaN` is a special literal and in most cases you expect a number to be a valid number.
+ * If you want to check if value is number (including `NaN`) use `isNumber(value) || isNaN(value)` instead.
  */
 export default function isNumber<T>(value: T | number): value is number {
     return isType(value, 'Number') && !Number.isNaN(value);
