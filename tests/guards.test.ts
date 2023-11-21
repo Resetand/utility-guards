@@ -55,7 +55,7 @@ test.each(
         failed: ['string', null, 0, false],
     }),
 )('should check on Object - %s', (value, expected) => {
-    expect(is.Object(value)).toBe(expected);
+    expect(is.AnyObject(value)).toBe(expected);
 });
 
 test.each(
