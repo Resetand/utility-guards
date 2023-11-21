@@ -26,7 +26,7 @@ type IsHasGuard = {
 };
 
 const isHas: IsHasGuard = curriedGuard((value, propertyName) => {
-    return isType(value, 'Object') && Object.prototype.hasOwnProperty.call(value, propertyName);
+    return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
 });
 
 export default isHas;

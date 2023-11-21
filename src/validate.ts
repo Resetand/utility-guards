@@ -3,7 +3,7 @@ import { curriedGuard } from './_utils';
 
 import isFunction from './guards/isFunction';
 import isPlainObject from './guards/isPlainObject';
-import isHasProperty from './guards/isHasProperty';
+import isHas from './guards/isHas';
 import isArray from './guards/isArray';
 
 type ValidateGuard = {
@@ -32,7 +32,7 @@ const validateFactory = (options: { strict: boolean }) => {
             const keys = !strict ? Object.keys(schema) : [...new Set([...Object.keys(schema), ...Object.keys(value!)])];
 
             return keys.every((key) =>
-                isHasProperty(value, key) && isHasProperty(schema, key)
+                isHas(value, key) && isHas(schema, key)
                     ? _validate(value[key], schema[key]) //
                     : false,
             );

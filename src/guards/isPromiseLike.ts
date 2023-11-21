@@ -1,6 +1,6 @@
 import isPromise from './isPromise';
 import isFunction from './isFunction';
-import isHasProperty from './isHasProperty';
+import isHasIn from './isHasIn';
 
 /**
  * Check if value is a promise-like object (has `then` method)
@@ -12,5 +12,5 @@ import isHasProperty from './isHasProperty';
  * isPromiseLike({}); // -> false
  */
 export default function isPromiseLike<T>(value: T | PromiseLike<any>): value is PromiseLike<any> {
-    return isPromise(value) || (isHasProperty(value, 'then') && isFunction(value.then));
+    return isPromise(value) || (isHasIn(value, 'then') && isFunction(value.then));
 }

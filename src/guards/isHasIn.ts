@@ -25,7 +25,7 @@ type IsHasInGuard = {
 };
 
 const isHasIn: IsHasInGuard = curriedGuard((value, propertyName) => {
-    return value instanceof Object && propertyName in value;
+    return value != null && propertyName in Object(value);
 });
 
 export default isHasIn;
