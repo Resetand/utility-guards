@@ -19,7 +19,7 @@ async function restoreCurrentChanges() {
     const { stdout } = await execGit('stash list');
 
     if (stdout.includes(BACKUP_STASH_NAME)) {
-        console.debug('Restoring current changes from git stash...');
+        console.log('Restoring current changes from git stash...');
         await execGit(`stash pop --index`);
     }
 }

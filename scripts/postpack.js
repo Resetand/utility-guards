@@ -3,10 +3,10 @@ const { restoreCurrentChanges, execGit } = require('./_shared');
 
 async function main() {
     // discard all changes after prepack
-    console.debug('Discarding all changes after prepack...');
+    console.log('Discarding all changes after prepack...');
     await execGit('clean -f -d');
 
-    console.debug('Restoring current changes from git stash...');
+    console.log('Restoring current changes from git stash...');
     // restore changes before prepack if any
     await restoreCurrentChanges();
 }

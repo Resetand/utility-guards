@@ -6,20 +6,20 @@ const { saveCurrentChanges, restoreCurrentChanges } = require('./_shared');
 
 async function main() {
     try {
-        console.debug('Saving current changes...');
+        console.log('Saving current changes...');
         await saveCurrentChanges();
 
-        console.debug('Running prepack...');
+        console.log('Running prepack...');
 
-        console.debug('Cleaning up current directory for prepack...');
+        console.log('Cleaning up current directory for prepack...');
         // cleanup current directory
         await cleanupCurrentDirForPrepack();
 
-        console.debug('Unpacking lib/ directory...');
+        console.log('Unpacking lib/ directory...');
         // unpack lib/ directory
         await unpackLibDir();
     } catch (error) {
-        console.debug('Rolling back changes after prepack...');
+        console.log('Rolling back changes after prepack...');
         await restoreCurrentChanges();
 
         console.error(error);
