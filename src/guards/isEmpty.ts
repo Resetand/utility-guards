@@ -6,17 +6,7 @@ import isString from './isString';
 import isNil from './isNil';
 import isInstanceOf from './isInstanceOf';
 
-// type ExtractEmpty<T> = Extract<T, NullOrUndefined | '' | [] | { [P in keyof T]: never } | never>;
-
-type ExtractEmpty<T> = T extends unknown[]
-    ? []
-    : T extends string
-    ? ''
-    : T extends { [P in keyof T]: never }
-    ? {}
-    : T extends NullOrUndefined
-    ? NullOrUndefined
-    : never;
+type EmptyValue = '' | [] | {} | NullOrUndefined;
 
 /**
  * Check if value is empty:
@@ -39,7 +29,7 @@ type ExtractEmpty<T> = T extends unknown[]
  * isEmpty('a'); // -> false
  *
  */
-export default function isEmpty<T>(value: T): value is T & ExtractEmpty<T> {
+export default function isEmpty<T>(value: T): value is Extract<T, EmptyValue> {
     if (isPlainObject(value)) {
         return !Object.keys(value).length;
     }
