@@ -1,5 +1,5 @@
 import { RecordLike } from '../_types';
-import { curriedGuard, isType } from '../_utils';
+import { curriedGuard } from '../_utils';
 
 type IsHasGuard = {
     /**
