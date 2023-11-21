@@ -3,14 +3,14 @@ type $ExtractBoolean<T> = T extends boolean ? false : never;
 type $ExtractString<T> = T extends string ? '' : never;
 type $ExtractNull<T> = T extends null ? null : never;
 type $ExtractUndefined<T> = T extends undefined ? undefined : never;
-type $ExtractEmpty<T> =
+type $ExtractFalsy<T> =
     | $ExtractNumber<T>
     | $ExtractBoolean<T>
     | $ExtractString<T>
     | $ExtractNull<T>
     | $ExtractUndefined<T>;
 
-type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : never;
+type $ExtractFalsyFor<T> = $ExtractFalsy<T> extends T ? $ExtractFalsy<T> : never;
 
 /**
  * Check if value is falsy.
@@ -25,6 +25,6 @@ type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : never
  * isFalsy(null); // -> true
  * isFalsy(1); // -> false
  */
-export default function isFalsy<T>(value: T): value is $ExtractEmptyFor<T> {
+export default function isFalsy<T>(value: T): value is $ExtractFalsyFor<T> {
     return !value;
 }
