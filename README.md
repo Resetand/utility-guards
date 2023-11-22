@@ -100,7 +100,7 @@ $not(isNil)(0); // true
 import isString from 'utility-guards/isString';
 import isNumber from 'utility-guards/isNumber';
 import isNil from 'utility-guards/isNil';
-import $not from 'utility-guards/$not';
+import $not from 'utility-guards/not';
 
 isString('42'); // true
 isNumber(42); // false
