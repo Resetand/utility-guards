@@ -62,9 +62,7 @@ async function extendsPackageJson(pathToPackageJson, exposedFiles) {
                 default: `./${name}.js`,
             };
 
-            acc[`./${name === 'index' ? '.' : name}`] = specifiers;
-            acc[`./${name}.js`] = specifiers;
-            acc[`./${name}.mjs`] = specifiers;
+            acc[`./${name === 'index' ? '' : name}`] = specifiers;
 
             return acc;
         }, {});
