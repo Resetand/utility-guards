@@ -62,9 +62,8 @@ async function extendsPackageJson(pathToPackageJson, exposedFiles) {
                 default: `./${name}.js`,
             };
 
-            acc[`./${name === 'index' ? '' : name}`] = specifiers;
-
-            return acc;
+            const moduleImport = name === 'index' ? '.' : `./${name}`;
+            return { ...acc, [moduleImport]: specifiers };
         }, {});
 
     packageJson.exports = exportsFiled;
