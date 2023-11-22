@@ -1,6 +1,6 @@
-import $every from './$every';
-import $not from './$not';
-import $some from './$some';
+import $every from './every';
+import $not from './not';
+import $some from './some';
 
 import isString from './guards/isString';
 import isArray from './guards/isArray';

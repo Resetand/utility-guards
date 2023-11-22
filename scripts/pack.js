@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
 const cp = require('child_process');
+const groupBy = require('lodash.groupby');
 
 const { glob } = require('glob');
 
@@ -14,6 +15,8 @@ async function main(buildDirName = 'lib') {
 
     const buildFiles = await glob(`${buildDirName}/**/*`, { cwd: '.' });
     await copyToTmp(...buildFiles);
+
+    await extendsPackageJson(path.join(TMP_DIR, 'package.json'), buildFiles);
 
     // run npm pack command
     await exec(`npm pack ${TMP_DIR} --pack-destination ${PROJECT_ROOT}`);
@@ -36,6 +39,39 @@ async function copyToTmp(...paths) {
         const dest = path.join(TMP_DIR, basename);
         await fs.copyFile(p, dest);
     }
+}
+
+/**
+ * @param {string} pathToPackageJson - path to package.json
+ * @param {string[]} exposedFiles - list of files to expose in package.json
+ */
+async function extendsPackageJson(pathToPackageJson, exposedFiles) {
+    const packageJson = require(pathToPackageJson);
+    // each [name].js – is module to expose with name [name]
+    const modulesMap = groupBy(exposedFiles, (f) => path.basename(f).split('.')[0]);
+
+    // creates `exports` section in package.json
+    // modulesMap presents a map with module name as a key and dist files with (.js, .d.ts, .mjs) files as a value
+    const exportsFiled = Object.entries(modulesMap)
+        .filter(([name]) => !name.startsWith('_'))
+        .reduce((acc, [name]) => {
+            const specifiers = {
+                types: `./${name}.d.ts`,
+                require: `./${name}.js`,
+                import: `./${name}.mjs`,
+                default: `./${name}.js`,
+            };
+
+            acc[`./${name === 'index' ? '.' : name}`] = specifiers;
+            acc[`./${name}.js`] = specifiers;
+            acc[`./${name}.mjs`] = specifiers;
+
+            return acc;
+        }, {});
+
+    packageJson.exports = exportsFiled;
+
+    await fs.writeFile(pathToPackageJson, JSON.stringify(packageJson, null, 2));
 }
 
 /**

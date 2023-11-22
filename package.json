@@ -25,14 +25,9 @@
   "main": "index.js",
   "module": "index.mjs",
   "types": "index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "types": "./index.d.ts",
-      "require": "./index.js",
-      "node": "./index.js"
-    }
-  },
+  "files": [
+    "*.{js,mjs,d.ts}"
+  ],
   "scripts": {
     "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
     "build": "tsup",
@@ -56,6 +51,7 @@
     "glob": "^10.3.10",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
+    "lodash.groupby": "^4.6.0",
     "tsup": "7.2.0",
     "typescript": "5.2.2",
     "vitest": "0.34.6"

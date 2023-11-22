@@ -8,9 +8,11 @@ const OUT_DIR = path.resolve(__dirname, 'lib');
 const SRC_DIR = path.resolve(__dirname, 'src');
 
 export default defineConfig(async () => {
+    const entry = await makeEntryMap(SRC_DIR);
+
     return {
+        entry,
         outDir: OUT_DIR,
-        entry: await makeEntryMap(SRC_DIR),
         format: ['cjs', 'esm'],
         splitting: false,
         sourcemap: true,
@@ -19,7 +21,7 @@ export default defineConfig(async () => {
         platform: 'neutral',
         target: 'es5',
         minify: true,
-        dts: true,
+        dts: { entry },
         bundle: true,
     };
 });
@@ -52,7 +54,8 @@ async function makeEntryMap(dirPath: string, aliases?: Record<string, string>) {
         if (dirent.isFile()) {
             const name = dirent.name.split('.')[0];
             const alias = aliases?.[name] ?? name;
-            entries[alias] = dirent.path;
+            const direntPath = path.resolve(dirPath, dirent.name);
+            entries[alias] = direntPath;
             continue;
         }
     }

@@ -4,7 +4,7 @@ import isNumber from './isNumber';
 import isString from './isString';
 import isSymbol from './isSymbol';
 import isNil from './isNil';
-import $some from '../$some';
+import $some from '../some';
 
 /**
  * Check if value is a primitive

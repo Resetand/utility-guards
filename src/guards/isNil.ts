@@ -1,4 +1,4 @@
-import $some from '../$some';
+import $some from '../some';
 import isNull from './isNull';
 import isUndefined from './isUndefined';
 
