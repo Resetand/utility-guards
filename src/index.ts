@@ -101,6 +101,8 @@ export {
     isFalsy,
     isError,
     isFunction,
+    isHas,
+    isHasIn,
     isHasProperty,
     isInstanceOf,
     isIterable,
