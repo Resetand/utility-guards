@@ -274,6 +274,16 @@ test('should check on exact match (is)', () => {
     expect(is('test', fakeEqual)(42)).toBe(true);
 });
 
+test('should throw invalid arguments error (is)', () => {
+    const fakeEqual = (_a: unknown, _b: unknown) => true;
+
+    // @ts-ignore
+    expect(() => is(fakeEqual, 'a', 'b', 'c')).toThrowError();
+
+    // @ts-ignore
+    expect(() => is('a', 'b', 'c')());
+});
+
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
