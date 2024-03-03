@@ -5,18 +5,30 @@ import isNil from './isNil';
 import isInstanceOf from './isInstanceOf';
 
 type EmptyObject = Record<PropertyKey, never>;
+type EmptyMap<TKey = unknown> = Map<TKey, never>;
+type EmptySet = Set<never>;
+type EmptyArray = [];
+type EmptyString = '';
+type AnyEmptyValue = EmptyArray | EmptyObject | EmptyString | EmptyMap | EmptySet | null | undefined;
 
-type $ExtractEmptyArray<T> = T extends any[] ? [] : never;
+type $ExtractEmptyArray<T> = T extends any[] ? EmptyArray : never;
 type $ExtractEmptyObject<T> = T extends Record<PropertyKey, unknown> ? EmptyObject : never;
-type $ExtractEmptyString<T> = T extends string ? '' : never;
+type $ExtractEmptyString<T> = T extends string ? EmptyString : never;
 type $ExtractEmptyNull<T> = T extends null ? null : never;
 type $ExtractEmptyUndefined<T> = T extends undefined ? undefined : never;
+type $ExtractEmptyMap<T> = T extends Map<infer TKey, unknown> ? EmptyMap<TKey> : never;
+type $ExtractEmptySet<T> = T extends Set<unknown> ? EmptySet : never;
+type $ExtractEmptyUnknownFallback<T> = unknown extends T ? AnyEmptyValue : never;
+
 type $ExtractEmpty<T> =
     | $ExtractEmptyArray<T>
     | $ExtractEmptyObject<T>
     | $ExtractEmptyString<T>
     | $ExtractEmptyNull<T>
-    | $ExtractEmptyUndefined<T>;
+    | $ExtractEmptyUndefined<T>
+    | $ExtractEmptyMap<T>
+    | $ExtractEmptySet<T>
+    | $ExtractEmptyUnknownFallback<T>;
 
 type $ExtractEmptyFor<T> = $ExtractEmpty<T> extends T ? $ExtractEmpty<T> : $ExtractEmpty<T> & T;
 

@@ -163,11 +163,13 @@ isBoolean(42); // false
 
 Check if value is an NaN value.
 
-ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which returns true for undefined and other non-number values
+ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which converts value to number before checking
 
 ```tsx
 isNaN(NaN); // true
-isNaN(2 + {}); // false
+isNaN(2 + {}); // true
+isNaN(42); // false
+isNaN({}); // false
 ```
 
 ---
