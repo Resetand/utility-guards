@@ -7,8 +7,13 @@ import isHas from './guards/isHas';
 import isArray from './guards/isArray';
 
 type ValidateGuard = {
-    <TSchema extends TypeSchema>(value: unknown, schema: TSchema): value is InferTypeSchema<TSchema>;
-    <TSchema extends TypeSchema>(schema: TSchema): (value: unknown) => value is InferTypeSchema<TSchema>;
+    <TSchema extends TypeSchema>(
+        value: unknown,
+        schema: TSchema | Readonly<TSchema>,
+    ): value is InferTypeSchema<TSchema>;
+    <TSchema extends TypeSchema>(schema: TSchema | Readonly<TSchema>): (
+        value: unknown,
+    ) => value is InferTypeSchema<TSchema>;
 };
 
 const validateFactory = (options: { strict: boolean }) => {

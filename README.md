@@ -540,39 +540,6 @@ isEmptyArray([1, 2, 3]); // false
 
 Allows to validate runtime values (objects) with given schema or guard
 
-### `validate` function args
-
-One of the use cases for `validate` is to validate runtime values with given schema or guard
-
-```ts
-type FunctionExample = {
-    (value: string): string;
-    (value: string, otherValue: number): string;
-    (value: string, otherValue: number[]): string;
-};
-
-const example: FunctionExample = (...args: unknown[]) => {
-    if (validate(args, tuple(isString))) {
-        const [value] = args; // [string]
-    }
-    if (validate(args, tuple(isString, isNumber))) {
-        const [value, otherValue] = args; // [string, number]
-    }
-    if (validate(args, tuple(isString, isArrayOf(isNumber)))) {
-        const [value, otherValue] = args; // [string, number[]]
-    }
-
-    // fallback
-};
-
-/**
- * This hack is required to correct type inference
- * Although typescript v5+ has `const` genetic modifier, that allows to infer such cases correctly
- * most of the projects use older versions of typescript, and this feature is breaking declaration files
- */
-const tuple = <T extends unknown[]>(...args: T) => args;
-```
-
 ### Usage
 
 #### Validate object with schema
@@ -626,6 +593,32 @@ if (validate(arr, schema)) {
 } else {
     arr[2].e[0]; // TS Error
 }
+```
+
+#### Validate function args
+
+One of the useful use-cases is to validate overloaded function arguments
+
+```ts
+type FunctionExample = {
+    (value: string): void;
+    (value: string, otherValue: number): void;
+    (value: string, otherValue: number[]): void;
+};
+
+const example: FunctionExample = (...args: unknown[]) => {
+    if (validate(args, [isString])) {
+        const [value] = args; // [string]
+    }
+    if (validate(args, [isString, isNumber])) {
+        const [value, otherValue] = args; // [string, number]
+    }
+    if (validate(args, [isString, isArrayOf(isNumber)])) {
+        const [value, otherValue] = args; // [string, number[]]
+    }
+
+    // fallback
+};
 ```
 
 #### Validate value with guard
