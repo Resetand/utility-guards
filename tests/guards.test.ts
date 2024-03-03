@@ -29,6 +29,7 @@ import {
     $not,
     $every,
     $some,
+    isAny,
 } from '../src';
 
 import { test, expect } from 'vitest';
@@ -336,7 +337,7 @@ describe('Guards runtime tests', () => {
             failed: [],
         }),
     )('should check on Any - %s', (value, expected) => {
-        expect(isSymbol(value)).toBe(expected);
+        expect(isAny(value)).toBe(expected);
     });
 });
 
