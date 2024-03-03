@@ -63,6 +63,7 @@ const validate: ValidateGuard = validateFactory({ strict: false });
 
 /**
  * Validate value against schema
+ * In strict mode, extra properties for objects are not allowed
  * @example
  * import { isString, isNumber, validateStrict } from 'utility-guards';
  *

@@ -12,7 +12,6 @@ import isDate from './guards/isDate';
 import isEmpty from './guards/isEmpty';
 import isError from './guards/isError';
 import isFunction from './guards/isFunction';
-import isHasProperty from './guards/isHasProperty';
 import isHas from './guards/isHas';
 import isHasIn from './guards/isHasIn';
 import isInstanceOf from './guards/isInstanceOf';
@@ -30,6 +29,7 @@ import isPromiseLike from './guards/isPromiseLike';
 import isRegExp from './guards/isRegExp';
 import isSymbol from './guards/isSymbol';
 import isFalsy from './guards/isFalsy';
+import isAny from './guards/isAny';
 
 import _isGuard, { IsGuard } from './_is-guard';
 
@@ -63,9 +63,7 @@ const _container = {
     Empty: isEmpty,
     Falsy: isFalsy,
     InstanceOf: isInstanceOf,
-
-    /** @deprecated – use `Has` instead */
-    HasProperty: isHasProperty,
+    Any: isAny,
     Has: isHas,
     HasIn: isHasIn,
 
@@ -103,7 +101,6 @@ export {
     isFunction,
     isHas,
     isHasIn,
-    isHasProperty,
     isInstanceOf,
     isIterable,
     isNaN,
@@ -119,6 +116,7 @@ export {
     isRegExp,
     isString,
     isSymbol,
+    isAny,
 
     // public utils
     $some,

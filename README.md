@@ -163,11 +163,13 @@ isBoolean(42); // false
 
 Check if value is an NaN value.
 
-ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which returns true for undefined and other non-number values
+ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which converts value to number before checking
 
 ```tsx
 isNaN(NaN); // true
-isNaN(2 + {}); // false
+isNaN(2 + {}); // true
+isNaN(42); // false
+isNaN({}); // false
 ```
 
 ---
@@ -537,6 +539,39 @@ isEmptyArray([1, 2, 3]); // false
 > `(schema) => (value) => boolean`
 
 Allows to validate runtime values (objects) with given schema or guard
+
+### `validate` function args
+
+One of the use cases for `validate` is to validate runtime values with given schema or guard
+
+```ts
+type FunctionExample = {
+    (value: string): string;
+    (value: string, otherValue: number): string;
+    (value: string, otherValue: number[]): string;
+};
+
+const example: FunctionExample = (...args: unknown[]) => {
+    if (validate(args, tuple(isString))) {
+        const [value] = args; // [string]
+    }
+    if (validate(args, tuple(isString, isNumber))) {
+        const [value, otherValue] = args; // [string, number]
+    }
+    if (validate(args, tuple(isString, isArrayOf(isNumber)))) {
+        const [value, otherValue] = args; // [string, number[]]
+    }
+
+    // fallback
+};
+
+/**
+ * This hack is required to correct type inference
+ * Although typescript v5+ has `const` genetic modifier, that allows to infer such cases correctly
+ * most of the projects use older versions of typescript, and this feature is breaking declaration files
+ */
+const tuple = <T extends unknown[]>(...args: T) => args;
+```
 
 ### Usage
 
