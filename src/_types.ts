@@ -41,6 +41,7 @@ export type InferTypeSchema<TSchema> = TSchema extends unknown[]
     ? { [K in keyof TSchema]: InferTypeSchema<TSchema[K]> }
     : InferGuardType<TSchema>;
 
-export type TypeSchema = { [key: PropertyKey]: TypeSchema } | TypeSchema[] | Guard;
+type ObjectSchema = { [K in PropertyKey]: TypeSchema };
+export type TypeSchema = ObjectSchema | Guard | [] | [TypeSchema] | [TypeSchema, ...TypeSchema[]];
 
 export type InferGuardType<TGuard> = TGuard extends Guard<infer TGuarded, any[]> ? TGuarded : never;
