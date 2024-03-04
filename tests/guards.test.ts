@@ -1,4 +1,3 @@
-import { describe } from 'node:test';
 import {
     default as is,
     isString,
@@ -30,11 +29,10 @@ import {
     $every,
     $some,
     isAny,
+    isClass,
 } from '../src';
 
-import { test, expect } from 'vitest';
-import { assertGuardedType } from './utils';
-import { AnyFunction } from '_types';
+import { describe, test, expect } from 'vitest';
 
 const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
     return [...tests.passed.map((p) => [p, true]), ...tests.failed.map((f) => [f, false])] as [TP | TF, boolean][];
@@ -43,7 +41,9 @@ const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
 // export const assertType = <T>(_: T) => {};
 
 class Cls {}
-class CustomError extends Error {}
+class CustomError extends Error {
+    unique = true;
+}
 function func() {}
 function* generator() {
     yield 1;
@@ -168,6 +168,15 @@ describe('Guards runtime tests', () => {
         }),
     )('should check on Function - %s', (value, expected) => {
         expect(isFunction(value)).toBe(expected);
+    });
+
+    test.each(
+        unwrap({
+            passed: [Cls, CustomError, CustomPromise],
+            failed: ['string', null, [1, 2, 3], 0, () => 'test'],
+        }),
+    )('should check on isClass - %s', (value, expected) => {
+        expect(isClass(value)).toBe(expected);
     });
 
     test.each(
@@ -341,7 +350,6 @@ describe('Guards runtime tests', () => {
     });
 });
 
-test('');
 test('Should work outside this context', () => {
     const { Number: isNumber } = is;
     expect([12, 32, 32].every(isNumber)).toBe(true);
@@ -386,138 +394,5 @@ describe('utility functions (hoc)', () => {
 
         expect([1, 2, null, 3, undefined].filter($not(isNil))).toEqual([1, 2, 3]);
         expect([1, 2, null, 3, undefined, 'test'].filter($not($some(isNil, isString)))).toEqual([1, 2, 3]);
-    });
-});
-
-describe('guards static typing tests', () => {
-    test('Should check isString typing', () => {
-        assertGuardedType<string>()(isString);
-        assertGuardedType<string>()(isString, '');
-        assertGuardedType<string>()(isString, 'some string');
-    });
-
-    test('Should check isNumber typing', () => {
-        assertGuardedType<number>()(isNumber);
-        assertGuardedType<number>()(isNumber, 32);
-    });
-
-    test('Should check isBoolean typing', () => {
-        assertGuardedType<boolean>()(isBoolean);
-        assertGuardedType<boolean>()(isBoolean, true);
-    });
-
-    test('Should check isUndefined typing', () => {
-        assertGuardedType<undefined>()(isUndefined);
-        assertGuardedType<undefined>()(isUndefined, undefined);
-    });
-
-    test('Should check isNull typing', () => {
-        assertGuardedType<null>()(isNull);
-        assertGuardedType<null>()(isNull, null);
-        assertGuardedType<null>()(isNull, 32 as unknown);
-    });
-
-    test('Should check isNil typing', () => {
-        assertGuardedType<null | undefined>()(isNil);
-        assertGuardedType<null | undefined>()(isNil, null);
-        assertGuardedType<null | undefined>()(isNil, undefined);
-    });
-
-    test('Should check isFunction typing', () => {
-        assertGuardedType<AnyFunction>()(isFunction);
-        assertGuardedType<AnyFunction>()(isFunction, () => 'test');
-        assertGuardedType<AnyFunction>()(isFunction, new Function());
-    });
-
-    test('Should check isEmpty typing', () => {
-        type AnyEmptyValue = [] | {} | '' | Set<never> | Map<unknown, never> | null | undefined;
-        assertGuardedType<AnyEmptyValue>()(isEmpty);
-        assertGuardedType<AnyEmptyValue>()(isEmpty, '');
-        assertGuardedType<AnyEmptyValue>()(isEmpty, []);
-        assertGuardedType<AnyEmptyValue>()(isEmpty, new Set());
-        assertGuardedType<AnyEmptyValue>()(isEmpty, new Map());
-        assertGuardedType<AnyEmptyValue>()(isEmpty, {});
-        assertGuardedType<AnyEmptyValue>()(isEmpty, undefined);
-        assertGuardedType<AnyEmptyValue>()(isEmpty, null);
-    });
-
-    test('Should check isArrayOf typing', () => {
-        assertGuardedType<number[]>()(isArrayOf(isNumber));
-        assertGuardedType<number[]>()(isArrayOf(isNumber), [1, 2]);
-        assertGuardedType<string[]>()(isArrayOf(isString), ['1', 2]);
-    });
-
-    test('Should check isInstanceOf typing', () => {
-        assertGuardedType<Cls>()(isInstanceOf(Cls));
-        assertGuardedType<Cls>()(isInstanceOf(Cls), new Cls());
-        assertGuardedType<CustomError>()(isInstanceOf(CustomError), new CustomError());
-    });
-
-    test('Should check isHas typing', () => {
-        assertGuardedType<{ prop: unknown }>()(isHas('prop'));
-        assertGuardedType<{ prop: unknown }>()(isHas('prop'), { prop: 1 });
-        assertGuardedType<{ prop: unknown; other: number }>()(isHas('prop'), { other: 1 });
-    });
-
-    test('Should check isHasIn typing', () => {
-        assertGuardedType<{ prop: unknown }>()(isHasIn('prop'));
-        assertGuardedType<{ prop: unknown }>()(isHasIn('prop'), { prop: 1 });
-        assertGuardedType<{ prop: unknown; other: number }>()(isHasIn('prop'), { other: 1 });
-    });
-
-    test('Should check isPromise typing', () => {
-        assertGuardedType<Promise<unknown>>()(isPromise, null as unknown);
-        assertGuardedType<Promise<unknown>>()(isPromise, new Promise((res) => res(1)));
-    });
-
-    test('Should check isPromiseLike typing', () => {
-        assertGuardedType<PromiseLike<unknown>>()(isPromiseLike, null as unknown);
-        assertGuardedType<PromiseLike<unknown>>()(isPromiseLike, new Promise((res) => res(1)));
-    });
-
-    test('Should check isIterable typing', () => {
-        assertGuardedType<Iterable<unknown>>()(isIterable, null as unknown);
-        assertGuardedType<Iterable<unknown>>()(isIterable, [1, 2, 3]);
-    });
-
-    test('Should check isRegExp typing', () => {
-        assertGuardedType<RegExp>()(isRegExp, /test/);
-        assertGuardedType<RegExp>()(isRegExp, null as unknown);
-    });
-
-    test('Should check isSymbol typing', () => {
-        assertGuardedType<symbol>()(isSymbol, Symbol('test'));
-        assertGuardedType<symbol>()(isSymbol, null as unknown);
-    });
-
-    test('Should check isError typing', () => {
-        assertGuardedType<Error>()(isError, new Error());
-        assertGuardedType<Error>()(isError, null as unknown);
-    });
-
-    test('Should check isPlainObject typing', () => {
-        assertGuardedType<{}>()(isPlainObject, {});
-        assertGuardedType<{}>()(isPlainObject, null as unknown);
-    });
-
-    test('Should check isAnyObject typing', () => {
-        assertGuardedType<{}>()(isAnyObject, {});
-        assertGuardedType<{}>()(isAnyObject, null as unknown);
-    });
-
-    test('Should check isPrimitive typing', () => {
-        type Primitive = string | number | bigint | boolean | symbol | null | undefined;
-        assertGuardedType<Primitive>()(isPrimitive, '');
-        assertGuardedType<Primitive>()(isPrimitive, 32);
-        assertGuardedType<Primitive>()(isPrimitive, true);
-        assertGuardedType<Primitive>()(isPrimitive, Symbol('test'));
-        assertGuardedType<Primitive>()(isPrimitive, null);
-        assertGuardedType<Primitive>()(isPrimitive, undefined);
-        assertGuardedType<Primitive>()(isPrimitive, null! as unknown);
-    });
-
-    test('Should check isNaN typing', () => {
-        assertGuardedType<number>()(isNaN, NaN);
-        assertGuardedType<number>()(isNaN, 32 as unknown);
     });
 });

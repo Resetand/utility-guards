@@ -1,4 +1,3 @@
-import { RecordLike } from '../_types';
 import { curriedGuard } from '../_utils';
 
 type IsHasGuard = {
@@ -21,8 +20,8 @@ type IsHasGuard = {
      * isHas({ a: 1 })('a'); // -> true
      * validate({value}, {value: is.isHas({ a: 1 })}); // -> true
      */
-    <T, P extends PropertyKey>(value: T | RecordLike, propertyName: P): value is RecordLike<P>;
-    <P extends PropertyKey>(propertyName: P): <T>(value: T) => value is RecordLike<P> & T;
+    <T, P extends PropertyKey>(value: T, propertyName: P): value is T & { [K in P]: unknown };
+    <P extends PropertyKey>(propertyName: P): <T>(value: T) => value is T & { [K in P]: unknown };
 };
 
 const isHas: IsHasGuard = curriedGuard((value, propertyName) => {

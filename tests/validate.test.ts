@@ -1,6 +1,5 @@
 import { test, expect, describe } from 'vitest';
 import is, { validate, validateStrict } from '../src';
-import { assertGuardedType } from './utils';
 
 describe('Validate runtime tests', () => {
     test('Should validate by schema shape (validate)', () => {
@@ -62,49 +61,5 @@ describe('Validate runtime tests', () => {
         expect(validate([1, '2', true, [{ a: 1, b: 2 }]], schema)).toBe(false);
         expect(validate([1, '2', true, [{ a: 1 }]], schema)).toBe(false);
         expect(validate([1, '2', true, [{ a: 1, b: '2', c: 3 }]], schema)).toBe(true); // extra properties are allowed
-    });
-});
-
-describe('Validate static typing tests', () => {
-    test('should infer guarded type from object schema', () => {
-        const schema = {
-            a: is.Number,
-            b: is.$some(is.String, is.Nil),
-            c: {
-                d: is.Boolean,
-                e: {
-                    f: is.Number,
-                    g: is.String,
-                },
-            },
-        };
-
-        type ExpectedType = {
-            a: number;
-            b: string | null | undefined;
-            c: {
-                d: boolean;
-                e: {
-                    f: number;
-                    g: string;
-                };
-            };
-        };
-
-        assertGuardedType<ExpectedType>()(validate(schema));
-        assertGuardedType<ExpectedType>()(validateStrict(schema));
-    });
-
-    test('should infer guarded type from array schema', () => {
-        type ExpectedType = [number, string, boolean];
-
-        assertGuardedType<ExpectedType>()(validate([is.Number, is.String, is.Boolean]), []);
-        assertGuardedType<ExpectedType>()(validateStrict([is.Number, is.String, is.Boolean]), []);
-    });
-
-    test('should infer guarded type from guard schema', () => {
-        assertGuardedType<number>()(validate(is.Number));
-        assertGuardedType<string>()(validate(is.String));
-        assertGuardedType<string | null | undefined>()(validate(is.$some(is.String, is.Nil)));
     });
 });

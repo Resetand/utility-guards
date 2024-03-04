@@ -1,16 +1,6 @@
-type $ExtractNumber<T> = T extends number ? 0 : never;
-type $ExtractBoolean<T> = T extends boolean ? false : never;
-type $ExtractString<T> = T extends string ? '' : never;
-type $ExtractNull<T> = T extends null ? null : never;
-type $ExtractUndefined<T> = T extends undefined ? undefined : never;
-type $ExtractFalsy<T> =
-    | $ExtractNumber<T>
-    | $ExtractBoolean<T>
-    | $ExtractString<T>
-    | $ExtractNull<T>
-    | $ExtractUndefined<T>;
+import { Narrow } from '../_types';
 
-type $ExtractFalsyFor<T> = $ExtractFalsy<T> extends T ? $ExtractFalsy<T> : $ExtractFalsy<T> & T;
+type Falsy = 0 | '' | false | null | undefined;
 
 /**
  * Check if value is falsy.
@@ -25,6 +15,6 @@ type $ExtractFalsyFor<T> = $ExtractFalsy<T> extends T ? $ExtractFalsy<T> : $Extr
  * isFalsy(null); // -> true
  * isFalsy(1); // -> false
  */
-export default function isFalsy<T>(value: T): value is $ExtractFalsyFor<T> {
+export default function isFalsy<T>(value: T): value is Narrow<T, Falsy> {
     return !value;
 }
