@@ -11,8 +11,15 @@ export type Class<T = unknown> = new (...args: any[]) => T;
  * type T3 = Narrow<Function, Record<string, unknown>>; // -> Function & Record<string, unknown>
  */
 export type Narrow<U, T> = Extract<T, U> extends never ? (T extends U ? T : T & U) : Extract<T, U>;
+export declare type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+    ? I
+    : never;
 
-export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
+export type ValueType<T> = {
+    [K in keyof T]: T[K];
+}[keyof T];
+
+export type Guard<TGuarded = unknown, TArgs extends any[] = void[]> = TArgs extends void[]
     ? (value: unknown | TGuarded) => value is TGuarded
     : (value: unknown | TGuarded, ...args: TArgs) => value is TGuarded;
 

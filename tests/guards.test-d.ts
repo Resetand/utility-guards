@@ -573,7 +573,9 @@ describe('guards static typing tests', () => {
             isDate(v) && expectTypeOf(v).toEqualTypeOf<never>();
         });
     });
+});
 
+describe('utility static typing tests', () => {
     test('Should check $not typing', () => {
         withValue((v: unknown) => {
             $not(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<unknown>();
@@ -618,9 +620,23 @@ describe('guards static typing tests', () => {
         withValue((v: string | number[]) => {
             notEmptyArrayOrString(v) && expectTypeOf(v).toEqualTypeOf<string | number[]>();
         });
+    });
 
-        withValue((v: unknown) => {
-            notEmptyArray(v) && expectTypeOf(v).toEqualTypeOf<unknown>();
+    test('Should combine complex logic', () => {
+        withValue(['1', 2, '3', 4, null], (v) => {
+            expectTypeOf(v.filter($not(isString))).toEqualTypeOf<(number | null)[]>();
+            expectTypeOf(v.filter($not(isNumber))).toEqualTypeOf<(string | null)[]>();
+
+            const notStringOrNumber = $not($some(isNumber, isString));
+            const notStringAndNotNumber = $every($not(isNumber), $not(isString));
+
+            expectTypeOf(v.filter(notStringOrNumber)).toEqualTypeOf<null[]>();
+            expectTypeOf(v.filter(notStringAndNotNumber)).toEqualTypeOf<null[]>();
+        });
+
+        withValue((v: [] | [number, ...number[]]) => {
+            const notEmptyArray = $every(isArray, isEmpty);
+            notEmptyArray(v) && expectTypeOf(v).toEqualTypeOf<[]>();
         });
     });
 });
