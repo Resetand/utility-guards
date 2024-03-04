@@ -11,6 +11,6 @@ import isHasIn from './isHasIn';
  * isPromiseLike({ then: () => void 0 }); // -> true
  * isPromiseLike({}); // -> false
  */
-export default function isPromiseLike<T>(value: T | PromiseLike<any>): value is PromiseLike<any> {
+export default function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
     return isPromise(value) || (isHasIn(value, 'then') && isFunction(value.then));
 }

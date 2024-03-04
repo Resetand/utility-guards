@@ -8,6 +8,6 @@ import { isType } from '../_utils';
  * isNil(undefined); // -> false
  * isNil(''); // -> false
  */
-export default function isNull<T>(value: T | null): value is null {
+export default function isNull(value: unknown): value is null {
     return isType(value, 'Null');
 }

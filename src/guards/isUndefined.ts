@@ -8,6 +8,6 @@ import { isType } from '../_utils';
  * isNil(null); // -> false
  * isNil(''); // -> false
  */
-export default function isUndefined<T>(value: T | undefined): value is undefined {
+export default function isUndefined(value: unknown): value is undefined {
     return isType(value, 'Undefined');
 }

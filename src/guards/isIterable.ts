@@ -12,6 +12,6 @@
  * isIterable({}); // -> false
  * isIterable(null); // -> false
  */
-export default function isIterable<T>(value: T | Iterable<unknown>): value is Iterable<unknown> {
+export default function isIterable(value: unknown): value is Iterable<unknown> {
     return Symbol.iterator in Object(value);
 }

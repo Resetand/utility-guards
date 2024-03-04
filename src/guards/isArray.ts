@@ -6,6 +6,6 @@
  * isArray(new Array()); // -> true
  * isArray({}); // -> false
  */
-export default function isArray<T>(value: T | unknown[]): value is unknown[] {
+export default function isArray(value: unknown): value is unknown[] {
     return Array.isArray(value);
 }

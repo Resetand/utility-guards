@@ -1,5 +1,4 @@
 import { isType } from '../_utils';
-
 /**
  * Check if value a number literal or number created by `Number` constructor and not `NaN`
  *
@@ -17,6 +16,6 @@ import { isType } from '../_utils';
  * `NaN` is a special literal and in most cases you expect a number to be a valid number.
  * If you want to check if value is number (including `NaN`) use `isNumber(value) || isNaN(value)` instead.
  */
-export default function isNumber<T>(value: T | number): value is number {
+export default function isNumber(value: unknown): value is number {
     return isType(value, 'Number') && !Number.isNaN(value);
 }

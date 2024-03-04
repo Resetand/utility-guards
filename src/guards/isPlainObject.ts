@@ -1,5 +1,8 @@
-import type { AnyRecord } from '../_types';
 import { isType } from '../_utils';
+
+type PlainObject = {
+    [key: string]: unknown;
+};
 
 /**
  * Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes)
@@ -15,7 +18,7 @@ import { isType } from '../_utils';
  * isPlainObject([]); // -> false
  * isPlainObject(null); // -> false
  */
-export default function isPlainObject<T>(value: T | AnyRecord): value is AnyRecord {
+export default function isPlainObject(value: unknown): value is PlainObject {
     if (!isType(value, 'Object')) {
         return false;
     }
