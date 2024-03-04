@@ -9,6 +9,6 @@ import { isType } from '../_utils';
  * isPromise({ then: () => void 0 }); // -> false (see `is.PromiseLike`)
  * isPromise({}); // -> false
  */
-export default function isPromise<T>(value: T | Promise<unknown>): value is Promise<unknown> {
+export default function isPromise(value: unknown): value is Promise<unknown> {
     return isType(value, 'Promise');
 }

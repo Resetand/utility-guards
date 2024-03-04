@@ -10,6 +10,6 @@ import { isType } from '../_utils';
  * isBigInt(''); // -> false
  * isBigInt(1); // -> false
  */
-export default function isBigInt<T>(value: T | bigint): value is bigint {
+export default function isBigInt(value: unknown): value is bigint {
     return isType(value, 'BigInt');
 }

@@ -13,6 +13,6 @@ import { isType } from '../_utils';
  *
  * isFunction(class {}); // -> false (although class is a constructor function in JS, it's expected behavior)
  */
-export default function isFunction<T>(value: T | AnyFunction): value is AnyFunction {
+export default function isFunction(value: unknown): value is AnyFunction {
     return isType(value, 'Function') && !isClass(value);
 }

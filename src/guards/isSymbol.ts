@@ -9,6 +9,6 @@ import { isType } from '../_utils';
  * isSymbol(Symbol.iterator); // -> true
  * isSymbol(''); // -> false
  */
-export default function isSymbol<T>(value: T | symbol): value is symbol {
+export default function isSymbol(value: unknown): value is symbol {
     return isType(value, 'Symbol');
 }

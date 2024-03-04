@@ -3,7 +3,6 @@ import isArray from './isArray';
 import isString from './isString';
 import isNil from './isNil';
 import isInstanceOf from './isInstanceOf';
-import { Narrow } from '../_types';
 
 type EmptyValue = '' | null | undefined | [] | Record<PropertyKey, never> | Map<never, never> | Set<never>;
 
@@ -28,7 +27,7 @@ type EmptyValue = '' | null | undefined | [] | Record<PropertyKey, never> | Map<
  * isEmpty('a'); // -> false
  *
  */
-export default function isEmpty<T>(value: T): value is Narrow<T, EmptyValue> {
+export default function isEmpty(value: unknown): value is EmptyValue {
     if (isPlainObject(value)) {
         return !Object.keys(value).length;
     }

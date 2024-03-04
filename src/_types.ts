@@ -1,12 +1,16 @@
-export type IndexOf<A extends unknown[]> = {
-    [K in keyof A]: A[K] extends A[number] ? K : never;
-}[number];
-
-export type NullOrUndefined = null | undefined;
 export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
-export type AnyPrimitive = string | number | bigint | boolean | symbol | null | undefined;
-export type AnyRecord<K extends PropertyKey = PropertyKey, V = any> = Record<K, V>;
-export type ClassConstructor<T = unknown> = new (...args: any[]) => T;
+export type Class<T = unknown> = new (...args: any[]) => T;
+
+/**
+ * Narrow type U to T, if T is a subset of U.
+ * If T is not a subset of U fallback to intersection between T and U
+ *
+ * @example
+ * type T1 = Narrow<number, 1 | 2>; // -> 1 | 2
+ * type T2 = Narrow<number, 1 | '2'>; // -> 1
+ * type T3 = Narrow<Function, Record<string, unknown>>; // -> Function & Record<string, unknown>
+ */
+export type Narrow<U, T> = Extract<T, U> extends never ? (T extends U ? T : T & U) : Extract<T, U>;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = TArgs extends void[]
     ? (value: unknown | TGuarded) => value is TGuarded
@@ -44,14 +48,3 @@ type ObjectSchema = { [K in PropertyKey]: TypeSchema };
 export type TypeSchema = ObjectSchema | Guard | [] | [TypeSchema] | [TypeSchema, ...TypeSchema[]];
 
 export type InferGuardType<TGuard> = TGuard extends Guard<infer TGuarded, any[]> ? TGuarded : never;
-
-/**
- * Narrow type U to T, if T is a subset of U.
- * If T is not a subset of U fallback to union of T and U.
- *
- * @example
- * type T1 = Narrow<number, 1 | 2>; // -> 1 | 2
- * type T2 = Narrow<number, 1 | '2'>; // -> 1
- * type T3 = Narrow<Function, Record<string, unknown>>; // -> Function & Record<string, unknown>
- */
-export type Narrow<U, T> = Extract<T, U> extends never ? T & U : Extract<T, U>;
