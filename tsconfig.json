@@ -12,7 +12,8 @@
     "baseUrl": "./src",
     "strict": true, // Enable strict mode
     "downlevelIteration": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true
   },
 
   "include": ["src", "tests"]
