@@ -6,6 +6,10 @@ import isSymbol from './isSymbol';
 import isNil from './isNil';
 import $some from '../some';
 
+type Primitive = string | number | boolean | symbol | bigint | null | undefined;
+
+const isPrimitiveImpl = $some(isNil, isBoolean, isString, isNumber, isBigInt, isSymbol);
+
 /**
  * Check if value is a primitive
  * @see `AnyPrimitive`
@@ -22,6 +26,6 @@ import $some from '../some';
  * isPrimitive({}); // -> false
  * isPrimitive([]); // -> false
  */
-const isPrimitive = $some(isNil, isBoolean, isString, isNumber, isBigInt, isSymbol);
-
-export default isPrimitive;
+export default function isPrimitive(value: unknown): value is Primitive {
+    return isPrimitiveImpl(value);
+}

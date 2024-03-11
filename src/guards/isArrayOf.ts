@@ -2,7 +2,7 @@ import type { Guard } from '../_types';
 import isArray from './isArray';
 import { curriedGuard } from '../_utils';
 
-type IsArrayOfGuard = {
+export type IsArrayOfGuard = {
     /**
      * Check if all elements of array match given guard
      *

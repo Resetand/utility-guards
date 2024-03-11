@@ -28,7 +28,7 @@ All base type guards that you used to copy from project to project in one place
 ### **Features:**
 
 -   🛠️ Reliable type checking for JS runtime
--   📦 Zero dependencies and only ~800 bytes gzipped size
+-   📦 Zero dependencies and only 1kb gzipped size
 -   📦 Tree-shaking friendly
 -   🔩 Full Typescript guard support
 -   🔩 Isomorphic: works in browser and node.js
@@ -41,6 +41,7 @@ All base type guards that you used to copy from project to project in one place
 
 -   [`isString`](#isstringvalue)
 -   [`isNumber`](#isnumbervalue)
+-   [`isBigInt`](#isbigintvalue)
 -   [`isBoolean`](#isbooleanvalue)
 -   [`isNaN`](#isnanvalue)
 -   [`isUndefined`](#isundefinedvalue)
@@ -64,6 +65,8 @@ All base type guards that you used to copy from project to project in one place
 -   [`isArrayOf`](#isarrayofvalue-guard)
 -   [`isInstanceOf`](#isinstanceofvalue-constructor)
 -   [`isEmpty`](#isemptyvalue)
+-   [`isFalsy`](#isfalsyvalue)
+-   [`isAny`](#isanyvalue)
 -   [`is`](#isvalue-expectedvalue)
 -   [`$not`](#notguard)
 -   [`$some`](#_some)
@@ -143,6 +146,16 @@ isNumber(42); // true
 isNumber(new Number(42)); // true
 isNumber('42'); // false
 isNumber(NaN); // false
+```
+
+### `isBigInt(value)`
+
+Check if value is an BigInt literal or BigInt created by `BigInt` constructor
+
+```tsx
+isBigInt(42n); // true
+isBigInt(BigInt(42)); // true
+isBigInt(42); // false
 ```
 
 ---
@@ -454,6 +467,37 @@ isEmpty(''); // true
 isEmpty(0); // false
 ```
 
+### `isFalsy(value)`
+
+Check if value is falsy
+
+```tsx
+isFalsy(0); // true
+isFalsy(''); // true
+isFalsy(false); // true
+isFalsy(null); // true
+isFalsy(undefined); // true
+isFalsy(NaN); // true
+isFalsy(42); // false
+```
+
+### `isAny(value)`
+
+Returns true for any value.
+This is special case guard that originally was created to be used with `validate` function.
+
+```tsx
+import validate from 'utility-guards/validate';
+
+const schema = {
+    a: isAny,
+    b: isAny,
+    c: isAny,
+};
+
+validate({ a: 42, b: '42', c: true }, schema); // true
+```
+
 ---
 
 ### `is(value, expectedValue)`
@@ -533,19 +577,18 @@ isEmptyArray([1, 2, 3]); // false
 
 ## `validate` addon
 
-### `validate(value, schema)`
+> `(value, schema, options) => boolean`\
+> `(schema, options) => (value) => boolean`
 
-> `(value, schema) => boolean`\
-> `(schema) => (value) => boolean`
-
-Allows to validate runtime values (objects) with given schema or guard
+Allows to validate runtime values (objects, arrays) with given schema or guard
 
 ### Usage
 
 #### Validate object with schema
 
 ```tsx
-import { validate, isString, isNil, isBoolean } from 'utility-guards';
+import validate from 'utility-guards/validate';
+import { isString, isNil, isBoolean } from 'utility-guards';
 
 const obj = JSON.parse('...');
 
@@ -573,7 +616,8 @@ if (validate(obj, schema)) {
 #### Validate array with schema
 
 ```tsx
-import { validate, isString, isNil, isBoolean, isArrayOf } from 'utility-guards';
+import validate from 'utility-guards/validate';
+import { isString, isNil, isBoolean, isArrayOf } from 'utility-guards';
 
 const arr = JSON.parse('...');
 
@@ -600,6 +644,8 @@ if (validate(arr, schema)) {
 One of the useful use-cases is to validate overloaded function arguments
 
 ```ts
+import validate from 'utility-guards/validate';
+
 type FunctionExample = {
     (value: string): void;
     (value: string, otherValue: number): void;
@@ -624,7 +670,8 @@ const example: FunctionExample = (...args: unknown[]) => {
 #### Validate value with guard
 
 ```tsx
-import { validate, isArray, isEmpty, isString, isNil, isBoolean, $every, $some } from 'utility-guards';
+import validate from 'utility-guards/validate';
+import { isArray, isEmpty, isString, isNil, isBoolean, $every, $some } from 'utility-guards';
 
 const value = JSON.parse('...');
 
@@ -636,26 +683,29 @@ validate([1, 2, 3], isArrayOf(isNumber)); // true
 validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 ```
 
-### `validateStrict(value, schema)`
+### Allow extra properties
 
 > `(value, schema) => boolean`\
 > `(schema) => (value) => boolean`
 
-ℹ️ Use `validateStrict` to check if object has all properties from schema
-
-Same as `validate` but also checks if object no extra properties
+For objects and arrays, by default, `validate` method checks if value has all properties defined in schema. If you want to allow extra properties, you can pass `allowExtraProperties: true` or `allowExtraItems: true` options
 
 ```tsx
-import { validateStrict, isString, isNumber } from 'utility-guards';
+import validate from 'utility-guards/validate';
+import { isString, isNumber } from 'utility-guards';
 
 const schema = {
     a: isNumber,
     b: isString,
 };
 
-validateStrict({ a: 42, b: '42' }, schema); // true
-validateStrict({ a: 42, b: '42', c: true }, schema); // false
-validateStrict({ a: 42 }, schema); // false
+// allowExtraProperties
+validate({ a: 42, b: '42', c: true }, schema); // false
+validate({ a: 42, b: '42', c: true }, schema, { allowExtraProperties: true }); // true
+
+// allowExtraItems
+validate([42, '42', true], [isNumber, isString]); // false
+validate([42, '42', true], [isNumber, isString], { allowExtraItems: true }); // true
 ```
 
 <br/>

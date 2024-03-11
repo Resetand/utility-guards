@@ -8,6 +8,6 @@ import type { Guard } from './_types';
  * isNotString(1); // -> true
  * isNotString(''); // -> false
  */
-export default function $not<TGuarded, TArgs extends unknown[]>(guard: Guard<TGuarded, TArgs>) {
-    return <TValue>(value: TValue, ...args: TArgs): value is Exclude<TValue, TGuarded> => !guard(value as any, ...args);
+export default function $not<TGuarded, TArgs extends unknown[] | never = never>(guard: Guard<TGuarded, TArgs>) {
+    return <TValue>(value: TValue, ...args: TArgs): value is Exclude<TValue, TGuarded> => !guard(value, ...args);
 }
