@@ -32,8 +32,7 @@ import isFalsy from './guards/isFalsy';
 import isAny from './guards/isAny';
 
 import _isGuard, { IsGuard } from './_is-guard';
-
-import validate, { validateStrict } from './validate';
+import { Guard } from '_types';
 
 /**
  * Container with type guards
@@ -80,8 +79,13 @@ type IsGuardContainer = IsGuard & typeof _container;
 /**
  * Singleton container with type guards
  *
+ * @example
+ * import is from 'utility-guards';
+ *
+ * is.String(''); // -> true
+ *
  * @note
- * `is` is callable function, use can use it as a guard to check is value equals to some type (Object.is)
+ * `is` is callable function, you can use it as a guard to check is value equals to some type (Object.is)
  */
 const is: IsGuardContainer = Object.assign(_isGuard, _container);
 
@@ -123,7 +127,6 @@ export {
     $every,
     $not,
 
-    // validate methods
-    validate,
-    validateStrict,
+    // types
+    type Guard,
 };

@@ -1,6 +1,6 @@
 import { curriedGuard } from '../_utils';
 
-type IsHasGuard = {
+export type IsHasGuard = {
     /**
      * Check if value is an any object and has a direct property with given name
      *
