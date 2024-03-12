@@ -688,7 +688,7 @@ validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
 > `(value, schema) => boolean`\
 > `(schema) => (value) => boolean`
 
-For objects and arrays, by default, `validate` method checks if value has all properties defined in schema. If you want to allow extra properties, you can pass `allowExtraProperties: true` or `allowExtraItems: true` options
+For objects and arrays, by default, `validate` method checks if value has all properties defined in schema. If you want to allow extra properties, you can pass `allowExtra: true`
 
 ```tsx
 import validate from 'utility-guards/validate';
@@ -699,13 +699,13 @@ const schema = {
     b: isString,
 };
 
-// allowExtraProperties
+// object
 validate({ a: 42, b: '42', c: true }, schema); // false
-validate({ a: 42, b: '42', c: true }, schema, { allowExtraProperties: true }); // true
+validate({ a: 42, b: '42', c: true }, schema, { allowExtra: true }); // true
 
-// allowExtraItems
+// array
 validate([42, '42', true], [isNumber, isString]); // false
-validate([42, '42', true], [isNumber, isString], { allowExtraItems: true }); // true
+validate([42, '42', true], [isNumber, isString], { allowExtra: true }); // true
 ```
 
 <br/>

@@ -2,6 +2,8 @@ export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
 export type Class<T = unknown> = new (...args: any[]) => T;
 export type Nominal<B, T = object> = T & { __brand: B };
 
+export type Assign<T, U> = Omit<T, keyof U> & U;
+
 export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
 export type Guard<TGuarded = unknown, TArgs extends unknown[] = void[]> = (
