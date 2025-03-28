@@ -25,7 +25,7 @@ const isObjectExactOf: ObjectExactOfGuard = curriedGuard((value: any, schema: Ob
     }
 
     for (const key in schema) {
-        if (!isHasOwn(schema, key)) {
+        if (!isHasOwn(value, key)) {
             return false;
         }
         if (!schema[key](value[key])) {

@@ -403,12 +403,22 @@ describe('Guards runtime tests', () => {
     test.each([
         {
             schema: { a: isNumber, b: isString },
+            value: 'test',
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
             value: { a: 1, b: 'a' },
             expected: true,
         },
         {
             schema: { a: isNumber, b: isString },
             value: { a: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: '1' },
             expected: false,
         },
         {
@@ -439,12 +449,27 @@ describe('Guards runtime tests', () => {
     test.each([
         {
             schema: { a: isNumber, b: isString },
+            value: 'test',
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
             value: { a: 1, b: 'a' },
             expected: true,
         },
         {
             schema: { a: isNumber, b: isString },
             value: { a: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber },
+            value: { c: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: '1' },
             expected: false,
         },
         {
