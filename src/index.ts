@@ -12,9 +12,11 @@ import isDate from './guards/isDate';
 import isEmpty from './guards/isEmpty';
 import isError from './guards/isError';
 import isFunction from './guards/isFunction';
-import isHas from './guards/isHas';
+import isAsyncFunction from './guards/isAsyncFunction';
+import isHasOwn from './guards/isHasOwn';
 import isHasIn from './guards/isHasIn';
 import isInstanceOf from './guards/isInstanceOf';
+import isExactInstanceOf from './guards/isExactInstanceOf';
 import isIterable from './guards/isIterable';
 import isNaN from './guards/isNaN';
 import isUndefined from './guards/isUndefined';
@@ -56,6 +58,7 @@ const _container = {
     Array: isArray,
     Class: isClass,
     Function: isFunction,
+    AsyncFunction: isAsyncFunction,
     Promise: isPromise,
     PromiseLike: isPromiseLike,
     Date: isDate,
@@ -63,16 +66,20 @@ const _container = {
     Empty: isEmpty,
     Falsy: isFalsy,
     InstanceOf: isInstanceOf,
+    ExactInstanceOf: isExactInstanceOf,
     Any: isAny,
-    Has: isHas,
+    HasOwn: isHasOwn,
     HasIn: isHasIn,
-
     ArrayOf: isArrayOf,
 
     // utility methods
     $some,
     $every,
     $not,
+
+    // deprecated
+    // @deprecated use `is.HasOwn` instead
+    Has: isHasOwn,
 };
 
 type IsGuardContainer = IsGuard & typeof _container;
@@ -99,9 +106,11 @@ export {
     isFalsy,
     isError,
     isFunction,
-    isHas,
+    isAsyncFunction,
+    isHasOwn,
     isHasIn,
     isInstanceOf,
+    isExactInstanceOf,
     isIterable,
     isNaN,
     isUndefined,
@@ -126,4 +135,9 @@ export {
     // validate methods
     validate,
     validateStrict,
+
+    // deprecated
+
+    /** @deprecated use `isHasOwn` instead */
+    isHasOwn as isHas,
 };

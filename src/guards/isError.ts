@@ -1,7 +1,5 @@
-import { isType } from '../_utils';
-
 /**
- * Check if value a JS error
+ * Check if value is instance of Error.
  *
  * @example
  * isError(new Error('')); // -> true
@@ -9,5 +7,5 @@ import { isType } from '../_utils';
  * isError(''); // -> false
  */
 export default function isError(value: unknown): value is Error {
-    return isType(value, 'Error') && value instanceof Error;
+    return value instanceof Error;
 }

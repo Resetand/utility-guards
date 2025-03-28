@@ -1,4 +1,5 @@
 export type AnyFunction<TReturn = any> = (...args: any[]) => TReturn;
+export type AnyAsyncFunction<TReturn = any> = (...args: any[]) => Promise<TReturn>;
 export type Class<T = unknown> = new (...args: any[]) => T;
 
 /**
@@ -39,6 +40,7 @@ export enum TypeTag {
     REGEXP = 'RegExp',
     ERROR = 'Error',
     FUNCTION = 'Function',
+    AsyncFunction = 'AsyncFunction',
     UNDEFINED = 'Undefined',
     NULL = 'Null',
 }

@@ -20,6 +20,6 @@
  * isAny(''); // -> true
  * isAny(<WHATEVER>); // -> true
  */
-export default function isAny(_value: unknown): _value is unknown {
+export default function isAny(_value: unknown): _value is any {
     return true;
 }

@@ -12,6 +12,8 @@
  * isNaN(null); // -> false
  * isNaN(undefined); // -> false
  */
+export default function isNaN(value: number): boolean;
+export default function isNaN(value: unknown): value is number;
 export default function isNaN(value: unknown): value is number {
     return Number.isNaN(value);
 }
