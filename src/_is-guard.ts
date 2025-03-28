@@ -1,6 +1,6 @@
+import isTupleOf from './guards/isTupleOf';
 import isFunction from './guards/isFunction';
-import { curriedGuard } from './_utils';
-import validate from './validate';
+import { curriedGuard } from './utils/_curried-guard';
 
 type IsEqualFn = (value: unknown, expectedValue: unknown) => boolean;
 
@@ -28,22 +28,22 @@ const isAny = (_v: unknown): _v is unknown => true;
 const is: IsGuard = curriedGuard(
     (value: unknown, expectedValue: unknown, isEqual: IsEqualFn = Object.is) => isEqual(value, expectedValue),
     (args, guard) => {
-        if (validate(args, [isAny])) {
+        if (isTupleOf(args, [isAny])) {
             // is(1) -> (value: unknown) => value is 1
             return (value: unknown) => guard(value, args[0]);
         }
 
-        if (validate(args, [isAny, isFunction])) {
+        if (isTupleOf(args, [isAny, isFunction])) {
             // is(1, isEqual) -> (value: unknown) => value is 1
             return (value: unknown) => guard(value, args[0], args[1]);
         }
 
-        if (validate(args, [isAny, isAny])) {
+        if (isTupleOf(args, [isAny, isAny])) {
             // is(1, 1) -> true
             return guard(args[0], args[1]);
         }
 
-        if (validate(args, [isAny, isAny, isFunction])) {
+        if (isTupleOf(args, [isAny, isAny, isFunction])) {
             // is(1, 1, isEqual) -> true
             return guard(args[0], args[1], args[2] as any);
         }

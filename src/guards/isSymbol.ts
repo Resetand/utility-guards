@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value a symbol
  *
@@ -10,5 +8,5 @@ import { isType } from '../_utils';
  * isSymbol(''); // -> false
  */
 export default function isSymbol(value: unknown): value is symbol {
-    return isType(value, 'Symbol');
+    return typeof value === 'symbol';
 }

@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value a regular expression or created by `RegExp` constructor
  *
@@ -9,5 +7,5 @@ import { isType } from '../_utils';
  * isRegExp(''); // -> false
  */
 export default function isRegExp(value: unknown): value is RegExp {
-    return isType(value, 'RegExp');
+    return value instanceof RegExp;
 }

@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value a boolean
  *
@@ -9,5 +7,5 @@ import { isType } from '../_utils';
  * isBoolean(1); // -> false
  */
 export default function isBoolean(value: unknown): value is boolean {
-    return isType(value, 'Boolean');
+    return typeof value === 'boolean';
 }

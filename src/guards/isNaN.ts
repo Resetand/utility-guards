@@ -15,5 +15,5 @@
 export default function isNaN(value: number): boolean;
 export default function isNaN(value: unknown): value is number;
 export default function isNaN(value: unknown): value is number {
-    return Number.isNaN(value);
+    return typeof value === 'number' && value !== value;
 }

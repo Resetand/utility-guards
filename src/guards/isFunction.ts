@@ -14,5 +14,5 @@ import type { AnyFunction } from '../_types';
  * isFunction(class {}); // -> false (although class is a constructor function in JS, it's expected behavior)
  */
 export default function isFunction(value: unknown): value is AnyFunction {
-    return value instanceof Function && !isClass(value);
+    return typeof value === 'function' && !isClass(value);
 }

@@ -14,7 +14,6 @@
  * isAnyObject({}); // -> true
  * isAnyObject([]); // -> true
  * isAnyObject(new Object()); // -> true
- * isAnyObject(new String('')); // -> true
  * isAnyObject(Object.create(null)); // -> true
  * isAnyObject(null); // -> false
  * isAnyObject(undefined); // -> false

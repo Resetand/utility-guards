@@ -1,7 +1,7 @@
+import { curriedGuard } from '../utils/_curried-guard';
 import type { Class } from '../_types';
-import { curriedGuard } from '../_utils';
 
-type ExactInstanceOfGuard = {
+export type InstanceExactOfGuard = {
     /**
      * Check if value is an exact instance of given constructor
      *
@@ -15,8 +15,8 @@ type ExactInstanceOfGuard = {
     <T>(constructor: Class<T>): (value: unknown) => value is T;
 };
 
-const isExactInstanceOf: ExactInstanceOfGuard = curriedGuard((value: unknown, constructor: Class) => {
+const isInstanceExactOf: InstanceExactOfGuard = curriedGuard((value: unknown, constructor: Class) => {
     return value instanceof constructor && Object.getPrototypeOf(value) === constructor.prototype;
 });
 
-export default isExactInstanceOf;
+export default isInstanceExactOf;

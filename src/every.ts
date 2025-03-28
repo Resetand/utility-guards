@@ -2,7 +2,7 @@ import type { Guard, InferGuardType, UnionToIntersection } from './_types';
 
 type AnyGuard<TGuarded = unknown, TValue = unknown> = (value: TValue | TGuarded, ...args: any[]) => value is TGuarded;
 
-type EveryGuard = {
+export type EveryGuard = {
     <G1, V1, G2, V2>(
         g1: AnyGuard<G1, V1>, //
         g2: AnyGuard<G2, V2>,

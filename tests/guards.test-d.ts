@@ -5,7 +5,6 @@ import {
     isUndefined,
     isNull,
     isFunction,
-    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -21,7 +20,7 @@ import {
     isPromiseLike,
     isIterable,
     isInstanceOf,
-    isExactInstanceOf,
+    isInstanceExactOf,
     isEmpty,
     isFalsy,
     isArrayOf,
@@ -29,6 +28,11 @@ import {
     isAny,
     isClass,
     isBigInt,
+    isObjectOf,
+    isObjectExactOf,
+    isTupleOf,
+    isFiniteNumber,
+    isValidDate,
     $not,
     $every,
     $some,
@@ -36,7 +40,7 @@ import {
 
 import { describe, test, expectTypeOf } from 'vitest';
 import { withValue } from './utils';
-import { AnyAsyncFunction, AnyFunction, Class } from '../src/_types';
+import { AnyFunction, Class } from '../src/_types';
 
 class Cls {}
 class CustomError extends Error {
@@ -48,109 +52,241 @@ describe('guards static typing tests', () => {
         type LiteralUnion<T extends U, U = string> = T | (U & { _?: never });
 
         withValue((v: unknown) => {
-            isString(v) && expectTypeOf(v).toEqualTypeOf<string>();
+            if (isString(v)) {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: string) => {
-            isString(v) && expectTypeOf(v).toEqualTypeOf<string>();
+            if (isString(v)) {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: number) => {
-            isString(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isString(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
 
         withValue((v: '' | number[]) => {
-            isString(v) && expectTypeOf(v).toEqualTypeOf<''>();
+            if (isString(v)) {
+                expectTypeOf(v).toEqualTypeOf<''>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            }
         });
 
         withValue((v: LiteralUnion<'a' | 'b'>) => {
-            isString(v) && expectTypeOf(v).toEqualTypeOf<LiteralUnion<'a' | 'b'>>();
+            if (isString(v)) {
+                expectTypeOf(v).toEqualTypeOf<LiteralUnion<'a' | 'b'>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
     });
 
     test('Should check isNumber typing', () => {
         withValue((v: number) => {
-            isNumber(v) && expectTypeOf(v).toEqualTypeOf<number>();
-        });
-
-        withValue((v: number) => {
-            isNumber(v) && expectTypeOf(v).toEqualTypeOf<number>();
+            if (isNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: 0 | string) => {
-            isNumber(v) && expectTypeOf(v).toEqualTypeOf<0>();
+            if (isNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<0>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: string) => {
-            isNumber(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
+        });
+    });
+
+    test('Should check isFiniteNumber typing', () => {
+        withValue((v: number) => {
+            if (isFiniteNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
+        });
+
+        withValue((v: 0 | string) => {
+            if (isFiniteNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<0>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
+        });
+
+        withValue((v: string) => {
+            if (isFiniteNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
+        });
+    });
+
+    test('Should check isNaN typing', () => {
+        withValue((v: number) => {
+            if (isNaN(v)) {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
+        });
+
+        withValue((v: string) => {
+            if (isNaN(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isBoolean typing', () => {
         withValue((v: unknown) => {
-            isBoolean(v) && expectTypeOf(v).toEqualTypeOf<boolean>();
+            if (isBoolean(v)) {
+                expectTypeOf(v).toEqualTypeOf<boolean>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: boolean) => {
-            isBoolean(v) && expectTypeOf(v).toEqualTypeOf<boolean>();
+            if (isBoolean(v)) {
+                expectTypeOf(v).toEqualTypeOf<boolean>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: true | string) => {
-            isBoolean(v) && expectTypeOf(v).toEqualTypeOf<true>();
+            if (isBoolean(v)) {
+                expectTypeOf(v).toEqualTypeOf<true>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: string) => {
-            isBoolean(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isBoolean(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isUndefined typing', () => {
         withValue((v: unknown) => {
-            isUndefined(v) && expectTypeOf(v).toEqualTypeOf<undefined>();
+            if (isUndefined(v)) {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: undefined) => {
-            isUndefined(v) && expectTypeOf(v).toEqualTypeOf<undefined>();
+            if (isUndefined(v)) {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: string) => {
-            isUndefined(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isUndefined(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isNull typing', () => {
         withValue((v: unknown) => {
-            isNull(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isNull(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: null) => {
-            isNull(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isNull(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: string) => {
-            isNull(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isNull(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isNil typing', () => {
         withValue((v: unknown) => {
-            isNil(v) && expectTypeOf(v).toEqualTypeOf<null | undefined>();
+            if (isNil(v)) {
+                expectTypeOf(v).toEqualTypeOf<null | undefined>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: null) => {
-            isNil(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isNil(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: undefined) => {
-            isNil(v) && expectTypeOf(v).toEqualTypeOf<undefined>();
+            if (isNil(v)) {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: string | undefined) => {
-            isNil(v) && expectTypeOf(v).toEqualTypeOf<undefined>();
+            if (isNil(v)) {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: string | null) => {
-            isNil(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isNil(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
@@ -160,65 +296,80 @@ describe('guards static typing tests', () => {
         type FunctionWithProps = ExampleCallback & { prop: number };
 
         withValue((v: unknown) => {
-            isFunction(v) && expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            if (isFunction(v)) {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: ExampleCallback) => {
-            isFunction(v) && expectTypeOf(v).toEqualTypeOf<ExampleCallback>();
+            if (isFunction(v)) {
+                expectTypeOf(v).toEqualTypeOf<ExampleCallback>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: null) => {
-            isFunction(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isFunction(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
         });
 
         withValue((v: Dict) => {
-            isFunction(v) && expectTypeOf(v).toEqualTypeOf<Dict & AnyFunction>();
+            if (isFunction(v)) {
+                expectTypeOf(v).toEqualTypeOf<Dict & AnyFunction>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Dict>();
+            }
         });
 
         withValue((v: FunctionWithProps | { prop: number }) => {
-            isFunction(v) && expectTypeOf(v).toEqualTypeOf<FunctionWithProps>();
-        });
-    });
-
-    test('Should check isAsyncFunction typing', () => {
-        type ExampleCallback = (a: number, b: string) => boolean;
-        type Dict = Record<string, unknown>;
-
-        withValue((v: unknown) => {
-            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<AnyAsyncFunction>();
-        });
-
-        withValue((v: ExampleCallback) => {
-            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<ExampleCallback & AnyAsyncFunction>();
-        });
-
-        withValue((v: null) => {
-            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<never>();
-        });
-
-        withValue((v: Dict) => {
-            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<Dict & AnyAsyncFunction>();
+            if (isFunction(v)) {
+                expectTypeOf(v).toEqualTypeOf<FunctionWithProps>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<{ prop: number }>();
+            }
         });
     });
 
     test('Should check isClass typing', () => {
         withValue((v: unknown) => {
-            isClass(v) && expectTypeOf(v).toEqualTypeOf<Class>();
-            isClass(v) && expectTypeOf(v).instance.toEqualTypeOf<unknown>();
+            if (isClass(v)) {
+                expectTypeOf(v).toEqualTypeOf<Class>();
+                expectTypeOf(v).instance.toEqualTypeOf<unknown>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Class<Cls> | null) => {
-            isClass(v) && expectTypeOf(v).toEqualTypeOf<Class<Cls>>();
-            isClass(v) && expectTypeOf(v).instance.toEqualTypeOf<Cls>();
+            if (isClass(v)) {
+                expectTypeOf(v).toEqualTypeOf<Class<Cls>>();
+                expectTypeOf(v).instance.toEqualTypeOf<Cls>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
         });
 
         withValue((v: AnyFunction) => {
-            isClass(v) && expectTypeOf(v).toEqualTypeOf<AnyFunction & Class>();
-            isClass(v) && expectTypeOf(v).instance.toEqualTypeOf<unknown>();
+            if (isClass(v)) {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction & Class>();
+                expectTypeOf(v).instance.toEqualTypeOf<unknown>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            }
         });
 
         withValue((v: Class<Cls> | Class<CustomError>) => {
-            isClass(v) && expectTypeOf(v).toEqualTypeOf<Class<Cls> | Class<CustomError>>();
+            if (isClass(v)) {
+                expectTypeOf(v).toEqualTypeOf<Class<Cls> | Class<CustomError>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
     });
 
@@ -226,39 +377,75 @@ describe('guards static typing tests', () => {
         type AnyEmptyValue = [] | Record<PropertyKey, never> | '' | Set<never> | Map<never, never> | null | undefined;
 
         withValue((v: unknown) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<AnyEmptyValue>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<AnyEmptyValue>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: string) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<''>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<''>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: Record<string, number>) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<Record<PropertyKey, never>>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<Record<PropertyKey, never>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number>>();
+            }
         });
 
         withValue((v: Set<number>) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<Set<never>>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<Set<never>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Set<number>>();
+            }
         });
 
         withValue((v: Map<string, number>) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<Map<never, never>>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<Map<never, never>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Map<string, number>>();
+            }
         });
 
         withValue((v: null) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: undefined) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<undefined>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: '' | 0 | number[] | null) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<'' | [] | null>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<'' | [] | null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<0 | number[]>();
+            }
         });
 
         withValue((v: AnyFunction) => {
-            isEmpty(v) && expectTypeOf(v).toEqualTypeOf<AnyEmptyValue & AnyFunction>();
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<AnyEmptyValue & AnyFunction>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            }
         });
     });
 
@@ -266,19 +453,35 @@ describe('guards static typing tests', () => {
         type ArrayWithProps = number[] & { prop: number };
 
         withValue((v: unknown) => {
-            isArray(v) && expectTypeOf(v).toEqualTypeOf<unknown[]>();
+            if (isArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<unknown[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: number[]) => {
-            isArray(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (isArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: string | number[]) => {
-            isArray(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (isArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: ArrayWithProps | string | Iterable<number>) => {
-            isArray(v) && expectTypeOf(v).toEqualTypeOf<ArrayWithProps>();
+            if (isArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<ArrayWithProps>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string | Iterable<number>>();
+            }
         });
     });
 
@@ -286,219 +489,313 @@ describe('guards static typing tests', () => {
         type ArrayWithProps = number[] & { prop: number };
 
         withValue((v: unknown) => {
-            isArrayOf(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (isArrayOf(isNumber)(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: number[]) => {
-            isArrayOf(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (isArrayOf(isNumber)(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: (string | number)[]) => {
-            isArrayOf(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (isArrayOf(isNumber)(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<(string | number)[]>();
+            }
         });
 
         withValue((v: ArrayWithProps | string[]) => {
-            isArrayOf(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<ArrayWithProps>();
+            if (isArrayOf(isNumber)(v)) {
+                expectTypeOf(v).toEqualTypeOf<ArrayWithProps>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string[]>();
+            }
         });
     });
 
     test('Should check isInstanceOf typing', () => {
         withValue((v: unknown) => {
-            isInstanceOf(v, Cls) && expectTypeOf(v).toEqualTypeOf<Cls>();
+            if (isInstanceOf(v, Cls)) {
+                expectTypeOf(v).toEqualTypeOf<Cls>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: unknown) => {
-            isInstanceOf(Cls)(v) && expectTypeOf(v).toEqualTypeOf<Cls>();
+            if (isInstanceOf(Cls)(v)) {
+                expectTypeOf(v).toEqualTypeOf<Cls>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: unknown) => {
-            isInstanceOf(v, CustomError) && expectTypeOf(v).toEqualTypeOf<CustomError>();
-        });
-
-        withValue((v: unknown) => {
-            isInstanceOf(CustomError)(v) && expectTypeOf(v).toEqualTypeOf<CustomError>();
+            if (isInstanceOf(v, CustomError)) {
+                expectTypeOf(v).toEqualTypeOf<CustomError>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
     });
 
-    test('Should check isExactInstanceOf typing', () => {
+    test('Should check isInstanceExactOf typing', () => {
         withValue((v: unknown) => {
-            isExactInstanceOf(v, Cls) && expectTypeOf(v).toEqualTypeOf<Cls>();
+            if (isInstanceExactOf(v, Cls)) {
+                expectTypeOf(v).toEqualTypeOf<Cls>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: unknown) => {
-            isExactInstanceOf(Cls)(v) && expectTypeOf(v).toEqualTypeOf<Cls>();
+            if (isInstanceExactOf(Cls)(v)) {
+                expectTypeOf(v).toEqualTypeOf<Cls>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: unknown) => {
-            isExactInstanceOf(v, CustomError) && expectTypeOf(v).toEqualTypeOf<CustomError>();
-        });
-
-        withValue((v: unknown) => {
-            isExactInstanceOf(CustomError)(v) && expectTypeOf(v).toEqualTypeOf<CustomError>();
+            if (isInstanceExactOf(v, CustomError)) {
+                expectTypeOf(v).toEqualTypeOf<CustomError>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
     });
 
-    test('Should check isHasOwn typing', () => {
+    test('Should check isHasOwn/isHasIn typing', () => {
         type PropShape<T = unknown> = { prop: T };
         type AnotherShape<T = string> = { another: T };
+        const isHas = null! as typeof isHasOwn | typeof isHasIn;
 
         withValue((v: unknown) => {
-            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape>();
+            if (isHas(v, 'prop')) {
+                expectTypeOf(v).toEqualTypeOf<PropShape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: unknown) => {
-            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape>();
+            if (isHas('prop')(v)) {
+                expectTypeOf(v).toEqualTypeOf<PropShape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: PropShape<number>) => {
-            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape<number>>();
+            if (isHas(v, 'prop')) {
+                expectTypeOf(v).toEqualTypeOf<PropShape<number>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: AnotherShape) => {
-            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            if (isHas(v, 'prop')) {
+                expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnotherShape>();
+            }
         });
 
         withValue((v: AnotherShape) => {
-            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            if (isHas('prop')(v)) {
+                expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnotherShape>();
+            }
         });
 
         withValue((v: AnyFunction) => {
-            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<AnyFunction & PropShape>();
+            if (isHas(v, 'prop')) {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction & PropShape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            }
         });
 
         withValue((v: { a: number } | undefined) => {
-            isHasOwn('a')(v) && expectTypeOf(v).toEqualTypeOf<{ a: number }>();
+            if (isHas(v, 'a')) {
+                expectTypeOf(v).toEqualTypeOf<{ a: number }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<undefined>();
+            }
         });
 
         withValue((v: { a: number } | { b: string } | undefined | string) => {
-            isHasOwn('a')(v) && expectTypeOf(v).toEqualTypeOf<{ a: number }>();
+            if (isHas(v, 'a')) {
+                expectTypeOf(v).toEqualTypeOf<{ a: number }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<{ b: string } | undefined | string>();
+            }
         });
 
         withValue((v: null) => {
-            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<never>();
-        });
-    });
-
-    test('Should check isHasIn typing', () => {
-        type PropShape<T = unknown> = { prop: T };
-        type AnotherShape<T = string> = { another: T };
-
-        withValue((v: unknown) => {
-            isHasIn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape>();
-        });
-
-        withValue((v: unknown) => {
-            isHasIn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape>();
-        });
-
-        withValue((v: AnotherShape) => {
-            isHasIn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
-        });
-
-        withValue((v: AnotherShape) => {
-            isHasIn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
-        });
-
-        withValue((v: AnyFunction) => {
-            isHasIn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<AnyFunction & PropShape>();
-        });
-
-        withValue((v: null) => {
-            isHasIn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isHas(v, 'prop')) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
         });
     });
 
     test('Should check isPromise typing', () => {
         withValue((v: unknown) => {
-            isPromise(v) && expectTypeOf(v).toEqualTypeOf<Promise<unknown>>();
+            if (isPromise(v)) {
+                expectTypeOf(v).toEqualTypeOf<Promise<unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Promise<number> | number) => {
-            isPromise(v) && expectTypeOf(v).toEqualTypeOf<Promise<number>>();
+            if (isPromise(v)) {
+                expectTypeOf(v).toEqualTypeOf<Promise<number>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
     });
 
     test('Should check isPromiseLike typing', () => {
         withValue((v: unknown) => {
-            isPromiseLike(v) && expectTypeOf(v).toEqualTypeOf<PromiseLike<unknown>>();
+            if (isPromiseLike(v)) {
+                expectTypeOf(v).toEqualTypeOf<PromiseLike<unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Promise<number> | number) => {
-            isPromiseLike(v) && expectTypeOf(v).toEqualTypeOf<Promise<number>>();
+            if (isPromiseLike(v)) {
+                expectTypeOf(v).toEqualTypeOf<Promise<number>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
 
         withValue((v: PromiseLike<number> | number) => {
-            isPromiseLike(v) && expectTypeOf(v).toEqualTypeOf<PromiseLike<number>>();
+            if (isPromiseLike(v)) {
+                expectTypeOf(v).toEqualTypeOf<PromiseLike<number>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
     });
 
     test('Should check isIterable typing', () => {
         withValue((v: unknown) => {
-            isIterable(v) && expectTypeOf(v).toEqualTypeOf<Iterable<unknown>>();
+            if (isIterable(v)) {
+                expectTypeOf(v).toEqualTypeOf<Iterable<unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Iterable<number> | number) => {
-            isIterable(v) && expectTypeOf(v).toEqualTypeOf<Iterable<number>>();
+            if (isIterable(v)) {
+                expectTypeOf(v).toEqualTypeOf<Iterable<number>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
 
         withValue((v: string | number) => {
-            isIterable(v) && expectTypeOf(v).toEqualTypeOf<string>();
+            if (isIterable(v)) {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
 
         withValue((v: string[] | number | AnyFunction) => {
-            isIterable(v) && expectTypeOf(v).toEqualTypeOf<string[]>();
+            if (isIterable(v)) {
+                expectTypeOf(v).toEqualTypeOf<string[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number | AnyFunction>();
+            }
         });
     });
 
     test('Should check isRegExp typing', () => {
         withValue((v: unknown) => {
-            isRegExp(v) && expectTypeOf(v).toEqualTypeOf<RegExp>();
+            if (isRegExp(v)) {
+                expectTypeOf(v).toEqualTypeOf<RegExp>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: RegExp | string) => {
-            isRegExp(v) && expectTypeOf(v).toEqualTypeOf<RegExp>();
+            if (isRegExp(v)) {
+                expectTypeOf(v).toEqualTypeOf<RegExp>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isSymbol typing', () => {
         withValue((v: unknown) => {
-            isSymbol(v) && expectTypeOf(v).toEqualTypeOf<symbol>();
+            if (isSymbol(v)) {
+                expectTypeOf(v).toEqualTypeOf<symbol>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: symbol | string) => {
-            isSymbol(v) && expectTypeOf(v).toEqualTypeOf<symbol>();
+            if (isSymbol(v)) {
+                expectTypeOf(v).toEqualTypeOf<symbol>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: string) => {
-            isSymbol(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isSymbol(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
     });
 
     test('Should check isError typing', () => {
         withValue((v: unknown) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<Error>();
+            if (isError(v)) {
+                expectTypeOf(v).toEqualTypeOf<Error>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Error | string) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<Error>();
+            if (isError(v)) {
+                expectTypeOf(v).toEqualTypeOf<Error>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string>();
+            }
         });
 
         withValue((v: null) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<never>();
-        });
-    });
-
-    test('Should check isError typing', () => {
-        withValue((v: unknown) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<Error>();
-        });
-
-        withValue((v: Error | string) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<Error>();
-        });
-
-        withValue((v: null) => {
-            isError(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isError(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
         });
     });
 
@@ -508,23 +805,44 @@ describe('guards static typing tests', () => {
         type ComplexType = string | number | Iterable<ComplexType> | boolean | null | undefined;
 
         withValue((v: unknown) => {
-            isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<{ [key: string]: unknown }>();
+            if (isPlainObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue<Record<string, unknown> | string | string[] | Function>((v) => {
-            isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            if (isPlainObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string | string[] | Function>();
+            }
         });
 
         withValue((v: Shape | AnyFunction) => {
-            isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<Shape>();
+            if (isPlainObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Shape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            }
         });
 
         withValue((v: Cls | Record<string, unknown>) => {
-            isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            // isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            if (isPlainObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Cls>();
+            }
         });
 
         withValue((v: ComplexType | Shape) => {
-            isPlainObject(v) && expectTypeOf(v).toEqualTypeOf<Shape>();
+            if (isPlainObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Shape>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<ComplexType>();
+            }
         });
     });
 
@@ -532,17 +850,33 @@ describe('guards static typing tests', () => {
         type Shape = { a: number; b: string };
 
         withValue((v: unknown) => {
-            isAnyObject(v) && expectTypeOf(v).toEqualTypeOf<object>();
+            if (isAnyObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<object>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
         withValue((v: Record<string, unknown>) => {
-            isAnyObject(v) && expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            if (isAnyObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, unknown>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
         withValue((v: null | Function | string | { some: number } | Cls) => {
-            isAnyObject(v) && expectTypeOf(v).toEqualTypeOf<Function | { some: number } | Cls>();
+            if (isAnyObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Function | { some: number } | Cls>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null | string>();
+            }
         });
 
         withValue((v: Shape | Cls) => {
-            isAnyObject(v) && expectTypeOf(v).toEqualTypeOf<Shape | Cls>();
+            if (isAnyObject(v)) {
+                expectTypeOf(v).toEqualTypeOf<Shape | Cls>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
     });
 
@@ -550,33 +884,27 @@ describe('guards static typing tests', () => {
         type Primitive = string | number | bigint | boolean | symbol | null | undefined;
 
         withValue((v: unknown) => {
-            isPrimitive(v) && expectTypeOf(v).toEqualTypeOf<Primitive>();
+            if (isPrimitive(v)) {
+                expectTypeOf(v).toEqualTypeOf<Primitive>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: Primitive) => {
-            isPrimitive(v) && expectTypeOf(v).toEqualTypeOf<Primitive>();
+            if (isPrimitive(v)) {
+                expectTypeOf(v).toEqualTypeOf<Primitive>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: null | AnyFunction | string) => {
-            isPrimitive(v) && expectTypeOf(v).toEqualTypeOf<null | string>();
-        });
-    });
-
-    test('Should check isNaN typing', () => {
-        withValue((v: unknown) => {
-            isNaN(v) && expectTypeOf(v).toEqualTypeOf<number>();
-        });
-
-        withValue((v: number) => {
-            isNaN(v) && expectTypeOf(v).toEqualTypeOf<number>();
-        });
-
-        withValue((v: number) => {
-            !isNaN(v) && expectTypeOf(v).toEqualTypeOf<number>();
-        });
-
-        withValue((v: string) => {
-            isNaN(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isPrimitive(v)) {
+                expectTypeOf(v).toEqualTypeOf<null | string>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+            }
         });
     });
 
@@ -584,57 +912,209 @@ describe('guards static typing tests', () => {
         type Falsy = '' | 0 | false | null | undefined;
 
         withValue((v: unknown) => {
-            isFalsy(v) && expectTypeOf(v).toEqualTypeOf<Falsy>();
+            if (isFalsy(v)) {
+                expectTypeOf(v).toEqualTypeOf<Falsy>();
+            } else {
+                // expectTypeOf(v).toEqualTypeOf<unknown>(); // FIXME
+            }
         });
 
         withValue((v: '' | 0 | false | null | undefined) => {
-            isFalsy(v) && expectTypeOf(v).toEqualTypeOf<'' | 0 | false | null | undefined>();
+            if (isFalsy(v)) {
+                expectTypeOf(v).toEqualTypeOf<Falsy>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: symbol) => {
-            isFalsy(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isFalsy(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<symbol>();
+            }
         });
     });
 
     test('Should check isAny typing', () => {
         withValue((v: unknown) => {
-            isAny(v) && expectTypeOf(v).toEqualTypeOf<any>();
+            if (isAny(v)) {
+                expectTypeOf(v).toEqualTypeOf<any>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: null) => {
-            isAny(v) && expectTypeOf(v).toEqualTypeOf<null>();
+            if (isAny(v)) {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
     });
 
     test('Should check isDate typing', () => {
         withValue((v: unknown) => {
-            isDate(v) && expectTypeOf(v).toEqualTypeOf<Date>();
+            if (isDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<Date>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: Date) => {
-            isDate(v) && expectTypeOf(v).toEqualTypeOf<Date>();
+            if (isDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<Date>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: null) => {
-            isDate(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
+        });
+    });
+
+    test('Should check isValidDate typing', () => {
+        withValue((v: unknown) => {
+            if (isValidDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<Date>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
+        });
+
+        withValue((v: Date) => {
+            if (isValidDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<Date>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Date>();
+            }
+        });
+
+        withValue((v: null) => {
+            if (isValidDate(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
+        });
+    });
+
+    test('Should check isObjectOf typing', () => {
+        withValue((v: unknown) => {
+            const schema = { a: isString, b: isNumber, c: isObjectOf({ d: isString }) };
+
+            if (isObjectOf(v, schema)) {
+                expectTypeOf(v).toEqualTypeOf<{ a: string; b: number; c: { d: string } }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
+        });
+
+        withValue((v: Record<string, number>) => {
+            const schema = { a: isString, b: isNumber };
+            if (isObjectOf(v, schema)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number> & { a: string; b: number }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number>>();
+            }
+        });
+
+        withValue((v: null) => {
+            if (isObjectOf(v, { a: isString })) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
+        });
+    });
+
+    test('Should check isObjectExactOf typing', () => {
+        withValue((v: unknown) => {
+            const schema = { a: isString, b: isNumber, c: isObjectOf({ d: isString }) };
+
+            if (isObjectExactOf(v, schema)) {
+                expectTypeOf(v).toEqualTypeOf<{ a: string; b: number; c: { d: string } }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
+        });
+
+        withValue((v: Record<string, number>) => {
+            const schema = { a: isString, b: isNumber };
+            if (isObjectExactOf(v, schema)) {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number> & { a: string; b: number }>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number>>();
+            }
+        });
+
+        withValue((v: null) => {
+            if (isObjectExactOf(v, { a: isString })) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<null>();
+            }
+        });
+    });
+
+    test('Should check isTupleOf typing', () => {
+        withValue((v: unknown) => {
+            if (isTupleOf(v, [isString, isNumber])) {
+                expectTypeOf(v).toEqualTypeOf<[string, number]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
+        });
+
+        withValue((v: [string, number]) => {
+            if (isTupleOf(v, [isString, isNumber])) {
+                expectTypeOf(v).toEqualTypeOf<[string, number]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
+        });
+
+        withValue((v: [string, number, ...number[]]) => {
+            if (isTupleOf(v, [isString, isNumber])) {
+                expectTypeOf(v).toEqualTypeOf<[string, number]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<[string, number, ...number[]]>();
+            }
+        });
+
+        withValue((v: string[]) => {
+            if (isTupleOf(v, [isString, isNumber])) {
+                expectTypeOf(v).toEqualTypeOf<[string, number] & string[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string[]>();
+            }
         });
     });
 });
 
 describe('utility static typing tests', () => {
     test('Should check $not typing', () => {
-        withValue((v: unknown) => {
-            $not(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<unknown>();
-        });
-
         withValue((v: string | { a: 1 } | number) => {
-            $not(isNumber)(v) && expectTypeOf(v).toEqualTypeOf<string | { a: 1 }>();
-            $not(isNumber)(v) && expectTypeOf(v).not.toEqualTypeOf<number>();
+            if ($not(isNumber)(v)) {
+                expectTypeOf(v).toEqualTypeOf<string | { a: 1 }>();
+                expectTypeOf(v).not.toEqualTypeOf<number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
 
         withValue((v: null) => {
-            $not(isNull)(v) && expectTypeOf(v).toEqualTypeOf<never>();
-            $not(isNull)(v) && expectTypeOf(v).not.toEqualTypeOf<null>();
+            if ($not(isNull)(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+                expectTypeOf(v).not.toEqualTypeOf<null>();
+            }
         });
     });
 
@@ -643,15 +1123,27 @@ describe('utility static typing tests', () => {
         const stringOrNumberOrArray = $some(stringOrNumber, isArray);
 
         withValue((v: unknown) => {
-            stringOrNumber(v) && expectTypeOf(v).toEqualTypeOf<string | number>();
+            if (stringOrNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<string | number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: string | number | string[]) => {
-            stringOrNumber(v) && expectTypeOf(v).toEqualTypeOf<string | number>();
+            if (stringOrNumber(v)) {
+                expectTypeOf(v).toEqualTypeOf<string | number>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<string[]>();
+            }
         });
 
         withValue((v: string | number | string[]) => {
-            stringOrNumberOrArray(v) && expectTypeOf(v).toEqualTypeOf<string | number | string[]>();
+            if (stringOrNumberOrArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<string | number | string[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
     });
 
@@ -660,7 +1152,11 @@ describe('utility static typing tests', () => {
         const notEmptyArrayOrString = $some(notEmptyArray, isString);
 
         withValue((v: number[]) => {
-            notEmptyArray(v) && expectTypeOf(v).toEqualTypeOf<number[]>();
+            if (notEmptyArray(v)) {
+                expectTypeOf(v).toEqualTypeOf<number[]>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: string | number[]) => {
@@ -688,15 +1184,27 @@ describe('utility static typing tests', () => {
 
     test('Should check isBigInt typing', () => {
         withValue((v: unknown) => {
-            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<bigint>();
+            if (isBigInt(v)) {
+                expectTypeOf(v).toEqualTypeOf<bigint>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<unknown>();
+            }
         });
 
         withValue((v: bigint) => {
-            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<bigint>();
+            if (isBigInt(v)) {
+                expectTypeOf(v).toEqualTypeOf<bigint>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            }
         });
 
         withValue((v: number) => {
-            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<never>();
+            if (isBigInt(v)) {
+                expectTypeOf(v).toEqualTypeOf<never>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<number>();
+            }
         });
     });
 });

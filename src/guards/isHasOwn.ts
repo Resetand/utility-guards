@@ -1,6 +1,6 @@
-import { curriedGuard } from '../_utils';
+import { curriedGuard } from '../utils/_curried-guard';
 
-type IsHasOwnGuard = {
+export type HasOwnGuard = {
     /**
      * Check if value is an any object and has a direct property with given name
      *
@@ -24,7 +24,7 @@ type IsHasOwnGuard = {
     <P extends PropertyKey>(propertyName: P): (value: unknown) => value is Record<P, unknown>;
 };
 
-const isHasOwn: IsHasOwnGuard = curriedGuard((value, propertyName) => {
+const isHasOwn: HasOwnGuard = curriedGuard((value, propertyName) => {
     return value instanceof Object && Object.prototype.hasOwnProperty.call(value, propertyName);
 });
 

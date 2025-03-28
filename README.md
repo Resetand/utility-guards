@@ -7,9 +7,9 @@
 
 <h1 align="center">utility-guards</h1>
 <h3 align="center">
-Utils for runtime and static type checking in JS and TS
+Set of guard function for runtime type checking in JavaScript with complete TypeScript support
 <br/>
-All base type guards that you used to copy from project to project in one place
+
 </h3>
 
 <strong>
@@ -25,693 +25,543 @@ All base type guards that you used to copy from project to project in one place
 <br/>
 <br/>
 
-### **Features:**
+## Motivation
 
--   🛠️ Reliable type checking for JS runtime
--   📦 Zero dependencies and only ~800 bytes gzipped size
--   📦 Tree-shaking friendly
--   🔩 Full Typescript guard support
--   🔩 Isomorphic: works in browser and node.js
--   🔑 Addon: `validate` and `validateStrict` validators for runtime values (object) validation
+JavaScript has a notoriously inconsistent system for runtime type checking — with scattered use of `typeof`, `instanceof`, `Array.isArray`, `Object.prototype.hasOwnProperty`, and more.
+As well, TypeScript does not work properly with all of these checks, leading to confusion and bugs.
 
-<br/>
-<br/>
+This library was created to unify all these scattered patterns into a consistent, type-safe, and minimal API.
 
-## `API Reference`
+## Features
 
--   [`isString`](#isstringvalue)
--   [`isNumber`](#isnumbervalue)
--   [`isBoolean`](#isbooleanvalue)
--   [`isNaN`](#isnanvalue)
--   [`isUndefined`](#isundefinedvalue)
--   [`isNull`](#isnullvalue)
--   [`isNil`](#isnilvalue)
--   [`isPrimitive`](#isprimitivevalue)
--   [`isSymbol`](#issymbolvalue)
--   [`isRegExp`](#isregexpvalue)
--   [`isError`](#iserrorvalue)
--   [`isAnyObject`](#isanyobjectvalue)
--   [`isPlainObject`](#isplainobjectvalue)
--   [`isArray`](#isarrayvalue)
--   [`isFunction`](#isfunctionvalue)
--   [`isClass`](#isclassvalue)
--   [`isPromise`](#ispromisevalue)
--   [`isPromiseLike`](#ispromiselikevalue)
--   [`isIterable`](#isiterablevalue)
--   [`isDate`](#isdatevalue)
--   [`isHasOwn`](#ishasvalue-propertyname)
--   [`isHasIn`](#ishasinvalue-propertyname)
--   [`isArrayOf`](#isarrayofvalue-guard)
--   [`isInstanceOf`](#isinstanceofvalue-constructor)
--   [`isEmpty`](#isemptyvalue)
--   [`is`](#isvalue-expectedvalue)
--   [`$not`](#notguard)
--   [`$some`](#_some)
--   [`$every`](#_every)
--   [`validate`](#validatevalue-schema)
--   [`validateStrict`](#validatestrictvalue-schema)
-
-<br/>
+-   🧪 Simple runtime type checking
+-   💡 Full TypeScript type inference support
+-   📦 Tree-shaking friendly and zero dependencies
 
 ---
 
-<br/>
+## Installation
 
 ```bash
 npm install utility-guards
 ```
 
-### Usage
+---
 
-```tsx
-// using named imports (tree-shaking friendly)
-import { isString, isNumber, isNil, $not } from 'utility-guards';
+## Usage
 
-isString('42'); // true
-isNumber(42); // false
+import from the main package
 
-isString('42'); // true
-isNumber(42); // false
-$not(isNil)(0); // true
+```ts
+import { isString, isNumber, isNil } from 'utility-guards';
+
+isString(...);
+isNumber(...);
+isNil(...);
 ```
 
-```tsx
-// using standalone imports (tree-shaking friendly)
+import from the sub-packages
+
+```ts
 import isString from 'utility-guards/isString';
 import isNumber from 'utility-guards/isNumber';
 import isNil from 'utility-guards/isNil';
-import $not from 'utility-guards/not';
 
-isString('42'); // true
-isNumber(42); // false
-$not(isNil)(0); // true
+isString(...);
+isNumber(...);
+isNil(...);
 ```
 
-```tsx
-// Using default import – `is` namespace object
+use `is` default export container
+
+```ts
 import is from 'utility-guards';
 
-is.String('42'); // true
-is.Number(42); // false
-is.$not(is.Nil)(0); // true
+is.String(...)
+is.Number(...)
+is.Nil(...)
 ```
 
-<br/>
+---
+
+## Table of Contents
+
+### API
+
+#### Primitive Checks
+
+-   [`isString`](#isstring)
+-   [`isNumber`](#isnumber)
+-   [`isFiniteNumber`](#isfinitenumber)
+-   [`isBoolean`](#isboolean)
+-   [`isBigInt`](#isbigint)
+-   [`isSymbol`](#issymbol)
+-   [`isNull`](#isnull)
+-   [`isUndefined`](#isundefined)
+-   [`isNil`](#isnil)
+-   [`isNaN`](#isnan)
+-   [`isPrimitive`](#isprimitive)
+-   [`isFalsy`](#isfalsy)
+
+#### Object Checks
+
+-   [`isAnyObject`](#isanyobject)
+-   [`isPlainObject`](#isplainobject)
+-   [`isEmpty`](#isempty)
+-   [`isArray`](#isarray)
+-   [`isArrayOf`](#isarrayof)
+-   [`isTupleOf`](#istupleof)
+-   [`isObjectOf`](#isobjectof)
+-   [`isObjectExactOf`](#isobjectexactof)
+
+#### Function & Class Checks
+
+-   [`isFunction`](#isfunction)
+-   [`isClass`](#isclass)
+
+#### Special Structures
+
+-   [`isRegExp`](#isregexp)
+-   [`isDate`](#isdate)
+-   [`isValidDate`](#isvaliddate)
+-   [`isIterable`](#isiterable)
+-   [`isPromise`](#ispromise)
+-   [`isPromiseLike`](#ispromiselike)
+-   [`isError`](#iserror)
+
+#### Advanced Structural Guards
+
+-   [`isHasOwn`](#ishasown)
+-   [`isHasIn`](#ishasin)
+-   [`isInstanceOf`](#isinstanceof)
+-   [`isInstanceExactOf`](#isinstanceexactof)
+
+#### Combinators
+
+-   [`$not`](#not)
+-   [`$some`](#some)
+-   [`$every`](#every)
+
+#### Utility
+
+-   [`is`](#is)
+-   [`isAny`](#isany)
+
+---
 
 ## API
 
-### `isString(value)`
+### Primitive Checks
 
-Check if value is an string literal or string created by `String` constructor
+#### `isString`
 
-```tsx
-isString('abc'); // true
-isString(new String('abc')); // true
-isString(42); // false
+Checks if a value is a string (based on `typeof`)
+
+```ts
+isString('hello'); // true
+isString(123); // false
 ```
 
----
+#### `isNumber`
 
-### `isNumber(value)`
+Checks if a value is a number (based on `typeof`)
 
-Check if value is an number literal or number created by `Number` constructor and **not `NaN`**
-
-ℹ️ Although `NaN` is considered a number in JS, it's not a valid number and in most cases, you probably want to check it separately
-
-```tsx
-isNumber(42); // true
-isNumber(new Number(42)); // true
-isNumber('42'); // false
-isNumber(NaN); // false
+```ts
+isNumber(123); // true
+isNumber('123'); // false
 ```
 
----
+#### `isFiniteNumber`
 
-### `isBoolean(value)`
+Checks if a values is a finite number (not `NaN`, `Infinity`, or `-Infinity`)
 
-Check if value is an boolean
+```ts
+isFiniteNumber(123); // true
+isFiniteNumber(NaN); // false
+isFiniteNumber(Infinity); // false
+isFiniteNumber('42'); // false
+```
 
-```tsx
+#### `isBoolean`
+
+Checks if a value is a boolean (based on `typeof`)
+
+```ts
 isBoolean(true); // true
-isBoolean(false); // true
-isBoolean(42); // false
+isBoolean(0); // false
 ```
 
----
+#### `isBigInt`
 
-### `isNaN(value)`
+Checks if value is a `bigint` (based on `typeof`)
 
-Check if value is an NaN value.
-
-ℹ️ This method is based on `Number.isNaN` and is not the same as global isNaN which converts value to number before checking
-
-```tsx
-isNaN(NaN); // true
-isNaN(2 + {}); // true
-isNaN(42); // false
-isNaN({}); // false
+```ts
+isBigInt(123n); // true
+isBigInt(BigInt(123)); // true
+isBigInt(123); // false
 ```
 
----
+#### `isSymbol`
 
-### `isUndefined(value)`
+Checks for symbol type (based on `typeof`)
 
-Check if value is a undefined
-
-```tsx
-isUndefined(undefined); // true
-isUndefined(null); // false
+```ts
+isSymbol(Symbol('foo')); // true
 ```
 
----
+#### `isNull`
 
-### `isNull(value)`
+Checks if value is exactly `null`.
 
-Check if value is a null
-
-```tsx
+```ts
 isNull(null); // true
 isNull(undefined); // false
 ```
 
----
+#### `isUndefined`
 
-### `isNil(value)`
+Checks if value is exactly `undefined`.
 
-Check if value is a null or undefined
+```ts
+isUndefined(undefined); // true
+isUndefined(null); // false
+```
 
-```tsx
+#### `isNil`
+
+Checks if value is `null` or `undefined`.
+
+```ts
 isNil(null); // true
 isNil(undefined); // true
-isNil(0); // false
 ```
 
----
+#### `isNaN`
 
-### `isPrimitive(value)`
+Strict `NaN` check
 
-Check if value is a primitive
-
-ℹ️ Primitive values in JS are: `string`, `number`, `boolean`, `null`, `undefined`, `symbol`, `bigint`
-
-```tsx
-isPrimitive(42); // true
-isPrimitive([1, 2, 3]); // false
+```ts
+isNaN(NaN); // true
+isNaN('foo'); // false
 ```
 
----
+#### `isPrimitive`
 
-### `isSymbol(value)`
+Checks for JS primitive types including (`string`, `number`, `boolean`, `bigint`, `symbol`, `null`, and `undefined`).
 
-Check if value is a `Symbol`
-
-```tsx
-isSymbol(Symbol('42')); // true
-isSymbol('42'); // false
+```ts
+isPrimitive('hello'); // true
 ```
 
----
+#### `isFalsy`
 
-### `isRegExp(value)`
+Checks if value is falsy: `false`, `0`, `''`, `null`, `undefined`
 
-Check if value is a RegExp object or RegExp literal
-
-```tsx
-isRegExp(/\w+/); // true
-isRegExp(new RegExp('\\w+')); // true
+```ts
+isFalsy(false); // true
+isFalsy(0); // true
+isFalsy(''); // true
 ```
 
----
+### Object Checks
 
-### `isError(value)`
+#### `isAnyObject`
 
-Check if value is an JS Error object
+Loose check for object-like values (including arrays, maps).
 
-```tsx
-isError(new Error()); // true
-isError(new TypeError()); // true
-```
-
----
-
-### `isAnyObject(value)`
-
-Check if value is a language type object (except null)
-
-ℹ️ This method is not type safe and may lead to unexpected runtime errors. You probably want to use `isPlainObject` instead
-
-```tsx
+```ts
 isAnyObject({}); // true
 isAnyObject([]); // true
 isAnyObject(new Map()); // true
-isAnyObject(new String()); // true
+isAnyObject(new MyClass()); // true
 ```
 
----
+#### `isPlainObject`
 
-### `isPlainObject(value)`
+Strictly checks for plain objects with default prototype.
 
-Check if value is a plain JavaScript object (excluding special classes or objects with other prototypes). It may be object literal `{}`, instance created by `Object` constructor or using `Object.create(null | Object)`
-
-```tsx
+```ts
 isPlainObject({}); // true
-isPlainObject([]); // false
 isPlainObject(new Map()); // false
-isPlainObject(new String()); // false
+isPlainObject(new MyClass()); // false
+isPlainObject(Object.create(null)); // true
 ```
 
----
+#### `isEmpty`
 
-### `isArray(value)`
+Checks if the value is empty (e.g. empty array, string, object, map, set).
 
-Check if value is array
+```ts
+isEmpty({}); // true
+isEmpty([]); // true
+isEmpty(''); // true
+isEmpty(new Map()); // true
+isEmpty(new Set()); // true
+```
 
-```tsx
+#### `isArray`
+
+Checks if value is an array (based on `Array.isArray`)
+
+```ts
 isArray([]); // true
-isArray({ 0: 'a', length: 10 }); // false
+isArray({}); // false
 ```
 
----
+#### `isArrayOf`
 
-### `isFunction(value)`
+Checks if every item in an array passes a specified guard.
 
-Check if value is an any function (except ES class definition)
+```ts
+isArrayOf(['hello', 'world'], isString); // true
+isArrayOf(['hello', 123], isString); // false
 
-```tsx
+// can also use currying
+is.ArrayOf(isString)(['hello', 'world']); // true
+```
+
+#### `isTupleOf`
+
+Checks if the value is an array that exactly matches a given tuple schema.
+
+```ts
+isTupleOf(['hello', 123], [isString, isNumber]); // true
+isTupleOf(['hello', 'world'], [isString, isNumber]); // false
+isTupleOf([123], [isString, isNumber]); // false
+```
+
+#### `isObjectOf`
+
+Checks if the value is an object that matches a given schema.
+
+```ts
+isObjectOf({ a: 1, b: 'hello' }, { a: isNumber, b: isString }); // true
+isObjectOf({ a: 1, b: 'hello' }, { a: isNumber, b: isString, c: isBoolean }); // false
+
+isObjectOf({ a: 1, b: 'hello', extra: true }, { a: isNumber, b: isString }); // true (see `isObjectExactOf` for strict check)
+```
+
+#### `isObjectExactOf`
+
+Same as `isObjectOf`, but strictly checks that the object matches the schema without extra keys.
+
+```ts
+isObjectExactOf({ a: 1, b: 'hello', extra: true }, { a: isNumber, b: isString }); // false
+```
+
+### Function & Class Checks
+
+#### `isFunction`
+
+Checks if a value is a function (but not a ES6 class constructor).
+
+```ts
 isFunction(() => {}); // true
 isFunction(function () {}); // true
-isFunction(async function () {}); // true
-isFunction(class {}); // false, although ES6 class is a constructor function in JS, it's  expected behavior
+isFunction(class MyClass {}); // false
 ```
 
----
+> Although technically es6 classes are functions as well, it's can not be called like a regular function and in most majority of cases this is not the expected behavior. So this guard is designed to check for regular functions only
 
-### `isAsyncFunction(value)`
+#### `isClass`
 
-Check if value is ES6 async function definition
+Checks if value is a ES6 class constructor. Uses `Object.prototype.toString` hack. Only works with ES6 classes defined with `class` keyword.
 
-```tsx
-isAsyncFunction(async function () {}); // true
-isAsyncFunction(async () => {}); // true
-isAsyncFunction(() => {}); // false
-```
-
----
-
-### `isClass(value)`
-
-Check if value is a ES6 class definition
-
-```tsx
-isClass(class {}); // true
-isClass(() => {}); // false
+```ts
+isClass(class MyClass {}); // true
 isClass(function () {}); // false
 ```
 
----
+### Special Structures
 
-### `isPromise(value)`
+#### `isRegExp`
 
-Check if value is a native promise object
+Checks if value is a `RegExp` instance.
 
-```tsx
-isPromise(Promise.resolve()); // true
+```ts
+isRegExp(/abc/); // true
+isRegExp(new RegExp('abc')); // true
+```
+
+#### `isDate`
+
+Checks if value is a `Date` instance.
+
+```ts
+isDate(new Date()); // true
+isDate(new Date('INVALID')); // true, includes invalid dates (see `isValidDate` for strict check)
+isDate('2023-01-01'); // false
+```
+
+#### `isValidDate`
+
+Same as `isDate`, but checks if the date is valid (i.e. not `Invalid Date`).
+
+```ts
+isValidDate(new Date()); // true
+isValidDate(new Date('INVALID')); // false
+```
+
+#### `isIterable`
+
+Checks if value is iterable, meaning it has a `[Symbol.iterator]` method and can be used in a `for...of` loop and spread operator.
+
+```ts
+isIterable(new Set([1, 2])); // true
+isIterable(new Map()); // true
+isIterable(new Map().keys()); // true
+isIterable((function* () {})()); // true
+isIterable({}); // false
+```
+
+#### `isPromise`
+
+Checks if value is a native `Promise` instance.
+
+```ts
 isPromise(new Promise(() => {})); // true
 isPromise({ then: () => {} }); // false
 ```
 
----
+#### `isPromiseLike`
 
-### `isPromiseLike(value)`
-
-Check if value is a promise-like object (has `then` method)
-
-```tsx
-isPromiseLike(Promise.resolve()); // true
-isPromiseLike(new Promise(() => {})); // true
-isPromiseLike({ then: () => {} }); // true
-```
-
----
-
-### `isIterable(value)`
-
-Check if value is iterable (arrays, strings, maps, sets, etc.)
-
-```tsx
-isIterable([]); // true
-isIterable('42'); // true
-isIterable(new Map()); // true
-```
-
----
-
-### `isDate(value)`
-
-Check if value is a valid JS Date object
-
-```tsx
-isDate(new Date()); // true
-isDate(new Date('Invalid Date')); // false
-```
-
----
-
-### `isHasOwn(value, propertyName)`
-
-> `(value, propertyName) => boolean`\
-> `(propertyName) => (value) => boolean`
-
-Check if value is an any object and has a direct property with given name
-
-> ℹ️ This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
-
-```tsx
-isHasOwn({ a: 42 }, 'a'); // true
-isHasOwn({ a: 42 }, 'b'); // false
-```
-
----
-
-### `isHasIn(value, propertyName)`
-
-> `(value, propertyName) => boolean`\
-> `(propertyName) => (value) => boolean`
-
-Check if value is an any object and has a direct or inherited property with given name
-
-> ℹ️ This method based on `in` operator and checks prototype chain
-
-```tsx
-isHasIn({ a: 42 }, 'a'); // true
-isHasIn({ a: 42 }, 'b'); // false
-isHasIn({ a: 42 }, 'toString'); // true
-
-class A {
-    method() {}
-}
-
-isHasIn(new A(), 'method'); // true
-```
-
----
-
-### `isArrayOf(value, guard)`
-
-> `(value, guard) => boolean`\
-> `(guard) => (value) => boolean`
-
-Check if value is an array and all elements of the array match a given guard
-
-```tsx
-isArrayOf([1, 2, 3], isNumber); // true
-isArrayOf([1, 2, 3], isString); // false
-```
-
----
-
-### `isInstanceOf(value, constructor)`
-
-> `(value, constructor) => boolean`\
-> `(constructor) => (value) => boolean`
-
-Check if value is instance of given constructor
-
-> ℹ️ This method based on `instanceof` operator
-
-```tsx
-isInstanceOf(new Map(), Map); // true
-isInstanceOf(new Map(), Set); // false
-```
-
----
-
-### `isEmpty(value)`
-
-Check if value is empty.
-
-> Value is considered as empty if it's:
->
-> -   Empty object: `{}`
-> -   Empty array: `[]`
-> -   Empty Map: `new Map()`
-> -   Empty Set: `new Set()`
-> -   Empty string: `''`
-> -   Nullable value: `null or undefined`
-
-```tsx
-isEmpty({}); // true
-isEmpty(new Set()); // true
-isEmpty(null); // true
-isEmpty(''); // true
-isEmpty(0); // false
-```
-
----
-
-### `is(value, expectedValue)`
-
-> 💡 You can use `is` container as a guard function
-
-> `(value, expectedValue) => boolean`\
-> `(value, expectedValue, isEqual) => boolean`
->
-> `(expectedValue) => (value) => boolean`\
-> `(expectedValue, isEqual) => (value) => boolean`
-
-Check if value is equal to a given expected value.
-
-ℹ️ By default will use `Object.is` for comparison, but you can pass custom `isEqual` function as a third argument
-
-```tsx
-is(42, 42); // true
-
-const isExactly42 = is(42);
-
-isExactly42(42); // true
-isExactly42('anything else'); // false
-```
-
-```tsx
-import is from 'utility-guards';
-import isEqual from 'lodash/isEqual';
-
-const isMyObject = is({ a: 3 }, isEqual);
-
-isMyObject({ a: 3 }); // true
-isMyObject({ a: 3, b: 4 }); // false
-```
-
----
-
-## utility methods
-
-> All methods that starts with `$` are utility methods for manipulating with guards
-
-### `$not(guard)`
-
-Inverse given guard
-
-```tsx
-const notIsNil = $not(isNil);
-
-const arr = [1, null, 2, undefined, 3];
-const filtered = arr.filter(notIsNil);
-
-console.log(filtered); // [1, 2, 3] (type: number[])
-```
-
-### `$some(guard1, guard2, ...)`<a name="_some"></a>
-
-Combine multiple guards with `some` logic (logical OR)
-
-```tsx
-const isNumberOrString = $some(isNumber, isString);
-
-isNumberOrString(42); // true
-isNumberOrString('42'); // true
-isNumberOrString(true); // false
-```
-
-### `$every(guard1, guard2, ...)`<a name="_every"></a>
-
-Combine multiple guards with `every` logic (logical AND)
-
-```tsx
-const isEmptyArray = $every(isArray, isEmpty);
-
-isEmptyArray([]); // true
-isEmptyArray([1, 2, 3]); // false
-```
-
-## `validate` addon
-
-### `validate(value, schema)`
-
-> `(value, schema) => boolean`\
-> `(schema) => (value) => boolean`
-
-Allows to validate runtime values (objects) with given schema or guard
-
-### Usage
-
-#### Validate object with schema
-
-```tsx
-import { validate, isString, isNil, isBoolean } from 'utility-guards';
-
-const obj = JSON.parse('...');
-
-const schema = {
-    a: isNumber,
-    b: $some(isString, isNil), // string or nil
-    c: {
-        d: isBoolean,
-        e: {
-            f: isNumber,
-            g: isString,
-        },
-    },
-};
-
-if (validate(obj, schema)) {
-    // type of obj is inferred
-    // { a: number, b: string | null, c: { d: boolean, e: { f: number, g: string } } }
-    obj.c.e.f; // OK
-} else {
-    obj.c.e.f; // TS Error
-}
-```
-
-#### Validate array with schema
-
-```tsx
-import { validate, isString, isNil, isBoolean, isArrayOf } from 'utility-guards';
-
-const arr = JSON.parse('...');
-
-const schema = [
-    isString,
-    isNil, // string or nil
-    {
-        d: isBoolean,
-        e: isArrayOf(isNumber), // array of numbers only
-    },
-];
-
-if (validate(arr, schema)) {
-    // type of arr is inferred
-    // [string, string | null, { d: boolean, e: number[] }]
-    arr[2].e[0]; // OK
-} else {
-    arr[2].e[0]; // TS Error
-}
-```
-
-#### Validate function args
-
-One of the useful use-cases is to validate overloaded function arguments
+Checks if value is a promise-like object, meaning it has a `then` method.
 
 ```ts
-type FunctionExample = {
-    (value: string): void;
-    (value: string, otherValue: number): void;
-    (value: string, otherValue: number[]): void;
-};
-
-const example: FunctionExample = (...args: unknown[]) => {
-    if (validate(args, [isString])) {
-        const [value] = args; // [string]
-    }
-    if (validate(args, [isString, isNumber])) {
-        const [value, otherValue] = args; // [string, number]
-    }
-    if (validate(args, [isString, isArrayOf(isNumber)])) {
-        const [value, otherValue] = args; // [string, number[]]
-    }
-
-    // fallback
-};
+isPromiseLike(new Promise(() => {})); // true
+isPromiseLike({ then: () => {} }); // true
+isPromiseLike({ then: 'foo' }); // false
 ```
 
-#### Validate value with guard
+#### `isError`
 
-```tsx
-import { validate, isArray, isEmpty, isString, isNil, isBoolean, $every, $some } from 'utility-guards';
+Checks if value is an instance of `Error`.
 
-const value = JSON.parse('...');
-
-validate(value, isNumber); // is number
-validate(value, $some(isNumber, isString)); // is number | string
-validate(value, $every(isArray, isEmpty)); // is []
-
-validate([1, 2, 3], isArrayOf(isNumber)); // true
-validate([1, 2, 3, 'asd'], isArrayOf(isNumber)); // false
+```ts
+isError(new Error('foo')); // true
+isError(new TypeError('foo')); // true
+isError(new MyCustomError('foo')); // true
 ```
 
-### `validateStrict(value, schema)`
+### Advanced Structural Guards
 
-> `(value, schema) => boolean`\
-> `(schema) => (value) => boolean`
+#### `isHasOwn`
 
-ℹ️ Use `validateStrict` to check if object has all properties from schema
+Checks if object has an own property (not inherited).
 
-Same as `validate` but also checks if object no extra properties
+```ts
+class Cls {
+    get key() {
+        return 'value';
+    }
+}
+const obj = { key: 'value' };
 
-```tsx
-import { validateStrict, isString, isNumber } from 'utility-guards';
-
-const schema = {
-    a: isNumber,
-    b: isString,
-};
-
-validateStrict({ a: 42, b: '42' }, schema); // true
-validateStrict({ a: 42, b: '42', c: true }, schema); // false
-validateStrict({ a: 42 }, schema); // false
+isHasOwn(obj, 'key'); // true
+isHasOwn(new Cls(), 'key'); // false
+isHasOwn('key')(obj); // support currying
 ```
 
-<br/>
+#### `isHasIn`
+
+Checks if property exists in object or its prototype chain.
+
+```ts
+isHasIn(obj, 'key'); // true
+isHasIn(new Cls(), 'key'); // true
+isHasIn('key')(obj); // support currying
+```
+
+#### `isInstanceOf`
+
+Checks if value is instance of constructor using `instanceof`.
+
+```ts
+class A {}
+class B extends A {}
+
+isInstanceOf(new A(), A); // true
+isInstanceOf(new B(), A); // true
+```
+
+#### `isInstanceExactOf`
+
+Strict check that prototype is exactly the one from constructor (not a subclass).
+
+```ts
+isInstanceExactOf(new A(), A); // true
+isInstanceExactOf(new B(), A); // false
+```
+
+### Combinators
+
+#### `$not`
+
+Inverts a given guard
+
+```ts
+const isNotString = $not(isString);
+isNotString(123); // true
+```
+
+#### `$some`
+
+Logical OR combinator: passes if any guard returns true.
+
+```ts
+const isStringOrNumber = $some(isString, isNumber);
+isStringOrNumber('hello'); // true
+isStringOrNumber(123); // true
+```
+
+#### `$every`
+
+Logical AND combinator: passes if all guards return true.
+
+```ts
+const isStringAndNotEmpty = $every(isString, $not(isEmpty));
+isStringAndNotEmpty('hello'); // true
+isStringAndNotEmpty(''); // false
+```
+
+### Utility
+
+#### `is`
+
+Checks two values for equality using `Object.is` (or custom equality function).
+Can be used for build more complex guards (e.g. `isObjectOf`, `isTupleOf` etc.).
+
+```ts
+is(123, 123); // true
+is(123)(123); // support currying
+```
+
+#### `isAny`
+
+A guard that always returns `true`. Useful as a wildcard in validations.
+
+```ts
+isAny(ANYTHING); // true
+```
 
 ---
 
-<br/>
+## Types
 
-### Compose and create custom guard
+All guards follow this signature:
 
-```tsx
-const isOkCode = $some(is(200), is(201), is(202));
+```ts
+// basic guards with single argument
+(value: unknown) => value is T
 
-const isUserProfile = validate({
-    id: isNumber,
-    name: isString,
-    age: $some(isNumber, isNil),
-    avatarUrl: $some(isString, isNil),
-});
-
-const isSuccessResult = validate({
-    ok: is(true),
-    code: isOkCode,
-    result: {
-        id: is.Number,
-        users: is.ArrayOf(isUserProfile),
-    },
-});
-
-// true
-isSuccessResult({
-    ok: true,
-    code: 200,
-    result: [
-        {
-            id: 42,
-            user: {
-                id: 42,
-                name: 'John',
-                age: null,
-                avatarUrl: null,
-            },
-        },
-    ],
-});
+// guards with multiple arguments (isArrayOf, isTupleOf, isObjectOf, isInstanceOf, isHasOwn etc.)
+// supports currying
+(value: unknown, ...args: unknown[]) => value is T
+(...args: unknown[]) => (value: unknown) => value is T
 ```
+
+---
+
+## License
+
+MIT © Resetand

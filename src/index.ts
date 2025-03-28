@@ -9,20 +9,21 @@ import isBigInt from './guards/isBigInt';
 import isBoolean from './guards/isBoolean';
 import isClass from './guards/isClass';
 import isDate from './guards/isDate';
+import isValidDate from './guards/isValidDate';
 import isEmpty from './guards/isEmpty';
 import isError from './guards/isError';
 import isFunction from './guards/isFunction';
-import isAsyncFunction from './guards/isAsyncFunction';
 import isHasOwn from './guards/isHasOwn';
 import isHasIn from './guards/isHasIn';
 import isInstanceOf from './guards/isInstanceOf';
-import isExactInstanceOf from './guards/isExactInstanceOf';
+import isInstanceExactOf from './guards/isInstanceExactOf';
 import isIterable from './guards/isIterable';
 import isNaN from './guards/isNaN';
 import isUndefined from './guards/isUndefined';
 import isNull from './guards/isNull';
 import isNil from './guards/isNil';
 import isNumber from './guards/isNumber';
+import isFiniteNumber from './guards/isFiniteNumber';
 import isAnyObject from './guards/isAnyObject';
 import isPlainObject from './guards/isPlainObject';
 import isPrimitive from './guards/isPrimitive';
@@ -32,10 +33,12 @@ import isRegExp from './guards/isRegExp';
 import isSymbol from './guards/isSymbol';
 import isFalsy from './guards/isFalsy';
 import isAny from './guards/isAny';
+import isObjectOf from './guards/isObjectOf';
+import isObjectExactOf from './guards/isObjectExactOf';
+import isTupleOf from './guards/isTupleOf';
 
 import _isGuard, { IsGuard } from './_is-guard';
-
-import validate, { validateStrict } from './validate';
+import type { Guard } from './_types';
 
 /**
  * Container with type guards
@@ -43,6 +46,7 @@ import validate, { validateStrict } from './validate';
 const _container = {
     String: isString,
     Number: isNumber,
+    FiniteNumber: isFiniteNumber,
     BigInt: isBigInt,
     Symbol: isSymbol,
     RegExp: isRegExp,
@@ -58,28 +62,27 @@ const _container = {
     Array: isArray,
     Class: isClass,
     Function: isFunction,
-    AsyncFunction: isAsyncFunction,
     Promise: isPromise,
     PromiseLike: isPromiseLike,
     Date: isDate,
+    ValidDate: isValidDate,
     Iterable: isIterable,
     Empty: isEmpty,
     Falsy: isFalsy,
     InstanceOf: isInstanceOf,
-    ExactInstanceOf: isExactInstanceOf,
+    ExactInstanceOf: isInstanceExactOf,
     Any: isAny,
     HasOwn: isHasOwn,
     HasIn: isHasIn,
     ArrayOf: isArrayOf,
+    TupleOf: isTupleOf,
+    ObjectOf: isObjectOf,
+    ObjectExactOf: isObjectExactOf,
 
     // utility methods
     $some,
     $every,
     $not,
-
-    // deprecated
-    // @deprecated use `is.HasOwn` instead
-    Has: isHasOwn,
 };
 
 type IsGuardContainer = IsGuard & typeof _container;
@@ -102,21 +105,22 @@ export {
     isBoolean,
     isClass,
     isDate,
+    isValidDate,
     isEmpty,
     isFalsy,
     isError,
     isFunction,
-    isAsyncFunction,
     isHasOwn,
     isHasIn,
     isInstanceOf,
-    isExactInstanceOf,
+    isInstanceExactOf,
     isIterable,
     isNaN,
     isUndefined,
     isNull,
     isNil,
     isNumber,
+    isFiniteNumber,
     isAnyObject,
     isPlainObject,
     isPrimitive,
@@ -126,18 +130,15 @@ export {
     isString,
     isSymbol,
     isAny,
+    isObjectOf,
+    isObjectExactOf,
+    isTupleOf,
 
     // public utils
     $some,
     $every,
     $not,
 
-    // validate methods
-    validate,
-    validateStrict,
-
-    // deprecated
-
-    /** @deprecated use `isHasOwn` instead */
-    isHasOwn as isHas,
+    // types
+    type Guard,
 };

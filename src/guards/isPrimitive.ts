@@ -1,14 +1,19 @@
-import isBigInt from './isBigInt';
-import isBoolean from './isBoolean';
-import isNumber from './isNumber';
-import isString from './isString';
-import isSymbol from './isSymbol';
-import isNil from './isNil';
-import $some from '../some';
+type Primitive = string | number | boolean | symbol | bigint | null | undefined;
+
+const typeOfMap = {
+    object: false,
+    function: false,
+    undefined: true,
+    string: true,
+    number: true,
+    boolean: true,
+    bigint: true,
+    symbol: true,
+};
 
 /**
  * Check if value is a primitive
- * @see `AnyPrimitive`
+ * @see `Primitive`
  *
  * @example
  * isPrimitive(1); // -> true
@@ -22,6 +27,6 @@ import $some from '../some';
  * isPrimitive({}); // -> false
  * isPrimitive([]); // -> false
  */
-const isPrimitive = $some(isNil, isBoolean, isString, isNumber, isBigInt, isSymbol);
-
-export default isPrimitive;
+export default function isPrimitive(value: unknown): value is Primitive {
+    return typeOfMap[typeof value] || value === null;
+}

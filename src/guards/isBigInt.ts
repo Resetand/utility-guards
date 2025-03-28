@@ -1,7 +1,5 @@
-import { isType } from '../_utils';
-
 /**
- * Check if value a bigint literal or bigint created by `BigInt` constructor
+ * Check if value a bigint literal or bigint created by `BigInt` constructor.
  *
  * @example
  * isBigInt(1n); // -> true
@@ -11,5 +9,5 @@ import { isType } from '../_utils';
  * isBigInt(1); // -> false
  */
 export default function isBigInt(value: unknown): value is bigint {
-    return isType(value, 'BigInt');
+    return typeof value === 'bigint';
 }

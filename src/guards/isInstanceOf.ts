@@ -1,7 +1,7 @@
 import type { Class } from '../_types';
-import { curriedGuard } from '../_utils';
+import { curriedGuard } from '../utils/_curried-guard';
 
-type InstanceOfGuard = {
+export type InstanceOfGuard = {
     /**
      * Check if value is instance of given constructor
      *

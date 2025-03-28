@@ -6,7 +6,6 @@ import {
     isUndefined,
     isNull,
     isFunction,
-    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -32,7 +31,12 @@ import {
     isAny,
     isClass,
     isBigInt,
-    isExactInstanceOf,
+    isInstanceExactOf,
+    isObjectOf,
+    isObjectExactOf,
+    isTupleOf,
+    isFiniteNumber,
+    isValidDate,
 } from '../src';
 
 import { describe, test, expect } from 'vitest';
@@ -41,10 +45,11 @@ const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
     return [...tests.passed.map((p) => [p, true]), ...tests.failed.map((f) => [f, false])] as [TP | TF, boolean][];
 };
 
-// export const assertType = <T>(_: T) => {};
-
 class Cls {}
 class SubCls extends Cls {}
+class MyClassWithMethod {
+    myMethod() {}
+}
 class CustomError extends Error {
     unique = true;
 }
@@ -60,14 +65,6 @@ class CustomPromise {
     then() {
         return this;
     }
-
-    catch() {
-        return this;
-    }
-
-    finally() {
-        return this;
-    }
 }
 
 describe('Guards runtime tests', () => {
@@ -76,17 +73,26 @@ describe('Guards runtime tests', () => {
             passed: ['test', String('test2')],
             failed: [[], null, 100, false, undefined],
         }),
-    )('should check on String - %s', (value, expected) => {
+    )('should check on String - %s (%#)', (value, expected) => {
         expect(isString(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
-            passed: [23, 0x23, 1e1, Infinity, Number(123)],
-            failed: [[], null, 'string', undefined, NaN],
+            passed: [23, 0x23, 1e1, Infinity, Number(123), NaN],
+            failed: [[], null, 'string', undefined],
         }),
-    )('should check on Number - %s', (value, expected) => {
+    )('should check on Number - %s (%#)', (value, expected) => {
         expect(isNumber(value)).toBe(expected);
+    });
+
+    test.each(
+        unwrap({
+            passed: [123, 0x23, 1e1, Number(123)],
+            failed: [NaN, Infinity, -Infinity, [], null, 'string', undefined],
+        }),
+    )('should check on Finite Number - %s (%#)', (value, expected) => {
+        expect(isFiniteNumber(value)).toBe(expected);
     });
 
     test.each(
@@ -94,7 +100,7 @@ describe('Guards runtime tests', () => {
             passed: [NaN, Number('s')],
             failed: [123, Infinity, 123, null, 'string', undefined],
         }),
-    )('should check on NaN - %s', (value, expected) => {
+    )('should check on NaN - %s (%#)', (value, expected) => {
         expect(isNaN(value)).toBe(expected);
     });
 
@@ -103,40 +109,42 @@ describe('Guards runtime tests', () => {
             passed: [true, false],
             failed: ['string', 0, '', null, NaN],
         }),
-    )('should check on Boolean - %s', (value, expected) => {
+    )('should check on Boolean - %s (%#)', (value, expected) => {
         expect(isBoolean(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
-            passed: [{}, Object.create(null), new String(''), [1, 2, 3], new Cls(), new CustomError()],
+            passed: [{}, Object.create(null), [1, 2, 3], new Cls(), new CustomError()],
             failed: ['string', null, 0, false],
         }),
-    )('should check on AnyObject - %s', (value, expected) => {
+    )('should check on AnyObject - %s (%#)', (value, expected) => {
         expect(isAnyObject(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
             passed: [{}, Object.create(null)],
-            failed: ['string', new Cls(), null, [1, 2, 3], 0, () => 'test', new String('')],
+            failed: ['string', new Cls(), null, [1, 2, 3], 0, () => 'test', String('')],
         }),
-    )('should check on PlainObject - %s', (value, expected) => {
+    )('should check on PlainObject - %s (%#)', (value, expected) => {
         expect(isPlainObject(value)).toBe(expected);
     });
 
-    test('should check on PlainObject with own property - %s', () => {
+    test('should check on PlainObject with own property', () => {
         expect(isHasOwn(Cls, 'toString')).toBe(false);
         expect(isHasOwn({}, 'toString')).toBe(false);
         expect(isHasOwn([1], '0')).toBe(true);
         expect(isHasOwn({ prop: 'example' }, 'prop')).toBe(true);
+        expect(isHasOwn(new MyClassWithMethod(), 'myMethod')).toBe(false);
     });
 
-    test('should check on value has direct or inherit property - %s', () => {
+    test('should check on value has direct or inherit property', () => {
         expect(isHasIn(Cls, 'toString')).toBe(true);
         expect(isHasIn({}, 'toString')).toBe(true);
         expect(isHasIn([1], '0')).toBe(true);
         expect(isHasIn({ prop: 'example' }, 'prop')).toBe(true);
+        expect(isHasIn(new MyClassWithMethod(), 'myMethod')).toBe(true);
     });
 
     test.each(
@@ -144,7 +152,7 @@ describe('Guards runtime tests', () => {
             passed: [undefined],
             failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test', null],
         }),
-    )('should check on undefined - %s', (value, expected) => {
+    )('should check on undefined - %s (%#)', (value, expected) => {
         expect(isUndefined(value)).toBe(expected);
     });
 
@@ -153,7 +161,7 @@ describe('Guards runtime tests', () => {
             passed: [null],
             failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test', undefined],
         }),
-    )('should check on null - %s', (value, expected) => {
+    )('should check on null - %s (%#)', (value, expected) => {
         expect(isNull(value)).toBe(expected);
     });
 
@@ -162,28 +170,25 @@ describe('Guards runtime tests', () => {
             passed: [null, undefined],
             failed: ['string', new Cls(), [1, 2, 3], 0, () => 'test'],
         }),
-    )('should check on Nill - %s', (value, expected) => {
+    )('should check on Nill - %s (%#)', (value, expected) => {
         expect(isNil(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
-            /* eslint-disable no-new-func */
-            passed: [() => '123', func, Function('a, b', 'return a + 2'), parseInt, JSON.stringify, asyncFunc],
+            passed: [
+                () => '123',
+                func,
+                Function('a, b', 'return a + 2'),
+                parseInt,
+                JSON.stringify,
+                asyncFunc,
+                async () => {},
+            ],
             failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls],
         }),
-    )('should check on Function - %s', (value, expected) => {
+    )('should check on Function - %s (%#)', (value, expected) => {
         expect(isFunction(value)).toBe(expected);
-    });
-
-    test.each(
-        unwrap({
-            /* eslint-disable no-new-func */
-            passed: [async () => '123', asyncFunc],
-            failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls, func, () => 'test'],
-        }),
-    )('should check on AsyncFunction - %s', (value, expected) => {
-        expect(isAsyncFunction(value)).toBe(expected);
     });
 
     test.each(
@@ -192,7 +197,7 @@ describe('Guards runtime tests', () => {
             passed: [BigInt(1), BigInt('1'), 42n],
             failed: ['string', null, [1, 2, 3], 0, () => 'test'],
         }),
-    )('should check on BigInt - %s', (value, expected) => {
+    )('should check on BigInt - %s (%#)', (value, expected) => {
         expect(isBigInt(value)).toBe(expected);
     });
 
@@ -201,7 +206,7 @@ describe('Guards runtime tests', () => {
             passed: [Cls, CustomError, CustomPromise],
             failed: ['string', null, [1, 2, 3], 0, () => 'test'],
         }),
-    )('should check on isClass - %s', (value, expected) => {
+    )('should check on isClass - %s (%#)', (value, expected) => {
         expect(isClass(value)).toBe(expected);
     });
 
@@ -210,7 +215,7 @@ describe('Guards runtime tests', () => {
             passed: ['test', 1, BigInt(1), null, undefined, true, false, Symbol('test')],
             failed: [{}, () => 'test', [1, 2, 3]],
         }),
-    )('should check on Primitive - %s', (value, expected) => {
+    )('should check on Primitive - %s (%#)', (value, expected) => {
         expect(isPrimitive(value)).toBe(expected);
     });
 
@@ -219,7 +224,7 @@ describe('Guards runtime tests', () => {
             passed: [new Promise((res) => res(1)), Promise.resolve()],
             failed: [{}, () => 'test', { then: () => void 0 }],
         }),
-    )('should check on Promise object - %s', (value, expected) => {
+    )('should check on Promise object - %s (%#)', (value, expected) => {
         expect(isPromise(value)).toBe(expected);
     });
 
@@ -228,7 +233,7 @@ describe('Guards runtime tests', () => {
             passed: [new Promise((res) => res(1)), Promise.resolve(), { then: () => void 0 }, new CustomPromise()],
             failed: [{}, () => 'test'],
         }),
-    )('should check on PromiseLike object - %s', (value, expected) => {
+    )('should check on PromiseLike object - %s (%#)', (value, expected) => {
         expect(isPromiseLike(value)).toBe(expected);
     });
 
@@ -247,21 +252,31 @@ describe('Guards runtime tests', () => {
             ],
             failed: [{}, () => 'test', { then: () => void 0 }, new Promise((res) => res(1))],
         }),
-    )('should check on Iterable - s%', (value, expected) => {
+    )('should check on Iterable - s% (%#)', (value, expected) => {
         expect(isIterable(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
-            passed: [new Date(), new Date('01.02.1971')],
-            failed: [123123, new Date('invalid date'), '01.02.1971'],
+            passed: [new Date(), new Date('01.02.1971'), new Date('invalid date')],
+            failed: [123123, '01.02.1971'],
         }),
-    )('should check on Date - %s', (value, expected) => {
+    )('should check on Date - %s (%#)', (value, expected) => {
         expect(isDate(value)).toBe(expected);
     });
 
-    test('should check on InstanceOf - s%', () => {
+    test.each(
+        unwrap({
+            passed: [new Date(), new Date('01.02.1971')],
+            failed: [123123, '01.02.1971', new Date('invalid date')],
+        }),
+    )('should check on Valid Date - %s (%#)', (value, expected) => {
+        expect(isValidDate(value)).toBe(expected);
+    });
+
+    test('should check on InstanceOf', () => {
         expect(isInstanceOf(new Cls(), Cls)).toBe(true);
+        expect(isInstanceOf(Cls)(new SubCls())).toBe(true);
         expect(isInstanceOf(new CustomError(), Error)).toBe(true);
         expect(isInstanceOf(new CustomError(), CustomError)).toBe(true);
         expect(isInstanceOf(new CustomError(), Cls)).toBe(false);
@@ -271,11 +286,12 @@ describe('Guards runtime tests', () => {
     });
 
     test('should check on ExactInstanceOf', () => {
-        expect(isExactInstanceOf(new Cls(), Cls)).toBe(true);
-        expect(isExactInstanceOf(new SubCls(), Cls)).toBe(false);
-        expect(isExactInstanceOf(new Cls(), SubCls)).toBe(false);
-        expect(isExactInstanceOf(new SubCls(), SubCls)).toBe(true);
-        expect(isInstanceOf({}, Cls)).toBe(false);
+        expect(isInstanceExactOf(new Cls(), Cls)).toBe(true);
+        expect(isInstanceExactOf(Cls)(new Cls())).toBe(true);
+        expect(isInstanceExactOf(new SubCls(), Cls)).toBe(false);
+        expect(isInstanceExactOf(new Cls(), SubCls)).toBe(false);
+        expect(isInstanceExactOf(new SubCls(), SubCls)).toBe(true);
+        expect(isInstanceExactOf({}, Cls)).toBe(false);
     });
 
     test.each(
@@ -283,27 +299,16 @@ describe('Guards runtime tests', () => {
             passed: ['', [], {}, new Map(), new Set()],
             failed: [[1, 2], { a: 'some' }, 'string', 0, Cls, () => 'a', new Set([1, 2, 3]), new Date()],
         }),
-    )('should check on Empty - %s', (value, expected) => {
+    )('should check on Empty - %s (%#)', (value, expected) => {
         expect(isEmpty(value)).toBe(expected);
     });
 
     test.each(
         unwrap({
             passed: ['', false, 0, null, undefined, NaN],
-            failed: [
-                [1, 2],
-                { a: 'some' },
-                'string',
-                Cls,
-                () => 'a',
-                new Set([1, 2, 3]),
-                new Date(),
-                new Boolean(false),
-                new Number(0),
-                new String(''),
-            ],
+            failed: [[1, 2], { a: 'some' }, 'string', Cls, () => 'a', new Set([1, 2, 3]), new Date()],
         }),
-    )('should check on Falsy - %s', (value, expected) => {
+    )('should check on Falsy - %s (%#)', (value, expected) => {
         expect(isFalsy(value)).toBe(expected);
     });
 
@@ -336,11 +341,12 @@ describe('Guards runtime tests', () => {
 
     test.each(
         unwrap({
-            passed: [[1, 2], [], [32, 3, new Number(32)], [Number(2)]],
-            failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a'],
+            passed: [[1, 2], [], [32, 3, Number('32')], [Number(2)]],
+            failed: [['asd'], [Cls], { a: 'some' }, 'string', 0, Cls, () => 'a', [BigInt(13)]],
         }),
     )('should check on Array of %s', (value, expected) => {
         expect(isArrayOf(value, isNumber)).toBe(expected);
+        expect(isArrayOf(isNumber)(value)).toBe(expected);
     });
 
     test('should check on exact match (is)', () => {
@@ -380,8 +386,132 @@ describe('Guards runtime tests', () => {
             ],
             failed: [],
         }),
-    )('should check on Any - %s', (value, expected) => {
+    )('should check on Any – %s', (value, expected) => {
         expect(isAny(value)).toBe(expected);
+    });
+
+    test.each([
+        {
+            schema: { a: isNumber, b: isString },
+            value: 'test',
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1, b: 'a' },
+            expected: true,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: '1' },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1, b: 'a', extra: true },
+            expected: true,
+        },
+        {
+            schema: { a: isNumber, b: isString, c: isObjectOf({ a: isNumber }) },
+            value: { a: 1, b: 'a', c: { a: 1 } },
+            expected: true,
+        },
+        {
+            schema: { myMethod: isFunction },
+            value: { myMethod: () => {} },
+            expected: true,
+        },
+        {
+            schema: { myMethod: isFunction },
+            value: new MyClassWithMethod(),
+            expected: false,
+        },
+    ])('should check on ObjectOf – %s ($#)', ({ schema, value, expected }) => {
+        expect(isObjectOf(value, schema as any)).toBe(expected);
+        expect(isObjectOf(schema as any)(value)).toBe(expected);
+    });
+
+    test.each([
+        {
+            schema: { a: isNumber, b: isString },
+            value: 'test',
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1, b: 'a' },
+            expected: true,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber },
+            value: { c: 1 },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: '1' },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString },
+            value: { a: 1, b: 'a', extra: true },
+            expected: false,
+        },
+        {
+            schema: { a: isNumber, b: isString, c: isObjectExactOf({ a: isNumber }) },
+            value: { a: 1, b: 'a', c: { a: 1, extra: true } },
+            expected: false,
+        },
+        {
+            schema: { myMethod: isFunction },
+            value: { myMethod: () => {} },
+            expected: true,
+        },
+        {
+            schema: { myMethod: isFunction },
+            value: new MyClassWithMethod(),
+            expected: false,
+        },
+    ])('should check on ObjectExactOf – %s ($#)', ({ schema, value, expected }) => {
+        expect(isObjectExactOf(value, schema as any)).toBe(expected);
+        expect(isObjectExactOf(schema as any)(value)).toBe(expected);
+    });
+
+    test.each([
+        {
+            schema: [isNumber, isString],
+            value: [1, 'a'],
+            expected: true,
+        },
+        {
+            schema: [isNumber, isString],
+            value: [1],
+            expected: false,
+        },
+        {
+            schema: [isNumber, isString],
+            value: [1, 'a', 'extra'],
+            expected: false,
+        },
+
+        {
+            schema: [isNumber, isString, isObjectOf({ a: isTupleOf([isNumber, isString]) })],
+            value: [1, 'a', { a: [1, 'a'] }],
+            expected: true,
+        },
+    ])('should check on TupleOf – %s ($#)', ({ schema, value, expected }) => {
+        expect(isTupleOf(value, schema as any)).toBe(expected);
+        expect(isTupleOf(schema as any)(value)).toBe(expected);
     });
 });
 

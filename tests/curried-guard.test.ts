@@ -1,5 +1,5 @@
 import { isArrayOf, isHasOwn, isInstanceOf, isNumber } from '../src';
-import { curriedGuard } from '../src/_utils';
+import { curriedGuard } from '../src/utils/_curried-guard';
 import { expect, test } from 'vitest';
 
 class Cls {}
