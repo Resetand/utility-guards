@@ -1,4 +1,4 @@
-import type { ClassConstructor } from '../_types';
+import type { Class } from '../_types';
 import { curriedGuard } from '../_utils';
 
 type InstanceOfGuard = {
@@ -15,11 +15,11 @@ type InstanceOfGuard = {
      * isInstanceOf(Cls)(new Cls()); // -> true
      * validate({value}, {value: is.InstanceOf(Cls)}); // -> true
      */
-    <T>(value: unknown, constructor: ClassConstructor<T>): value is T;
-    <T>(constructor: ClassConstructor<T>): (value: unknown) => value is T;
+    <T>(value: unknown, constructor: Class<T>): value is T;
+    <T>(constructor: Class<T>): (value: unknown) => value is T;
 };
 
-const isInstanceOf: InstanceOfGuard = curriedGuard((value: unknown, constructor: ClassConstructor) => {
+const isInstanceOf: InstanceOfGuard = curriedGuard((value: unknown, constructor: Class) => {
     return value instanceof constructor;
 });
 

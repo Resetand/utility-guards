@@ -1,4 +1,4 @@
-import type { ClassConstructor } from '../_types';
+import type { Class } from '../_types';
 import { isType } from '../_utils';
 
 /**
@@ -15,6 +15,6 @@ import { isType } from '../_utils';
  * isClass(function() {}); // -> false
  * isClass(new Function()); // -> false
  */
-export default function isClass<T>(value: T | ClassConstructor): value is ClassConstructor {
+export default function isClass(value: unknown): value is Class {
     return isType(value, 'Function') && /^class\s/.test(Function.prototype.toString.call(value));
 }

@@ -1,5 +1,3 @@
-import { Narrow } from '../_types';
-
 type Falsy = 0 | '' | false | null | undefined;
 
 /**
@@ -15,6 +13,6 @@ type Falsy = 0 | '' | false | null | undefined;
  * isFalsy(null); // -> true
  * isFalsy(1); // -> false
  */
-export default function isFalsy<T>(value: T): value is Narrow<T, Falsy> {
+export default function isFalsy(value: unknown): value is Falsy {
     return !value;
 }

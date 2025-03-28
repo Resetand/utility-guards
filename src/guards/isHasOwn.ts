@@ -20,8 +20,8 @@ type IsHasOwnGuard = {
      * isHasOwn({ a: 1 })('a'); // -> true
      * validate({value}, {value: is.isHasOwn({ a: 1 })}); // -> true
      */
-    <T, P extends PropertyKey>(value: T, propertyName: P): value is T & { [K in P]: unknown };
-    <P extends PropertyKey>(propertyName: P): <T>(value: T) => value is T & { [K in P]: unknown };
+    <T, P extends PropertyKey>(value: unknown, propertyName: P): value is Record<P, unknown>;
+    <P extends PropertyKey>(propertyName: P): (value: unknown) => value is Record<P, unknown>;
 };
 
 const isHasOwn: IsHasOwnGuard = curriedGuard((value, propertyName) => {

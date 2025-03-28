@@ -6,6 +6,6 @@
  * isError(new CustomError()); // -> true
  * isError(''); // -> false
  */
-export default function isError<T>(value: T | Error): value is Error {
+export default function isError(value: unknown): value is Error {
     return value instanceof Error;
 }

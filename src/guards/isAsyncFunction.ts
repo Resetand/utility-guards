@@ -1,4 +1,4 @@
-import type { AnyFunction } from '../_types';
+import type { AnyFunction, AnyAsyncFunction } from '../_types';
 import { isType } from '../_utils';
 
 /**
@@ -10,6 +10,8 @@ import { isType } from '../_utils';
  * isFunction(() => {}); // -> false
  * isFunction(function() {}); // -> false
  */
-export default function isAsyncFunction<T>(value: T | AnyFunction): value is AnyFunction {
+export default function isAsyncFunction(value: AnyFunction): value is AnyAsyncFunction;
+export default function isAsyncFunction(value: unknown): value is AnyAsyncFunction;
+export default function isAsyncFunction(value: unknown): value is AnyAsyncFunction {
     return isType(value, 'AsyncFunction');
 }

@@ -9,6 +9,6 @@ import { isType } from '../_utils';
  * isString(new String('')); // -> true
  * isString(1); // -> false
  */
-export default function isString<T>(value: T | string): value is string {
+export default function isString(value: unknown): value is string {
     return isType(value, 'String');
 }

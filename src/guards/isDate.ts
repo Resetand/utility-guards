@@ -9,6 +9,6 @@ import { isType } from '../_utils';
  * isDate(new Date('01.02.1971')); // -> true
  * isDate(new Date('invalid date')); // -> false
  */
-export default function isDate<T>(value: T | Date): value is Date {
+export default function isDate(value: unknown): value is Date {
     return !!value && isType(value, 'Date') && !isNaN(Number(value));
 }

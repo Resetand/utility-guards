@@ -8,6 +8,6 @@ import { isType } from '../_utils';
  * isRegExp(new RegExp('\\w+', 'g')); // -> true
  * isRegExp(''); // -> false
  */
-export default function isRegExp<T>(value: T | RegExp): value is RegExp {
+export default function isRegExp(value: unknown): value is RegExp {
     return isType(value, 'RegExp');
 }
