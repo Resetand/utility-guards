@@ -1,4 +1,3 @@
- 
 import { defineConfig } from 'tsup';
 
 import * as path from 'path';
@@ -8,21 +7,22 @@ const OUT_DIR = path.resolve(__dirname, 'lib');
 const SRC_DIR = path.resolve(__dirname, 'src');
 
 export default defineConfig(async () => {
-    const entry = await makeEntryMap(SRC_DIR);
+    const entryFiles = await makeEntryMap(SRC_DIR);
 
     return {
-        entry,
+        entry: entryFiles,
         outDir: OUT_DIR,
         format: ['cjs', 'esm'],
+        dts: true,
         splitting: false,
         sourcemap: false,
         clean: true,
         treeshake: true,
         platform: 'neutral',
-        target: 'es5',
+        target: 'es6',
         minify: true,
-        dts: { entry },
         bundle: true,
+        shims: false,
     };
 });
 
