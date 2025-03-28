@@ -6,6 +6,7 @@ import {
     isUndefined,
     isNull,
     isFunction,
+    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -14,7 +15,7 @@ import {
     isArray,
     isAnyObject,
     isPlainObject,
-    isHas,
+    isHasOwn,
     isHasIn,
     isNil,
     isPromise,
@@ -30,6 +31,8 @@ import {
     $some,
     isAny,
     isClass,
+    isBigInt,
+    isExactInstanceOf,
 } from '../src';
 
 import { describe, test, expect } from 'vitest';
@@ -41,10 +44,13 @@ const unwrap = <TP, TF>(tests: { passed: TP[]; failed: TF[] }) => {
 // export const assertType = <T>(_: T) => {};
 
 class Cls {}
+class SubCls extends Cls {}
 class CustomError extends Error {
     unique = true;
 }
 function func() {}
+async function asyncFunc() {}
+
 function* generator() {
     yield 1;
     yield 2;
@@ -120,10 +126,10 @@ describe('Guards runtime tests', () => {
     });
 
     test('should check on PlainObject with own property - %s', () => {
-        expect(isHas(Cls, 'toString')).toBe(false);
-        expect(isHas({}, 'toString')).toBe(false);
-        expect(isHas([1], '0')).toBe(true);
-        expect(isHas({ prop: 'example' }, 'prop')).toBe(true);
+        expect(isHasOwn(Cls, 'toString')).toBe(false);
+        expect(isHasOwn({}, 'toString')).toBe(false);
+        expect(isHasOwn([1], '0')).toBe(true);
+        expect(isHasOwn({ prop: 'example' }, 'prop')).toBe(true);
     });
 
     test('should check on value has direct or inherit property - %s', () => {
@@ -163,11 +169,31 @@ describe('Guards runtime tests', () => {
     test.each(
         unwrap({
             /* eslint-disable no-new-func */
-            passed: [() => '123', func, Function('a, b', 'return a + 2'), parseInt, JSON.stringify],
+            passed: [() => '123', func, Function('a, b', 'return a + 2'), parseInt, JSON.stringify, asyncFunc],
             failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls],
         }),
     )('should check on Function - %s', (value, expected) => {
         expect(isFunction(value)).toBe(expected);
+    });
+
+    test.each(
+        unwrap({
+            /* eslint-disable no-new-func */
+            passed: [async () => '123', asyncFunc],
+            failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls, func, () => 'test'],
+        }),
+    )('should check on AsyncFunction - %s', (value, expected) => {
+        expect(isAsyncFunction(value)).toBe(expected);
+    });
+
+    test.each(
+        unwrap({
+            // @ts-ignore
+            passed: [BigInt(1), BigInt('1'), 42n],
+            failed: ['string', null, [1, 2, 3], 0, () => 'test'],
+        }),
+    )('should check on BigInt - %s', (value, expected) => {
+        expect(isBigInt(value)).toBe(expected);
     });
 
     test.each(
@@ -221,7 +247,7 @@ describe('Guards runtime tests', () => {
             ],
             failed: [{}, () => 'test', { then: () => void 0 }, new Promise((res) => res(1))],
         }),
-    )('should check on Iterable', (value, expected) => {
+    )('should check on Iterable - s%', (value, expected) => {
         expect(isIterable(value)).toBe(expected);
     });
 
@@ -234,13 +260,22 @@ describe('Guards runtime tests', () => {
         expect(isDate(value)).toBe(expected);
     });
 
-    test('should check on InstanceOf', () => {
+    test('should check on InstanceOf - s%', () => {
         expect(isInstanceOf(new Cls(), Cls)).toBe(true);
         expect(isInstanceOf(new CustomError(), Error)).toBe(true);
         expect(isInstanceOf(new CustomError(), CustomError)).toBe(true);
         expect(isInstanceOf(new CustomError(), Cls)).toBe(false);
         expect(isInstanceOf(new Cls(), CustomError)).toBe(false);
-        expect(!isInstanceOf(new Cls(), Error)).toBe(true);
+        expect(isInstanceOf(new Cls(), Error)).toBe(false);
+        expect(isInstanceOf({}, Cls)).toBe(false);
+    });
+
+    test('should check on ExactInstanceOf', () => {
+        expect(isExactInstanceOf(new Cls(), Cls)).toBe(true);
+        expect(isExactInstanceOf(new SubCls(), Cls)).toBe(false);
+        expect(isExactInstanceOf(new Cls(), SubCls)).toBe(false);
+        expect(isExactInstanceOf(new SubCls(), SubCls)).toBe(true);
+        expect(isInstanceOf({}, Cls)).toBe(false);
     });
 
     test.each(

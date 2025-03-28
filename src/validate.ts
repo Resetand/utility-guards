@@ -2,7 +2,7 @@ import type { Assign, Guard, InferGuardType, Nominal } from './_types';
 
 import isFunction from './guards/isFunction';
 import isPlainObject from './guards/isPlainObject';
-import isHas from './guards/isHas';
+import isHasOwn from './guards/isHasOwn';
 import isArray from './guards/isArray';
 import isAnyObject from './guards/isAnyObject';
 import isHasIn from './guards/isHasIn';
@@ -174,10 +174,10 @@ const validateImpl = (value: unknown, schema: TypeSchema, options?: ValidateOpti
     if (isPlainObject(schema)) {
         const keys = allowExtra ? Object.keys(schema) : [...new Set([...Object.keys(schema), ...Object.keys(value!)])];
 
-        const has = checkInheritedProperties ? isHasIn : isHas;
+        const has = checkInheritedProperties ? isHasIn : isHasOwn;
 
         return keys.every((key) =>
-            has(value, key) && isHas(schema, key)
+            has(value, key) && isHasOwn(schema, key)
                 ? validateImpl(value[key], schema[key], options) //
                 : false,
         );

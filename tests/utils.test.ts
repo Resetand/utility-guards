@@ -1,4 +1,4 @@
-import { isArrayOf, isHas, isInstanceOf, isNumber } from '../src';
+import { isArrayOf, isHasOwn, isInstanceOf, isNumber } from '../src';
 import { curriedGuard } from '../src/_utils';
 import { expect, test } from 'vitest';
 
@@ -32,6 +32,6 @@ test('Should curry guard', () => {
     expect(isInstanceOf(Cls)(new Cls())).toBe(true);
     expect(isInstanceOf(Cls)(new CustomError())).toBe(false);
 
-    expect(isHas('prop')({ prop: 1 })).toBe(true);
-    expect(isHas('prop')({ prop: 1, otherProp: 2 })).toBe(true);
+    expect(isHasOwn('prop')({ prop: 1 })).toBe(true);
+    expect(isHasOwn('prop')({ prop: 1, otherProp: 2 })).toBe(true);
 });
