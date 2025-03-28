@@ -13,7 +13,6 @@ import isValidDate from './guards/isValidDate';
 import isEmpty from './guards/isEmpty';
 import isError from './guards/isError';
 import isFunction from './guards/isFunction';
-import isAsyncFunction from './guards/isAsyncFunction';
 import isHasOwn from './guards/isHasOwn';
 import isHasIn from './guards/isHasIn';
 import isInstanceOf from './guards/isInstanceOf';
@@ -47,6 +46,7 @@ import type { Guard } from './_types';
 const _container = {
     String: isString,
     Number: isNumber,
+    FiniteNumber: isFiniteNumber,
     BigInt: isBigInt,
     Symbol: isSymbol,
     RegExp: isRegExp,
@@ -62,7 +62,6 @@ const _container = {
     Array: isArray,
     Class: isClass,
     Function: isFunction,
-    AsyncFunction: isAsyncFunction,
     Promise: isPromise,
     PromiseLike: isPromiseLike,
     Date: isDate,
@@ -111,7 +110,6 @@ export {
     isFalsy,
     isError,
     isFunction,
-    isAsyncFunction,
     isHasOwn,
     isHasIn,
     isInstanceOf,

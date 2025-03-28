@@ -50,8 +50,9 @@ npm install utility-guards
 
 ## Usage
 
+import from the main package
+
 ```ts
-// import from the main package
 import { isString, isNumber, isNil } from 'utility-guards';
 
 isString(...);
@@ -59,8 +60,9 @@ isNumber(...);
 isNil(...);
 ```
 
+import from the sub-packages
+
 ```ts
-// or import standalone functions
 import isString from 'utility-guards/isString';
 import isNumber from 'utility-guards/isNumber';
 import isNil from 'utility-guards/isNil';
@@ -70,8 +72,9 @@ isNumber(...);
 isNil(...);
 ```
 
+use `is` default export container
+
 ```ts
-// or use the full guard container
 import is from 'utility-guards';
 
 is.String(...)
@@ -114,7 +117,6 @@ is.Nil(...)
 #### Function & Class Checks
 
 -   [`isFunction`](#isfunction)
--   [`isAsyncFunction`](#isasyncfunction)
 -   [`isClass`](#isclass)
 
 #### Special Structures
@@ -177,6 +179,7 @@ Checks if a values is a finite number (not `NaN`, `Infinity`, or `-Infinity`)
 isFiniteNumber(123); // true
 isFiniteNumber(NaN); // false
 isFiniteNumber(Infinity); // false
+isFiniteNumber('42'); // false
 ```
 
 #### `isBoolean`
@@ -352,15 +355,13 @@ isObjectExactOf({ a: 1, b: 'hello', extra: true }, { a: isNumber, b: isString })
 
 Checks if a value is a function (but not a ES6 class constructor).
 
-#### `isAsyncFunction`
-
-Checks if value is an async function. Uses `Object.prototype.toString` hack to check for `AsyncFunction`. Only works with actual async functions defined with `async` keyword.
-
 ```ts
-isAsyncFunction(async () => {}); // true
-isAsyncFunction(function () {}); // false
-isAsyncFunction(() => new Promise(() => {})); // false
+isFunction(() => {}); // true
+isFunction(function () {}); // true
+isFunction(class MyClass {}); // false
 ```
+
+> Although technically es6 classes are functions as well, it's can not be called like a regular function and in most majority of cases this is not the expected behavior. So this guard is designed to check for regular functions only
 
 #### `isClass`
 

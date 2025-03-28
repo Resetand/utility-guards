@@ -5,7 +5,6 @@ import {
     isUndefined,
     isNull,
     isFunction,
-    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -41,7 +40,7 @@ import {
 
 import { describe, test, expectTypeOf } from 'vitest';
 import { withValue } from './utils';
-import { AnyAsyncFunction, AnyFunction, Class } from '../src/_types';
+import { AnyFunction, Class } from '../src/_types';
 
 class Cls {}
 class CustomError extends Error {
@@ -333,43 +332,6 @@ describe('guards static typing tests', () => {
                 expectTypeOf(v).toEqualTypeOf<FunctionWithProps>();
             } else {
                 expectTypeOf(v).toEqualTypeOf<{ prop: number }>();
-            }
-        });
-    });
-
-    test('Should check isAsyncFunction typing', () => {
-        type ExampleCallback = (a: number, b: string) => boolean;
-        type Dict = Record<string, unknown>;
-
-        withValue((v: unknown) => {
-            if (isAsyncFunction(v)) {
-                expectTypeOf(v).toEqualTypeOf<AnyAsyncFunction>();
-            } else {
-                expectTypeOf(v).toEqualTypeOf<unknown>();
-            }
-        });
-
-        withValue((v: ExampleCallback) => {
-            if (isAsyncFunction(v)) {
-                expectTypeOf(v).toEqualTypeOf<ExampleCallback & AnyAsyncFunction>();
-            } else {
-                expectTypeOf(v).toEqualTypeOf<ExampleCallback>();
-            }
-        });
-
-        withValue((v: null) => {
-            if (isAsyncFunction(v)) {
-                expectTypeOf(v).toEqualTypeOf<never>();
-            } else {
-                expectTypeOf(v).toEqualTypeOf<null>();
-            }
-        });
-
-        withValue((v: Dict) => {
-            if (isAsyncFunction(v)) {
-                expectTypeOf(v).toEqualTypeOf<Dict & AnyAsyncFunction>();
-            } else {
-                expectTypeOf(v).toEqualTypeOf<Dict>();
             }
         });
     });

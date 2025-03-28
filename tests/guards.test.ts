@@ -6,7 +6,6 @@ import {
     isUndefined,
     isNull,
     isFunction,
-    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -190,15 +189,6 @@ describe('Guards runtime tests', () => {
         }),
     )('should check on Function - %s (%#)', (value, expected) => {
         expect(isFunction(value)).toBe(expected);
-    });
-
-    test.each(
-        unwrap({
-            passed: [async () => '123', asyncFunc],
-            failed: ['string', new Cls(), null, [1, 2, 3], 0, Cls, func, () => 'test'],
-        }),
-    )('should check on AsyncFunction - %s (%#)', (value, expected) => {
-        expect(isAsyncFunction(value)).toBe(expected);
     });
 
     test.each(
