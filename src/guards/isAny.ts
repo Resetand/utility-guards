@@ -3,12 +3,16 @@
  * This is special case guard that originally was created to be used with `validate` function.
  *
  * @example
+ * import validate from 'utility-guards/validate';
+ * 
  * // using with validate function
  * if (validate(value, { someProp: isAny, someOtherProp: isString })) {
  *   value.someProp // type unknown
  * }
  * 
  * @example
+ * import validate from 'utility-guards/validate';
+ * 
  * const obj = JSON.parse(value) as { a: number } | { b: string };
  * if (validate(obj, { a: isAny })) {
  *   obj.a // type number

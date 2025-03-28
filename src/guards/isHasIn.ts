@@ -1,6 +1,6 @@
 import { curriedGuard } from '../_utils';
 
-type IsHasInGuard = {
+export type IsHasInGuard = {
     /**
      * Check if value is an any object and a direct or inherited property
      *

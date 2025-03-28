@@ -2,7 +2,15 @@ import type { Guard, InferGuardType } from './_types';
 
 type AnyGuard<TGuarded = unknown, TValue = unknown> = (value: TValue | TGuarded, ...args: any[]) => value is TGuarded;
 
-type SomeGuard = {
+export type SomeGuard = {
+    /**
+     * Combine multiple guards into union guard
+     * @example
+     * const isNumberOrString = $some(is.Number, is.String);
+     * isNumberOrString(1); // -> true
+     * isNumberOrString('1'); // -> true
+     * isNumberOrString([]); // -> false
+     */
     <G1, V1, G2, V2>(
         g1: AnyGuard<G1, V1>, //
         g2: AnyGuard<G2, V2>,
@@ -40,14 +48,6 @@ type SomeGuard = {
     <TGuards extends Guard[]>(...guards: TGuards): AnyGuard<InferGuardType<TGuards[number]>>;
 };
 
-/**
- * Combine multiple guards into union guard
- * @example
- * const isNumberOrString = $some(is.Number, is.String);
- * isNumberOrString(1); // -> true
- * isNumberOrString('1'); // -> true
- * isNumberOrString([]); // -> false
- */
 const $some: SomeGuard = (...guards: AnyGuard[]) => {
     return (value: any): value is unknown => guards.some((guard) => guard(value));
 };

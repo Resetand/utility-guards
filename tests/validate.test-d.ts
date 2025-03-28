@@ -1,6 +1,8 @@
 import { test, describe, expectTypeOf } from 'vitest';
-import is, { validate, validateStrict } from '../src';
+import is from '../src';
 import { withValue } from './utils';
+import validate from '../src/validate';
+import { Guard } from '_types';
 
 describe('Validate static typing tests', () => {
     test('should infer guarded type from object schema', () => {
@@ -30,9 +32,6 @@ describe('Validate static typing tests', () => {
 
         withValue((v: unknown) => {
             validate(v, schema) && expectTypeOf(v).toEqualTypeOf<ExpectedType>();
-        });
-        withValue((v: unknown) => {
-            validateStrict(v, schema) && expectTypeOf(v).toEqualTypeOf<ExpectedType>();
         });
     });
 
@@ -68,9 +67,6 @@ describe('Validate static typing tests', () => {
         withValue((v: unknown) => {
             validate(v, schema) && expectTypeOf(v).toEqualTypeOf<ExpectedType>();
         });
-        withValue((v: unknown) => {
-            validateStrict(v, schema) && expectTypeOf(v).toEqualTypeOf<ExpectedType>();
-        });
     });
 
     test('should infer guarded type from guard schema', () => {
@@ -83,6 +79,22 @@ describe('Validate static typing tests', () => {
         withValue((v: unknown) => {
             validate(v, is.$some(is.String, is.Nil)) && expectTypeOf(v).toEqualTypeOf<string | null | undefined>();
         });
+    });
+
+    test('Should narrow down the guarded type using `as` method', () => {
+        withValue(() => {
+            validate(is.Number) as Guard<1>;
+            // @ts-expect-error wrong types
+            validate(is.Number) as Guard<string>;
+        });
+
+        validate(is.Number) as Guard<1>;
+        // @ts-expect-error wrong types
+        validate(is.Number) as Guard<string>;
+
+        validate(is.ArrayOf(is.String)) as Guard<'a'[]>;
+        // @ts-expect-error wrong types
+        validate(is.Number) as Guard<number[]>;
     });
 });
 
