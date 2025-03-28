@@ -7,7 +7,7 @@ type InferObjectSchema<TSchema extends ObjectSchema> = {
     [K in keyof TSchema]: InferGuardType<TSchema[K]>;
 };
 
-type ObjectExactOfGuard = {
+export type ObjectExactOfGuard = {
     /**
      * Similar to `isObjectOf` but checks for exact object with no additional properties allowed
      */
