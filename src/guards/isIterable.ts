@@ -13,5 +13,6 @@
  * isIterable(null); // -> false
  */
 export default function isIterable<T>(value: T | Iterable<unknown>): value is Iterable<unknown> {
-    return Symbol.iterator in Object(value);
+    const o = Object(value);
+    return Symbol.iterator in o && typeof o[Symbol.iterator] === 'function';
 }

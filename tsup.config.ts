@@ -15,7 +15,7 @@ export default defineConfig(async () => {
         outDir: OUT_DIR,
         format: ['cjs', 'esm'],
         splitting: false,
-        sourcemap: true,
+        sourcemap: false,
         clean: true,
         treeshake: true,
         platform: 'neutral',

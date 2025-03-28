@@ -28,6 +28,7 @@ export enum TypeTag {
     REGEXP = 'RegExp',
     ERROR = 'Error',
     FUNCTION = 'Function',
+    AsyncFunction = 'AsyncFunction',
     UNDEFINED = 'Undefined',
     NULL = 'Null',
 }

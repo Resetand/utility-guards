@@ -5,6 +5,7 @@ import {
     isUndefined,
     isNull,
     isFunction,
+    isAsyncFunction,
     isPrimitive,
     isDate,
     isSymbol,
@@ -13,22 +14,24 @@ import {
     isArray,
     isAnyObject,
     isPlainObject,
-    isHas,
+    isHasOwn,
     isHasIn,
     isNil,
     isPromise,
     isPromiseLike,
     isIterable,
     isInstanceOf,
+    isExactInstanceOf,
     isEmpty,
     isFalsy,
     isArrayOf,
     isNaN,
+    isAny,
+    isClass,
+    isBigInt,
     $not,
     $every,
     $some,
-    isAny,
-    isClass,
 } from '../src';
 
 import { describe, test, expectTypeOf } from 'vitest';
@@ -158,6 +161,27 @@ describe('guards static typing tests', () => {
         });
     });
 
+    test('Should check isAsyncFunction typing', () => {
+        type ExampleCallback = (a: number, b: string) => boolean;
+        type Dict = Record<string, unknown>;
+
+        withValue((v: unknown) => {
+            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<AnyFunction>();
+        });
+
+        withValue((v: ExampleCallback) => {
+            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<ExampleCallback>();
+        });
+
+        withValue((v: null) => {
+            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<never>();
+        });
+
+        withValue((v: Dict) => {
+            isAsyncFunction(v) && expectTypeOf(v).toEqualTypeOf<Dict & AnyFunction>();
+        });
+    });
+
     test('Should check isClass typing', () => {
         withValue((v: unknown) => {
             isClass(v) && expectTypeOf(v).toEqualTypeOf<ClassConstructor>();
@@ -244,36 +268,54 @@ describe('guards static typing tests', () => {
         });
     });
 
+    test('Should check isExactInstanceOf typing', () => {
+        withValue((v: unknown) => {
+            isExactInstanceOf(v, Cls) && expectTypeOf(v).toEqualTypeOf<Cls>();
+        });
+
+        withValue((v: unknown) => {
+            isExactInstanceOf(Cls)(v) && expectTypeOf(v).toEqualTypeOf<Cls>();
+        });
+
+        withValue((v: unknown) => {
+            isExactInstanceOf(v, CustomError) && expectTypeOf(v).toEqualTypeOf<CustomError>();
+        });
+
+        withValue((v: unknown) => {
+            isExactInstanceOf(CustomError)(v) && expectTypeOf(v).toEqualTypeOf<CustomError>();
+        });
+    });
+
     test('Should check isHas typing', () => {
         type PropShape<T = unknown> = { prop: T };
         type AnotherShape<T = string> = { another: T };
 
         withValue((v: unknown) => {
-            isHas(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape>();
+            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape>();
         });
 
         withValue((v: unknown) => {
-            isHas('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape>();
+            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape>();
         });
 
         withValue((v: PropShape<number>) => {
-            isHas('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape<number>>();
+            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape<number>>();
         });
 
         withValue((v: AnotherShape) => {
-            isHas(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
         });
 
         withValue((v: AnotherShape) => {
-            isHas('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
+            isHasOwn('prop')(v) && expectTypeOf(v).toEqualTypeOf<PropShape & AnotherShape>();
         });
 
         withValue((v: AnyFunction) => {
-            isHas(v, 'prop') && expectTypeOf(v).toEqualTypeOf<AnyFunction & PropShape>();
+            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<AnyFunction & PropShape>();
         });
 
         withValue((v: null) => {
-            isHas(v, 'prop') && expectTypeOf(v).toEqualTypeOf<never>();
+            isHasOwn(v, 'prop') && expectTypeOf(v).toEqualTypeOf<never>();
         });
     });
 
@@ -447,6 +489,10 @@ describe('guards static typing tests', () => {
             isNaN(v) && expectTypeOf(v).toEqualTypeOf<number>();
         });
 
+        withValue((v: number) => {
+            !isNaN(v) && expectTypeOf(v).toEqualTypeOf<number>();
+        });
+
         withValue((v: string) => {
             isNaN(v) && expectTypeOf(v).toEqualTypeOf<never>();
         });
@@ -470,7 +516,7 @@ describe('guards static typing tests', () => {
 
     test('Should check isAny typing', () => {
         withValue((v: unknown) => {
-            isAny(v) && expectTypeOf(v).toEqualTypeOf<unknown>();
+            isAny(v) && expectTypeOf(v).toEqualTypeOf<any>();
         });
 
         withValue((v: null) => {
@@ -539,6 +585,20 @@ describe('guards static typing tests', () => {
 
         withValue((v: unknown) => {
             notEmptyArray(v) && expectTypeOf(v).toEqualTypeOf<unknown>();
+        });
+    });
+
+    test('Should check isBigInt typing', () => {
+        withValue((v: unknown) => {
+            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<bigint>();
+        });
+
+        withValue((v: bigint) => {
+            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<bigint>();
+        });
+
+        withValue((v: number) => {
+            isBigInt(v) && expectTypeOf(v).toEqualTypeOf<never>();
         });
     });
 });

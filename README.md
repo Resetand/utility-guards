@@ -59,7 +59,7 @@ All base type guards that you used to copy from project to project in one place
 -   [`isPromiseLike`](#ispromiselikevalue)
 -   [`isIterable`](#isiterablevalue)
 -   [`isDate`](#isdatevalue)
--   [`isHas`](#ishasvalue-propertyname)
+-   [`isHasOwn`](#ishasvalue-propertyname)
 -   [`isHasIn`](#ishasinvalue-propertyname)
 -   [`isArrayOf`](#isarrayofvalue-guard)
 -   [`isInstanceOf`](#isinstanceofvalue-constructor)
@@ -136,7 +136,7 @@ isString(42); // false
 
 Check if value is an number literal or number created by `Number` constructor and **not `NaN`**
 
-ℹ️ Although `NaN` is considered a number in JS, it's not a valid number in most cases you want to check if value is a valid number, so `isNumber(NaN)` returns `false`
+ℹ️ Although `NaN` is considered a number in JS, it's not a valid number and in most cases, you probably want to check it separately
 
 ```tsx
 isNumber(42); // true
@@ -295,19 +295,32 @@ isArray({ 0: 'a', length: 10 }); // false
 
 ### `isFunction(value)`
 
-Check if value is an any function (except class definition)
+Check if value is an any function (except ES class definition)
 
 ```tsx
 isFunction(() => {}); // true
 isFunction(function () {}); // true
-isFunction(class {}); // false
+isFunction(async function () {}); // true
+isFunction(class {}); // false, although ES6 class is a constructor function in JS, it's  expected behavior
+```
+
+---
+
+### `isAsyncFunction(value)`
+
+Check if value is ES6 async function definition
+
+```tsx
+isAsyncFunction(async function () {}); // true
+isAsyncFunction(async () => {}); // true
+isAsyncFunction(() => {}); // false
 ```
 
 ---
 
 ### `isClass(value)`
 
-Check if value is a class definition
+Check if value is a ES6 class definition
 
 ```tsx
 isClass(class {}); // true
@@ -364,7 +377,7 @@ isDate(new Date('Invalid Date')); // false
 
 ---
 
-### `isHas(value, propertyName)`
+### `isHasOwn(value, propertyName)`
 
 > `(value, propertyName) => boolean`\
 > `(propertyName) => (value) => boolean`
@@ -374,8 +387,8 @@ Check if value is an any object and has a direct property with given name
 > ℹ️ This method based on `Object.prototype.hasOwnProperty` and does not check prototype chain
 
 ```tsx
-isHas({ a: 42 }, 'a'); // true
-isHas({ a: 42 }, 'b'); // false
+isHasOwn({ a: 42 }, 'a'); // true
+isHasOwn({ a: 42 }, 'b'); // false
 ```
 
 ---
