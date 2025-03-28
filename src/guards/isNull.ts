@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value is a null
  *
@@ -9,5 +7,5 @@ import { isType } from '../_utils';
  * isNil(''); // -> false
  */
 export default function isNull(value: unknown): value is null {
-    return isType(value, 'Null');
+    return value === null;
 }

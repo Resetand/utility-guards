@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 import { defineConfig } from 'tsup';
 
 import * as path from 'path';

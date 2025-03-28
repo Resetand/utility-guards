@@ -57,3 +57,6 @@ type ObjectSchema = { [K in PropertyKey]: TypeSchema };
 export type TypeSchema = ObjectSchema | Guard | [] | [TypeSchema] | [TypeSchema, ...TypeSchema[]];
 
 export type InferGuardType<TGuard> = TGuard extends Guard<infer TGuarded, any[]> ? TGuarded : never;
+
+export type Assign<T, U> = Omit<T, keyof U> & U;
+export type RequireKeys<T, K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;

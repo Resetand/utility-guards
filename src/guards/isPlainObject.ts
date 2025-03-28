@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 type PlainObject = {
     [key: string]: unknown;
 };
@@ -19,7 +17,7 @@ type PlainObject = {
  * isPlainObject(null); // -> false
  */
 export default function isPlainObject(value: unknown): value is PlainObject {
-    if (!isType(value, 'Object')) {
+    if (value === null || !(typeof value === 'object')) {
         return false;
     }
 

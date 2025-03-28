@@ -1,8 +1,7 @@
 import type { Guard } from '../_types';
-import isArray from './isArray';
-import { curriedGuard } from '../_utils';
+import { curriedGuard } from '../utils/_curried-guard';
 
-type IsArrayOfGuard = {
+export type ArrayOfGuard = {
     /**
      * Check if all elements of array match given guard
      *
@@ -21,8 +20,8 @@ type IsArrayOfGuard = {
     <TItemGuarded>(guard: Guard<TItemGuarded>): (value: unknown) => value is TItemGuarded[];
 };
 
-const isArrayOf: IsArrayOfGuard = curriedGuard((value, guard: Guard<unknown>) => {
-    return isArray(value) && value.every((value) => guard(value));
+const isArrayOf: ArrayOfGuard = curriedGuard((value, guard: Guard<unknown>) => {
+    return Array.isArray(value) && value.every((value) => guard(value));
 });
 
 export default isArrayOf;

@@ -1,7 +1,3 @@
-import $some from '../some';
-import isNull from './isNull';
-import isUndefined from './isUndefined';
-
 /**
  * Check if value is a null or undefined
  *
@@ -11,6 +7,6 @@ import isUndefined from './isUndefined';
  * isNil(0); // -> false
  * isNil(''); // -> false
  */
-const isNil = $some(isNull, isUndefined);
-
-export default isNil;
+export default function isNil(value: unknown): value is null | undefined {
+    return value === null || value === undefined;
+}

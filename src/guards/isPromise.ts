@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value is a promise object
  *
@@ -10,5 +8,5 @@ import { isType } from '../_utils';
  * isPromise({}); // -> false
  */
 export default function isPromise(value: unknown): value is Promise<unknown> {
-    return isType(value, 'Promise');
+    return value instanceof Promise;
 }
