@@ -1,5 +1,5 @@
 /**
- * Check if value a finite number, which mean a valid number that is not NaN, Infinity or -Infinity.
+ * Check if value is a finite number, meaning a valid number that is not NaN, Infinity, or -Infinity.
  *
  * @example
  * isFiniteNumber(1); // -> true
