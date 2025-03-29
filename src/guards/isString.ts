@@ -1,14 +1,11 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value a string literal or string created by `String` constructor
  *
  * @example
  * isString(''); // -> true
  * isString(String('')); // -> true
- * isString(new String('')); // -> true
  * isString(1); // -> false
  */
 export default function isString(value: unknown): value is string {
-    return isType(value, 'String');
+    return typeof value === 'string';
 }

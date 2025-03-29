@@ -1,5 +1,3 @@
-import { isType } from '../_utils';
-
 /**
  * Check if value is a undefined
  *
@@ -9,5 +7,5 @@ import { isType } from '../_utils';
  * isNil(''); // -> false
  */
 export default function isUndefined(value: unknown): value is undefined {
-    return isType(value, 'Undefined');
+    return value === undefined;
 }

@@ -1,6 +1,6 @@
-import { curriedGuard } from '../_utils';
+import { curriedGuard } from '../utils/_curried-guard';
 
-type IsHasInGuard = {
+export type HasInGuard = {
     /**
      * Check if value is an any object and a direct or inherited property
      *
@@ -23,7 +23,7 @@ type IsHasInGuard = {
     <P extends PropertyKey>(propertyName: P): (value: unknown) => value is Record<P, unknown>;
 };
 
-const isHasIn: IsHasInGuard = curriedGuard((value, propertyName) => {
+const isHasIn: HasInGuard = curriedGuard((value, propertyName) => {
     return value != null && propertyName in Object(value);
 });
 
