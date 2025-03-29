@@ -33,7 +33,7 @@
     "lint": "eslint --max-warnings=0 --ext=ts,tsx . --fix ",
     "build": "tsup",
     "test": "vitest run --typecheck",
-    "test:coverage": "npm run test -- --coverage",
+    "test:coverage": "vitest run --typecheck --coverage",
     "prepare": "husky install",
     "pack": "npm run lint && npm run test && npm run build && node scripts/pack.js",
     "prepublish": "npm run pack",
