@@ -447,6 +447,14 @@ describe('guards static typing tests', () => {
                 expectTypeOf(v).toEqualTypeOf<AnyFunction>();
             }
         });
+
+        withValue((v: Record<string, number> | string) => {
+            if (isEmpty(v)) {
+                expectTypeOf(v).toEqualTypeOf<'' | Record<PropertyKey, never>>();
+            } else {
+                expectTypeOf(v).toEqualTypeOf<Record<string, number> | string>();
+            }
+        });
     });
 
     test('Should check isArray typing', () => {
